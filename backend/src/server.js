@@ -24,7 +24,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 // Serve o frontend estático (pasta ../../frontend)
-const frontendPath = path.join(__dirname, '..', '..', 'frontend');
+const frontendPath = path.join(__dirname, '..', 'frontend');
 app.use(express.static(frontendPath));
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
