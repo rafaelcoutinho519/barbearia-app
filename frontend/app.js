@@ -110,7 +110,7 @@ function renderNav(active) {
 async function renderHome() {
   appEl.innerHTML = `
     <section class="hero">
-      <h1>NAVALHA DE OURO</h1>
+      <h1>SHOWROOM BARBEARIA</h1>
       <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário em menos de um minuto.</p>
       <a href="#${state.user && state.user.role === 'client' ? 'dashboard' : (state.user ? 'barber' : 'register')}" class="btn">Agendar horário</a>
     </section>
@@ -125,7 +125,7 @@ async function renderHome() {
       return;
     }
     list.innerHTML = services.map(s => `
-      <div class="card service-card">
+      <div class="card service-card" style="cursor: pointer;" onclick="location.hash = '${state.user && state.user.role === 'client' ? 'dashboard' : 'login'}'">
         <h3>${s.name}</h3>
         <p class="text-muted" style="min-height:36px">${s.description || ''}</p>
         <div class="price">${formatPrice(s.price)}</div>
@@ -264,7 +264,7 @@ async function renderBookingFlow() {
           <label>2. Escolha o barbeiro</label>
           <select id="barberSelect">
             <option value="">Selecione...</option>
-            ${barbers.map(b => `<option value="${b.id}">${b.name}</option>`).join('')}
+            ${barbers.map(b => `<option value="${b.id}">${b.name === 'Administrador' ? 'Júnior Soares' : b.name}</option>`).join('')}
           </select>
         </div>
 
@@ -363,7 +363,7 @@ async function renderMyAppointments() {
                 <td>${formatDate(a.date)}</td>
                 <td>${a.start_time}</td>
                 <td>${a.service_name}</td>
-                <td>${a.barber_name}</td>
+                <td>${a.barber_name === 'Administrador' ? 'Júnior Soares' : a.barber_name}</td>
                 <td>${formatPrice(a.price)}</td>
                 <td><span class="badge ${a.status}">${a.status}</span></td>
                 <td>${a.status === 'agendado' ? `<button class="btn small danger" data-cancel="${a.id}">Cancelar</button>` : ''}</td>
