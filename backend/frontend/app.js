@@ -55,6 +55,17 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Helper para selecionar serviço e navegar direto pro agendamento
+function selectServiceAndBook(serviceId) {
+  state.booking.serviceId = serviceId;
+  if (state.user && state.user.role === 'client') {
+    location.hash = '#dashboard';
+  } else {
+    toast('Faça login para concluir seu agendamento.');
+    location.hash = '#login';
+  }
+}
+
 // ---------- Roteamento ----------
 const routes = {
   home: renderHome,
@@ -125,11 +136,14 @@ async function renderHome() {
       return;
     }
     list.innerHTML = services.map(s => `
-      <div class="card service-card" style="cursor: pointer;" onclick="location.hash = '${state.user && state.user.role === 'client' ? 'dashboard' : 'login'}'">
-        <h3>${s.name}</h3>
-        <p class="text-muted" style="min-height:36px">${s.description || ''}</p>
-        <div class="price">${formatPrice(s.price)}</div>
-        <div class="meta">${s.duration_minutes} min</div>
+      <div class="card service-card" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;" onclick="selectServiceAndBook('${s.id}')">
+        <div>
+          <h3>${s.name}</h3>
+          <p class="text-muted" style="min-height:36px">${s.description || ''}</p>
+          <div class="price">${formatPrice(s.price)}</div>
+          <div class="meta">${s.duration_minutes} min</div>
+        </div>
+        <button class="btn small mt-16" style="width: 100%;">Agendar este serviço</button>
       </div>
     `).join('');
   } catch (err) {
@@ -250,7 +264,14 @@ async function renderBookingFlow() {
   content.innerHTML = `<p class="text-muted">Carregando serviços e barbeiros...</p>`;
   try {
     const [{ services }, { barbers }] = await Promise.all([api('/services'), api('/barbers')]);
-    state.booking = { serviceId: null, barberId: null, date: todayISO(), time: null };
+    
+    // Mantém o serviceId se veio de um clique direto na Home
+    state.booking = {
+      serviceId: state.booking.serviceId || null,
+      barberId: null,
+      date: todayISO(),
+      time: null
+    };
 
     content.innerHTML = `
       <div class="card">
@@ -311,10 +332,10 @@ async function renderBookingFlow() {
       }
     }
 
-    // Renderiza Cards de Serviços
+    // Renderiza Cards de Serviços com seleção automática caso venha da Home
     const servicesGrid = document.getElementById('servicesGrid');
     servicesGrid.innerHTML = services.map(s => `
-      <div class="selectable-card" data-service-id="${s.id}">
+      <div class="selectable-card ${String(state.booking.serviceId) === String(s.id) ? 'selected' : ''}" data-service-id="${s.id}">
         <div class="card-title">${s.name}</div>
         <div class="card-info">
           <span class="card-price">${formatPrice(s.price)}</span>
@@ -411,6 +432,11 @@ async function renderBookingFlow() {
 
     setupDateSelector();
 
+    // Atualiza horários se um serviço já veio selecionado da Home
+    if (state.booking.serviceId) {
+      refreshSlots();
+    }
+
     confirmBtn.onclick = async () => {
       const { serviceId, barberId, date, time } = state.booking;
       document.getElementById('bookError').textContent = '';
@@ -421,6 +447,8 @@ async function renderBookingFlow() {
           body: { serviceId, barberId, date, startTime: time },
         });
         toast('Horário agendado com sucesso!');
+        // Limpa o estado da reserva
+        state.booking = { serviceId: null, barberId: null, date: null, time: null };
         document.querySelector('.tab[data-tab="mine"]').click();
       } catch (err) {
         document.getElementById('bookError').textContent = err.message;
