@@ -340,3 +340,67 @@ th { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform
   cursor: not-allowed;
   pointer-events: none;
 }
+/* Grid de Seleção de Serviços e Barbeiros */
+.cards-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.selectable-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.selectable-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.selectable-card.selected {
+  background: var(--bg-alt);
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 16px rgba(212, 162, 78, 0.25);
+}
+
+.selectable-card .card-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.selectable-card .card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.selectable-card .card-price {
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.selectable-card .card-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Ajuste específico para seleção de barbeiros */
+.barber-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
