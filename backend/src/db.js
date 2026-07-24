@@ -43,7 +43,7 @@ db.exec(`
   );
 `);
 
-// Seed inicial: um usuário barbeiro/admin e alguns serviços, apenas se o banco estiver vazio
+// Seed inicial: um usuário barbeiro/admin e os serviços atualizados
 const userCount = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
 if (userCount === 0) {
   const adminName = process.env.ADMIN_NAME || 'Administrador';
@@ -58,10 +58,15 @@ if (userCount === 0) {
   const insertService = db.prepare(
     `INSERT INTO services (name, description, price, duration_minutes) VALUES (?, ?, ?, ?)`
   );
-  insertService.run('Corte de cabelo', 'Corte tradicional na tesoura ou máquina', 40, 30);
-  insertService.run('Barba', 'Modelagem e acabamento de barba com navalha', 30, 20);
-  insertService.run('Corte + Barba', 'Combo completo', 65, 50);
-  insertService.run('Sobrancelha', 'Design de sobrancelha na navalha', 15, 10);
+
+  // Novos serviços e valores cadastrados
+  insertService.run('Corte', 'Corte tradicional na tesoura ou máquina', 25, 35);
+  insertService.run('Barba', 'Modelagem e acabamento de barba com navalha', 10, 15);
+  insertService.run('Corte + Barba', 'Combo completo de corte e barba', 35, 40);
+  insertService.run('Sobrancelha', 'Design de sobrancelha na navalha', 5, 10);
+  insertService.run('Pezinho do Cabelo', 'Acabamento do pezinho do cabelo', 5, 10);
+  insertService.run('Progressiva', 'Alisamento e tratamento capilar', 50, 40);
+  insertService.run('Progressiva + Corte', 'Combo de alisamento com corte', 80, 80);
 
   console.log(`Usuário admin/barbeiro criado: ${adminEmail} / senha: ${adminPassword}`);
 }
