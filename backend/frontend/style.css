@@ -260,3 +260,83 @@ th { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform
 .mt-16 { margin-top: 16px; }
 .mt-24 { margin-top: 24px; }
 .text-muted { color: var(--text-muted); }
+/* Container de Scroll Horizontal dos Dias */
+.date-selector {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 4px 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
+}
+
+.date-selector::-webkit-scrollbar {
+  height: 6px;
+}
+.date-selector::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 4px;
+}
+
+/* Card Individual de Dia */
+.date-card {
+  flex: 0 0 auto;
+  min-width: 80px;
+  padding: 12px 10px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.date-card .day-name {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: block;
+}
+
+.date-card .day-number {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 2px 0;
+  display: block;
+}
+
+.date-card .month-name {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: block;
+}
+
+/* Hover e Estados Selecionados */
+.date-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.date-card.selected {
+  background: var(--gold);
+  border-color: var(--gold-light);
+  box-shadow: 0 0 16px rgba(212, 162, 78, 0.4);
+  transform: scale(1.05);
+}
+
+.date-card.selected .day-name,
+.date-card.selected .day-number,
+.date-card.selected .month-name {
+  color: #1a1512;
+}
+
+/* Estilo para dia fechado (Domingo) */
+.date-card.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
