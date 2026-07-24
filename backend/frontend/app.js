@@ -270,7 +270,7 @@ async function renderBookingFlow() {
 
         <div class="mt-16">
           <label>3. Escolha a data</label>
-          <input type="date" id="dateInput" min="${todayISO()}" value="${todayISO()}" />
+          <div id="dateSelector" class="date-selector"></div>
         </div>
 
         <div class="mt-16">
@@ -287,7 +287,6 @@ async function renderBookingFlow() {
 
     const serviceSelect = document.getElementById('serviceSelect');
     const barberSelect = document.getElementById('barberSelect');
-    const dateInput = document.getElementById('dateInput');
     const confirmBtn = document.getElementById('confirmBtn');
 
     async function refreshSlots() {
@@ -320,9 +319,68 @@ async function renderBookingFlow() {
       }
     }
 
+    // Função interna para construir os cards de data modernos
+    function setupDateSelector() {
+      const container = document.getElementById('dateSelector');
+      if (!container) return;
+
+      container.innerHTML = '';
+      const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+      const today = new Date();
+
+      let firstValidDateSet = false;
+
+      for (let i = 0; i < 14; i++) {
+        const d = new Date();
+        d.setDate(today.getDate() + i);
+
+        const year = d.getFullYear();
+        const monthStr = String(d.getMonth() + 1).padStart(2, '0');
+        const dayStr = String(d.getDate()).padStart(2, '0');
+        const fullDate = `${year}-${monthStr}-${dayStr}`;
+
+        const dayOfWeek = d.getDay();
+        const isSunday = dayOfWeek === 0;
+
+        const card = document.createElement('div');
+        card.className = `date-card ${isSunday ? 'disabled' : ''}`;
+        card.dataset.date = fullDate;
+
+        let dayLabel = daysOfWeek[dayOfWeek];
+        if (i === 0) dayLabel = 'Hoje';
+        if (i === 1) dayLabel = 'Amanhã';
+
+        card.innerHTML = `
+          <span class="day-name">${dayLabel}</span>
+          <span class="day-number">${d.getDate()}</span>
+          <span class="month-name">${months[d.getMonth()]}</span>
+        `;
+
+        if (!isSunday) {
+          card.onclick = () => {
+            container.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            state.booking.date = fullDate;
+            refreshSlots();
+          };
+
+          // Seleciona automaticamente o primeiro dia funcional (hoje ou amanhã, se hoje for domingo)
+          if (!firstValidDateSet) {
+            card.classList.add('selected');
+            state.booking.date = fullDate;
+            firstValidDateSet = true;
+          }
+        }
+
+        container.appendChild(card);
+      }
+    }
+
+    setupDateSelector();
+
     serviceSelect.onchange = () => { state.booking.serviceId = serviceSelect.value || null; refreshSlots(); };
     barberSelect.onchange = () => { state.booking.barberId = barberSelect.value || null; refreshSlots(); };
-    dateInput.onchange = () => { state.booking.date = dateInput.value; refreshSlots(); };
 
     confirmBtn.onclick = async () => {
       const { serviceId, barberId, date, time } = state.booking;
