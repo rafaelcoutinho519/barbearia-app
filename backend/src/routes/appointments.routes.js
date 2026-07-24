@@ -4,15 +4,11 @@ import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = Router();
 
-// Horário de funcionamento da barbearia (fixo por enquanto)
-const OPEN_HOUR = 9; // 09:00
-const CLOSE_HOUR = 19; // 19:00
-const CLOSED_WEEKDAY = 0; // domingo fechado (0 = domingo)
-
 function toMinutes(hhmm) {
   const [h, m] = hhmm.split(':').map(Number);
   return h * 60 + m;
 }
+
 function toHHMM(mins) {
   const h = Math.floor(mins / 60)
     .toString()
@@ -21,7 +17,31 @@ function toHHMM(mins) {
   return `${h}:${m}`;
 }
 
-// Retorna horários livres para um barbeiro, data e serviço (duração) específicos
+// Retorna os horários fixos permitidos de acordo com o dia da semana
+function getFixedSlotsForDate(dateString) {
+  // Converte a data YYYY-MM-DD para verificar o dia da semana
+  const weekday = new Date(`${dateString}T12:00:00`).getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+
+  // Domingo (0): Fechado
+  if (weekday === 0) {
+    return [];
+  }
+
+  // Segunda-feira (1): Apenas à tarde
+  if (weekday === 1) {
+    return ['13:00', '13:40', '14:20', '15:00', '15:40'];
+  }
+
+  // Terça a Sábado (2 a 6)
+  return [
+    '08:00', '08:40', '09:20', 
+    '10:40', '11:20', '12:00', '12:40', 
+    '13:20', '14:00', '14:40', '15:20', 
+    '16:00', '16:40', '17:20'
+  ];
+}
+
+// Retorna horários livres para um barbeiro, data e serviço específicos
 router.get('/available', (req, res) => {
   const { barberId, date, serviceId } = req.query;
   if (!barberId || !date || !serviceId) {
@@ -31,11 +51,14 @@ router.get('/available', (req, res) => {
   const service = db.prepare('SELECT * FROM services WHERE id = ?').get(serviceId);
   if (!service) return res.status(404).json({ error: 'Serviço não encontrado.' });
 
-  const weekday = new Date(`${date}T12:00:00`).getDay();
-  if (weekday === CLOSED_WEEKDAY) {
-    return res.json({ slots: [] });
+  // Pega a lista de horários fixos permitidos para aquele dia da semana
+  const baseSlots = getFixedSlotsForDate(date);
+
+  if (baseSlots.length === 0) {
+    return res.json({ slots: [], duration_minutes: service.duration_minutes });
   }
 
+  // Busca agendamentos ativos já existentes para o mesmo dia e barbeiro
   const existing = db
     .prepare(
       `SELECT start_time, end_time FROM appointments
@@ -44,20 +67,22 @@ router.get('/available', (req, res) => {
     .all(barberId, date);
 
   const duration = service.duration_minutes;
-  const slots = [];
-  for (let start = OPEN_HOUR * 60; start + duration <= CLOSE_HOUR * 60; start += duration) {
+
+  // Filtra removendo os horários que entram em conflito com agendamentos existentes
+  const availableSlots = baseSlots.filter((slotTime) => {
+    const start = toMinutes(slotTime);
     const end = start + duration;
+
     const overlaps = existing.some((appt) => {
       const apptStart = toMinutes(appt.start_time);
       const apptEnd = toMinutes(appt.end_time);
       return start < apptEnd && end > apptStart;
     });
-    if (!overlaps) {
-      slots.push(toHHMM(start));
-    }
-  }
 
-  res.json({ slots, duration_minutes: duration });
+    return !overlaps;
+  });
+
+  res.json({ slots: availableSlots, duration_minutes: duration });
 });
 
 // Cliente autenticado cria um agendamento
@@ -73,11 +98,14 @@ router.post('/', requireAuth, requireRole('client'), (req, res) => {
   const barber = db.prepare(`SELECT * FROM users WHERE id = ? AND role IN ('barber','admin')`).get(barberId);
   if (!barber) return res.status(404).json({ error: 'Barbeiro não encontrado.' });
 
+  // Valida se o horário escolhido faz parte das opções válidas para o dia
+  const validSlots = getFixedSlotsForDate(date);
+  if (!validSlots.includes(startTime)) {
+    return res.status(400).json({ error: 'Horário selecionado não é válido para este dia.' });
+  }
+
   const startMin = toMinutes(startTime);
   const endMin = startMin + service.duration_minutes;
-  if (startMin < OPEN_HOUR * 60 || endMin > CLOSE_HOUR * 60) {
-    return res.status(400).json({ error: 'Horário fora do funcionamento da barbearia.' });
-  }
 
   const conflict = db
     .prepare(
