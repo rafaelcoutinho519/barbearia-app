@@ -255,25 +255,19 @@ async function renderBookingFlow() {
     content.innerHTML = `
       <div class="card">
         <label>1. Escolha o serviço</label>
-        <select id="serviceSelect">
-          <option value="">Selecione...</option>
-          ${services.map(s => `<option value="${s.id}">${s.name} — ${formatPrice(s.price)} (${s.duration_minutes}min)</option>`).join('')}
-        </select>
+        <div id="servicesGrid" class="cards-selector-grid"></div>
 
-        <div class="mt-16">
+        <div class="mt-24">
           <label>2. Escolha o barbeiro</label>
-          <select id="barberSelect">
-            <option value="">Selecione...</option>
-            ${barbers.map(b => `<option value="${b.id}">${b.name === 'Administrador' ? 'Júnior Soares' : b.name}</option>`).join('')}
-          </select>
+          <div id="barbersGrid" class="cards-selector-grid"></div>
         </div>
 
-        <div class="mt-16">
+        <div class="mt-24">
           <label>3. Escolha a data</label>
           <div id="dateSelector" class="date-selector"></div>
         </div>
 
-        <div class="mt-16">
+        <div class="mt-24">
           <label>4. Escolha o horário</label>
           <div id="slotsWrap" class="slots"><span class="text-muted">Selecione serviço, barbeiro e data.</span></div>
         </div>
@@ -285,8 +279,6 @@ async function renderBookingFlow() {
       </div>
     `;
 
-    const serviceSelect = document.getElementById('serviceSelect');
-    const barberSelect = document.getElementById('barberSelect');
     const confirmBtn = document.getElementById('confirmBtn');
 
     async function refreshSlots() {
@@ -319,7 +311,48 @@ async function renderBookingFlow() {
       }
     }
 
-    // Função interna para construir os cards de data modernos
+    // Renderiza Cards de Serviços
+    const servicesGrid = document.getElementById('servicesGrid');
+    servicesGrid.innerHTML = services.map(s => `
+      <div class="selectable-card" data-service-id="${s.id}">
+        <div class="card-title">${s.name}</div>
+        <div class="card-info">
+          <span class="card-price">${formatPrice(s.price)}</span>
+          <span class="card-meta">${s.duration_minutes} min</span>
+        </div>
+      </div>
+    `).join('');
+
+    servicesGrid.querySelectorAll('[data-service-id]').forEach(card => {
+      card.onclick = () => {
+        servicesGrid.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        state.booking.serviceId = card.dataset.serviceId;
+        refreshSlots();
+      };
+    });
+
+    // Renderiza Cards de Barbeiros
+    const barbersGrid = document.getElementById('barbersGrid');
+    barbersGrid.innerHTML = barbers.map(b => {
+      const barberName = b.name === 'Administrador' ? 'Júnior Soares' : b.name;
+      return `
+        <div class="selectable-card" data-barber-id="${b.id}">
+          <div class="barber-card-title">${barberName}</div>
+        </div>
+      `;
+    }).join('');
+
+    barbersGrid.querySelectorAll('[data-barber-id]').forEach(card => {
+      card.onclick = () => {
+        barbersGrid.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        state.booking.barberId = card.dataset.barberId;
+        refreshSlots();
+      };
+    });
+
+    // Construção dos Cards de Data
     function setupDateSelector() {
       const container = document.getElementById('dateSelector');
       if (!container) return;
@@ -365,7 +398,6 @@ async function renderBookingFlow() {
             refreshSlots();
           };
 
-          // Seleciona automaticamente o primeiro dia funcional (hoje ou amanhã, se hoje for domingo)
           if (!firstValidDateSet) {
             card.classList.add('selected');
             state.booking.date = fullDate;
@@ -378,9 +410,6 @@ async function renderBookingFlow() {
     }
 
     setupDateSelector();
-
-    serviceSelect.onchange = () => { state.booking.serviceId = serviceSelect.value || null; refreshSlots(); };
-    barberSelect.onchange = () => { state.booking.barberId = barberSelect.value || null; refreshSlots(); };
 
     confirmBtn.onclick = async () => {
       const { serviceId, barberId, date, time } = state.booking;
