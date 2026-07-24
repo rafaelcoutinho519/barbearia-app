@@ -151,24 +151,20 @@ async function renderHome() {
   }
 }
 
-// ---------- Login ----------
+// ---------- Login (Simplificado por Telefone) ----------
 function renderLogin() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
       <h2>Entrar</h2>
       <form id="loginForm">
         <div>
-          <label>E-mail</label>
-          <input type="email" name="email" required />
-        </div>
-        <div>
-          <label>Senha</label>
-          <input type="password" name="password" required />
+          <label>Seu telefone / WhatsApp</label>
+          <input type="tel" name="phone" placeholder="(11) 99999-9999" required />
         </div>
         <p id="loginError" class="error-msg"></p>
         <button class="btn" type="submit">Entrar</button>
       </form>
-      <p class="auth-switch">Ainda não tem conta? <a href="#register">Cadastre-se</a></p>
+      <p class="auth-switch">Ainda não tem conta? <a href="#register">Cadastre-se rapidinho</a></p>
     </div>
   `;
   document.getElementById('loginForm').onsubmit = async (e) => {
@@ -177,7 +173,7 @@ function renderLogin() {
     try {
       const { user, token } = await api('/auth/login', {
         method: 'POST',
-        body: { email: fd.get('email'), password: fd.get('password') },
+        body: { phone: fd.get('phone') },
       });
       saveSession(user, token);
       toast(`Bem-vindo, ${user.name.split(' ')[0]}!`);
@@ -189,7 +185,7 @@ function renderLogin() {
   };
 }
 
-// ---------- Cadastro (cliente) ----------
+// ---------- Cadastro Simplificado (Apenas Nome + Telefone) ----------
 function renderRegister() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
@@ -197,24 +193,16 @@ function renderRegister() {
       <form id="registerForm">
         <div>
           <label>Nome completo</label>
-          <input type="text" name="name" required />
+          <input type="text" name="name" placeholder="Ex: Rafael Coutinho" required />
         </div>
         <div>
-          <label>E-mail</label>
-          <input type="email" name="email" required />
-        </div>
-        <div>
-          <label>Telefone</label>
-          <input type="tel" name="phone" placeholder="(00) 00000-0000" />
-        </div>
-        <div>
-          <label>Senha (mín. 6 caracteres)</label>
-          <input type="password" name="password" minlength="6" required />
+          <label>Número de Telefone / WhatsApp</label>
+          <input type="tel" name="phone" placeholder="(11) 99999-9999" required />
         </div>
         <p id="registerError" class="error-msg"></p>
-        <button class="btn" type="submit">Criar conta</button>
+        <button class="btn" type="submit">Acessar e Agendar</button>
       </form>
-      <p class="auth-switch">Já tem conta? <a href="#login">Entrar</a></p>
+      <p class="auth-switch">Já tem conta? <a href="#login">Entrar pelo telefone</a></p>
     </div>
   `;
   document.getElementById('registerForm').onsubmit = async (e) => {
@@ -225,9 +213,7 @@ function renderRegister() {
         method: 'POST',
         body: {
           name: fd.get('name'),
-          email: fd.get('email'),
           phone: fd.get('phone'),
-          password: fd.get('password'),
         },
       });
       saveSession(user, token);
@@ -265,7 +251,6 @@ async function renderBookingFlow() {
   try {
     const [{ services }, { barbers }] = await Promise.all([api('/services'), api('/barbers')]);
     
-    // Mantém o serviceId se veio de um clique direto na Home
     state.booking = {
       serviceId: state.booking.serviceId || null,
       barberId: null,
@@ -332,7 +317,6 @@ async function renderBookingFlow() {
       }
     }
 
-    // Renderiza Cards de Serviços com seleção automática caso venha da Home
     const servicesGrid = document.getElementById('servicesGrid');
     servicesGrid.innerHTML = services.map(s => `
       <div class="selectable-card ${String(state.booking.serviceId) === String(s.id) ? 'selected' : ''}" data-service-id="${s.id}">
@@ -353,7 +337,6 @@ async function renderBookingFlow() {
       };
     });
 
-    // Renderiza Cards de Barbeiros
     const barbersGrid = document.getElementById('barbersGrid');
     barbersGrid.innerHTML = barbers.map(b => {
       const barberName = b.name === 'Administrador' ? 'Júnior Soares' : b.name;
@@ -373,7 +356,6 @@ async function renderBookingFlow() {
       };
     });
 
-    // Construção dos Cards de Data
     function setupDateSelector() {
       const container = document.getElementById('dateSelector');
       if (!container) return;
@@ -432,7 +414,6 @@ async function renderBookingFlow() {
 
     setupDateSelector();
 
-    // Atualiza horários se um serviço já veio selecionado da Home
     if (state.booking.serviceId) {
       refreshSlots();
     }
@@ -447,7 +428,16 @@ async function renderBookingFlow() {
           body: { serviceId, barberId, date, startTime: time },
         });
         toast('Horário agendado com sucesso!');
-        // Limpa o estado da reserva
+
+        // ---------- Notificação de WhatsApp ao Barbeiro ----------
+        const barberPhone = '5587996289373'; // Informe o WhatsApp com DDD aqui
+        const msg = `Olá! Acabei de realizar um agendamento pelo site` +
+                    `*Cliente:* ${state.user.name}%0A` +
+                    `*Telefone:* ${state.user.phone}%0A` +
+                    `*Data:* ${formatDate(date)} às ${time}`;
+
+        window.open(`https://wa.me/${barberPhone}?text=${msg}`, '_blank');
+
         state.booking = { serviceId: null, barberId: null, date: null, time: null };
         document.querySelector('.tab[data-tab="mine"]').click();
       } catch (err) {
@@ -538,7 +528,7 @@ async function renderAgenda() {
   const dateInput = document.getElementById('agendaDate');
   async function load() {
     const list = document.getElementById('agendaList');
-    list.innerHTML = '<p class="text-muted">Carregando...</p>';
+    if (!list) return;
     try {
       const { appointments } = await api(`/appointments/agenda?date=${dateInput.value}`, { auth: true });
       if (!appointments.length) {
@@ -587,6 +577,15 @@ async function renderAgenda() {
   }
   dateInput.onchange = load;
   load();
+
+  // Auto-refresh a cada 15s para atualização automática da agenda do barbeiro
+  const interval = setInterval(() => {
+    if (location.hash === '#barber' && document.getElementById('agendaDate')) {
+      load();
+    } else {
+      clearInterval(interval);
+    }
+  }, 15000);
 }
 
 async function renderServicesAdmin() {
