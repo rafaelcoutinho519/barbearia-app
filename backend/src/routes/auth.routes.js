@@ -1,45 +1,44 @@
 import { Router } from 'express';
-import bcrypt from 'bcryptjs';
 import { db } from '../db.js';
 import { generateToken, requireAuth } from '../middleware/auth.js';
 
 const router = Router();
 
-// Cadastro público — sempre cria clientes. Barbeiros são criados por um admin.
+// Cadastro público — cria clientes apenas com Nome e Telefone
 router.post('/register', (req, res) => {
-  const { name, email, phone, password } = req.body;
+  const { name, phone } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios.' });
-  }
-  if (password.length < 6) {
-    return res.status(400).json({ error: 'A senha deve ter pelo menos 6 caracteres.' });
+  if (!name || !phone) {
+    return res.status(400).json({ error: 'Nome e telefone são obrigatórios.' });
   }
 
-  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+  // Verifica se o telefone já está cadastrado
+  const existing = db.prepare('SELECT id FROM users WHERE phone = ?').get(phone);
   if (existing) {
-    return res.status(409).json({ error: 'Já existe uma conta com este e-mail.' });
+    return res.status(409).json({ error: 'Já existe uma conta cadastrada com este telefone.' });
   }
 
-  const hash = bcrypt.hashSync(password, 10);
+  // Insere o cliente na tabela (email e password_hash ficam como texto vazio ou nulo)
   const info = db
     .prepare('INSERT INTO users (name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)')
-    .run(name, email, phone || '', hash, 'client');
+    .run(name, '', phone, '', 'client');
 
   const user = db.prepare('SELECT id, name, email, phone, role FROM users WHERE id = ?').get(info.lastInsertRowid);
   const token = generateToken(user);
   res.status(201).json({ user, token });
 });
 
+// Login do cliente — autentica apenas pelo número de telefone
 router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
+  const { phone } = req.body;
+
+  if (!phone) {
+    return res.status(400).json({ error: 'O número de telefone é obrigatório.' });
   }
 
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
-    return res.status(401).json({ error: 'E-mail ou senha inválidos.' });
+  const user = db.prepare('SELECT id, name, email, phone, role FROM users WHERE phone = ?').get(phone);
+  if (!user) {
+    return res.status(404).json({ error: 'Telefone não cadastrado. Crie uma conta primeiro.' });
   }
 
   const safeUser = { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role };
@@ -54,23 +53,18 @@ router.get('/me', requireAuth, (req, res) => {
   res.json({ user });
 });
 
-// Um admin cria contas de barbeiro
+// Um admin cria contas de barbeiro (mantido para gestão interna)
 router.post('/barbers', requireAuth, (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Apenas administradores podem cadastrar barbeiros.' });
   }
   const { name, email, phone, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios.' });
+  if (!name) {
+    return res.status(400).json({ error: 'Nome é obrigatório.' });
   }
-  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-  if (existing) {
-    return res.status(409).json({ error: 'Já existe uma conta com este e-mail.' });
-  }
-  const hash = bcrypt.hashSync(password, 10);
   const info = db
     .prepare('INSERT INTO users (name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)')
-    .run(name, email, phone || '', hash, 'barber');
+    .run(name, email || '', phone || '', password || '', 'barber');
   const user = db.prepare('SELECT id, name, email, phone, role FROM users WHERE id = ?').get(info.lastInsertRowid);
   res.status(201).json({ user });
 });
