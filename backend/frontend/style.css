@@ -123,7 +123,36 @@ h1, h2, h3, .brand, .logo-font {
 .grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 .grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 
-.service-card h3 { color: var(--gold); margin: 0 0 6px; font-size: 22px; }
+/* ---------- ESTILOS DOS CARDS COM HOVER E FEEDBACK TOUCH ---------- */
+.service-card {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Efeito Hover (ao passar o mouse no PC) */
+.service-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold);
+  box-shadow: 0 12px 28px rgba(212, 162, 78, 0.18);
+  background-color: #2a241f;
+}
+
+.service-card:hover h3 {
+  color: var(--gold-light);
+}
+
+/* Efeito Active (ao clicar no PC ou tocar na tela do celular) */
+.service-card:active {
+  transform: translateY(-2px) scale(0.98);
+  border-color: var(--gold-light);
+  box-shadow: 0 4px 14px rgba(212, 162, 78, 0.3);
+  background-color: #312a24;
+}
+
+.service-card h3 { color: var(--gold); margin: 0 0 6px; font-size: 22px; transition: color 0.2s ease; }
 .service-card .price { font-size: 20px; font-weight: 700; color: var(--text); }
 .service-card .meta { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
