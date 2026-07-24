@@ -177,23 +177,48 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); }
 .auth-switch { text-align: center; margin-top: 14px; color: var(--text-muted); font-size: 14px; }
 .auth-switch a { color: var(--gold); cursor: pointer; text-decoration: underline; }
 
+/* ---------- SELEÇÃO DE HORÁRIOS (SLOTS) ---------- */
 .slots {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 12px;
 }
+
 .slot-btn {
   background: var(--bg-alt);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 8px 14px;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.slot-btn:hover { border-color: var(--gold); }
-.slot-btn.selected { background: var(--gold); color: #1a1512; border-color: var(--gold); font-weight: 700; }
+
+.slot-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(212, 162, 78, 0.08);
+  transform: translateY(-2px);
+}
+
+/* DESTAQUE DE HORÁRIO SELECIONADO */
+.slot-btn.selected {
+  background: var(--gold);
+  color: #1a1512;
+  border-color: var(--gold-light);
+  font-weight: 800;
+  box-shadow: 0 0 16px rgba(212, 162, 78, 0.45);
+  transform: scale(1.06);
+}
+
+.slot-btn:active {
+  transform: scale(0.96);
+}
 
 table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); font-size: 14px; }
