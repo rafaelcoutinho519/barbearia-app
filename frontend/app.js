@@ -438,7 +438,7 @@ async function renderMyAppointments() {
 
           const barberPhone = '5587996289373';
           let cancelMsg = `⚠️ *CANCELAMENTO DE AGENDAMENTO*%0A%0A` +
-                            `O cliente *${state.user ? state.user.name : 'Cliente'}* cancelou um agendamento.`;
+                          `O cliente *${state.user ? state.user.name : 'Cliente'}* cancelou um agendamento.`;
 
           if (appt) {
             cancelMsg += `%0A%0A` +
