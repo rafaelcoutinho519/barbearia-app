@@ -55,20 +55,10 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// Helper para selecionar serviço e navegar direto pro agendamento
-function selectServiceAndBook(serviceId) {
-  state.booking.serviceId = serviceId;
-  if (state.user && state.user.role === 'client') {
-    location.hash = '#dashboard';
-  } else {
-    toast('Faça login para concluir seu agendamento.');
-    location.hash = '#login';
-  }
-}
-
 // ---------- Roteamento ----------
 const routes = {
   home: renderHome,
+  profissionais: renderProfessionals,
   login: renderLogin,
   register: renderRegister,
   dashboard: renderClientDashboard,
@@ -92,6 +82,7 @@ window.addEventListener('hashchange', navigate);
 function renderNav(active) {
   const links = [];
   links.push(`<a href="#home" class="${active === 'home' ? 'active' : ''}">Início</a>`);
+  links.push(`<a href="#profissionais" class="${active === 'profissionais' ? 'active' : ''}">Profissionais</a>`);
 
   if (state.user && state.user.role === 'client') {
     links.push(`<a href="#dashboard" class="${active === 'dashboard' ? 'active' : ''}">Meus agendamentos</a>`);
@@ -136,14 +127,11 @@ async function renderHome() {
       return;
     }
     list.innerHTML = services.map(s => `
-      <div class="card service-card" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;" onclick="selectServiceAndBook('${s.id}')">
-        <div>
-          <h3>${s.name}</h3>
-          <p class="text-muted" style="min-height:36px">${s.description || ''}</p>
-          <div class="price">${formatPrice(s.price)}</div>
-          <div class="meta">${s.duration_minutes} min</div>
-        </div>
-        <button class="btn small mt-16" style="width: 100%;">Agendar este serviço</button>
+      <div class="card service-card" style="cursor: pointer;" onclick="location.hash = '${state.user && state.user.role === 'client' ? 'dashboard' : 'login'}'">
+        <h3>${s.name}</h3>
+        <p class="text-muted" style="min-height:36px">${s.description || ''}</p>
+        <div class="price">${formatPrice(s.price)}</div>
+        <div class="meta">${s.duration_minutes} min</div>
       </div>
     `).join('');
   } catch (err) {
@@ -151,20 +139,68 @@ async function renderHome() {
   }
 }
 
-// ---------- Login (Simplificado por Telefone) ----------
+// ---------- Conheça Nossos Profissionais ----------
+function renderProfessionals() {
+  appEl.innerHTML = `
+    <section class="hero" style="padding: 40px 20px;">
+      <h1>NOSSOS PROFISSIONAIS</h1>
+      <p>Profissionais qualificados focados em entregar o melhor estilo e atendimento.</p>
+    </section>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px;">
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+        <div style="flex: 1; min-width: 250px; text-align: center;">
+          <div style="width: 150px; height: 150px; border-radius: 50%; background: #c59b27; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #1a1a1a; font-weight: bold;">
+            JS
+          </div>
+          <h2 style="margin-bottom: 4px;">Júnior Soares</h2>
+          <p class="text-muted" style="margin-bottom: 16px;">Barbeiro Master & Fundador</p>
+          
+          <div style="display: flex; gap: 12px; justify-content: center;">
+            <a href="https://instagram.com/SEU_INSTAGRAM" target="_blank" class="btn small" style="background: #E1306C; color: #fff; text-decoration: none;">Instagram</a>
+            <a href="https://wa.me/5587996289373" target="_blank" class="btn small" style="background: #25D366; color: #fff; text-decoration: none;">WhatsApp</a>
+          </div>
+        </div>
+
+        <div style="flex: 2; min-width: 280px;">
+          <h3>Sobre o profissional</h3>
+          <p class="text-muted" style="margin-top: 8px; line-height: 1.6;">
+            Especialista em cortes modernos, clássicos, barba na navalha e visagismo. Anos de experiência dedicados a elevar o padrão do atendimento e garantir a satisfação de cada cliente que passa pela cadeira.
+          </p>
+          <div class="mt-16">
+            <a href="#${state.user && state.user.role === 'client' ? 'dashboard' : 'register'}" class="btn">Agendar com Júnior</a>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 40px; margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;">Galeria de Trabalhos</h3>
+      <div class="grid cols-3" style="gap: 12px;">
+        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Corte Degradê</div>
+        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Barba Navalhada</div>
+        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Social Moderno</div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- Login ----------
 function renderLogin() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
       <h2>Entrar</h2>
       <form id="loginForm">
         <div>
-          <label>Seu telefone / WhatsApp</label>
-          <input type="tel" name="phone" placeholder="(11) 99999-9999" required />
+          <label>E-mail</label>
+          <input type="email" name="email" required />
+        </div>
+        <div>
+          <label>Senha</label>
+          <input type="password" name="password" required />
         </div>
         <p id="loginError" class="error-msg"></p>
         <button class="btn" type="submit">Entrar</button>
       </form>
-      <p class="auth-switch">Ainda não tem conta? <a href="#register">Cadastre-se rapidinho</a></p>
+      <p class="auth-switch">Ainda não tem conta? <a href="#register">Cadastre-se</a></p>
     </div>
   `;
   document.getElementById('loginForm').onsubmit = async (e) => {
@@ -173,7 +209,7 @@ function renderLogin() {
     try {
       const { user, token } = await api('/auth/login', {
         method: 'POST',
-        body: { phone: fd.get('phone') },
+        body: { email: fd.get('email'), password: fd.get('password') },
       });
       saveSession(user, token);
       toast(`Bem-vindo, ${user.name.split(' ')[0]}!`);
@@ -185,7 +221,7 @@ function renderLogin() {
   };
 }
 
-// ---------- Cadastro Simplificado (Apenas Nome + Telefone) ----------
+// ---------- Cadastro (cliente) ----------
 function renderRegister() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
@@ -193,16 +229,24 @@ function renderRegister() {
       <form id="registerForm">
         <div>
           <label>Nome completo</label>
-          <input type="text" name="name" placeholder="Ex: Rafael Coutinho" required />
+          <input type="text" name="name" required />
         </div>
         <div>
-          <label>Número de Telefone / WhatsApp</label>
-          <input type="tel" name="phone" placeholder="(11) 99999-9999" required />
+          <label>E-mail</label>
+          <input type="email" name="email" required />
+        </div>
+        <div>
+          <label>Telefone</label>
+          <input type="tel" name="phone" placeholder="(00) 00000-0000" />
+        </div>
+        <div>
+          <label>Senha (mín. 6 caracteres)</label>
+          <input type="password" name="password" minlength="6" required />
         </div>
         <p id="registerError" class="error-msg"></p>
-        <button class="btn" type="submit">Acessar e Agendar</button>
+        <button class="btn" type="submit">Criar conta</button>
       </form>
-      <p class="auth-switch">Já tem conta? <a href="#login">Entrar pelo telefone</a></p>
+      <p class="auth-switch">Já tem conta? <a href="#login">Entrar</a></p>
     </div>
   `;
   document.getElementById('registerForm').onsubmit = async (e) => {
@@ -213,7 +257,9 @@ function renderRegister() {
         method: 'POST',
         body: {
           name: fd.get('name'),
+          email: fd.get('email'),
           phone: fd.get('phone'),
+          password: fd.get('password'),
         },
       });
       saveSession(user, token);
@@ -250,30 +296,30 @@ async function renderBookingFlow() {
   content.innerHTML = `<p class="text-muted">Carregando serviços e barbeiros...</p>`;
   try {
     const [{ services }, { barbers }] = await Promise.all([api('/services'), api('/barbers')]);
-    
-    state.booking = {
-      serviceId: state.booking.serviceId || null,
-      barberId: null,
-      date: todayISO(),
-      time: null
-    };
+    state.booking = { serviceId: null, barberId: null, date: todayISO(), time: null };
 
     content.innerHTML = `
       <div class="card">
         <label>1. Escolha o serviço</label>
-        <div id="servicesGrid" class="cards-selector-grid"></div>
+        <select id="serviceSelect">
+          <option value="">Selecione...</option>
+          ${services.map(s => `<option value="${s.id}">${s.name} — ${formatPrice(s.price)} (${s.duration_minutes}min)</option>`).join('')}
+        </select>
 
-        <div class="mt-24">
+        <div class="mt-16">
           <label>2. Escolha o barbeiro</label>
-          <div id="barbersGrid" class="cards-selector-grid"></div>
+          <select id="barberSelect">
+            <option value="">Selecione...</option>
+            ${barbers.map(b => `<option value="${b.id}">${b.name === 'Administrador' ? 'Júnior Soares' : b.name}</option>`).join('')}
+          </select>
         </div>
 
-        <div class="mt-24">
+        <div class="mt-16">
           <label>3. Escolha a data</label>
-          <div id="dateSelector" class="date-selector"></div>
+          <input type="date" id="dateInput" min="${todayISO()}" value="${todayISO()}" />
         </div>
 
-        <div class="mt-24">
+        <div class="mt-16">
           <label>4. Escolha o horário</label>
           <div id="slotsWrap" class="slots"><span class="text-muted">Selecione serviço, barbeiro e data.</span></div>
         </div>
@@ -285,6 +331,9 @@ async function renderBookingFlow() {
       </div>
     `;
 
+    const serviceSelect = document.getElementById('serviceSelect');
+    const barberSelect = document.getElementById('barberSelect');
+    const dateInput = document.getElementById('dateInput');
     const confirmBtn = document.getElementById('confirmBtn');
 
     async function refreshSlots() {
@@ -317,106 +366,9 @@ async function renderBookingFlow() {
       }
     }
 
-    const servicesGrid = document.getElementById('servicesGrid');
-    servicesGrid.innerHTML = services.map(s => `
-      <div class="selectable-card ${String(state.booking.serviceId) === String(s.id) ? 'selected' : ''}" data-service-id="${s.id}">
-        <div class="card-title">${s.name}</div>
-        <div class="card-info">
-          <span class="card-price">${formatPrice(s.price)}</span>
-          <span class="card-meta">${s.duration_minutes} min</span>
-        </div>
-      </div>
-    `).join('');
-
-    servicesGrid.querySelectorAll('[data-service-id]').forEach(card => {
-      card.onclick = () => {
-        servicesGrid.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        state.booking.serviceId = card.dataset.serviceId;
-        refreshSlots();
-      };
-    });
-
-    const barbersGrid = document.getElementById('barbersGrid');
-    barbersGrid.innerHTML = barbers.map(b => {
-      const barberName = b.name === 'Administrador' ? 'Júnior Soares' : b.name;
-      return `
-        <div class="selectable-card" data-barber-id="${b.id}">
-          <div class="barber-card-title">${barberName}</div>
-        </div>
-      `;
-    }).join('');
-
-    barbersGrid.querySelectorAll('[data-barber-id]').forEach(card => {
-      card.onclick = () => {
-        barbersGrid.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        state.booking.barberId = card.dataset.barberId;
-        refreshSlots();
-      };
-    });
-
-    function setupDateSelector() {
-      const container = document.getElementById('dateSelector');
-      if (!container) return;
-
-      container.innerHTML = '';
-      const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-      const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-      const today = new Date();
-
-      let firstValidDateSet = false;
-
-      for (let i = 0; i < 14; i++) {
-        const d = new Date();
-        d.setDate(today.getDate() + i);
-
-        const year = d.getFullYear();
-        const monthStr = String(d.getMonth() + 1).padStart(2, '0');
-        const dayStr = String(d.getDate()).padStart(2, '0');
-        const fullDate = `${year}-${monthStr}-${dayStr}`;
-
-        const dayOfWeek = d.getDay();
-        const isSunday = dayOfWeek === 0;
-
-        const card = document.createElement('div');
-        card.className = `date-card ${isSunday ? 'disabled' : ''}`;
-        card.dataset.date = fullDate;
-
-        let dayLabel = daysOfWeek[dayOfWeek];
-        if (i === 0) dayLabel = 'Hoje';
-        if (i === 1) dayLabel = 'Amanhã';
-
-        card.innerHTML = `
-          <span class="day-name">${dayLabel}</span>
-          <span class="day-number">${d.getDate()}</span>
-          <span class="month-name">${months[d.getMonth()]}</span>
-        `;
-
-        if (!isSunday) {
-          card.onclick = () => {
-            container.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            state.booking.date = fullDate;
-            refreshSlots();
-          };
-
-          if (!firstValidDateSet) {
-            card.classList.add('selected');
-            state.booking.date = fullDate;
-            firstValidDateSet = true;
-          }
-        }
-
-        container.appendChild(card);
-      }
-    }
-
-    setupDateSelector();
-
-    if (state.booking.serviceId) {
-      refreshSlots();
-    }
+    serviceSelect.onchange = () => { state.booking.serviceId = serviceSelect.value || null; refreshSlots(); };
+    barberSelect.onchange = () => { state.booking.barberId = barberSelect.value || null; refreshSlots(); };
+    dateInput.onchange = () => { state.booking.date = dateInput.value; refreshSlots(); };
 
     confirmBtn.onclick = async () => {
       const { serviceId, barberId, date, time } = state.booking;
@@ -425,20 +377,15 @@ async function renderBookingFlow() {
         await api('/appointments', {
           method: 'POST',
           auth: true,
-          body: { serviceId, barberId, date, startTime: time },
+          body: { 
+            serviceId: Number(serviceId), 
+            barberId: Number(barberId), 
+            date, 
+            startTime: time,
+            start_time: time
+          },
         });
         toast('Horário agendado com sucesso!');
-
-        // ---------- Notificação de WhatsApp ao Barbeiro ----------
-        const barberPhone = '5587996289373'; // Informe o WhatsApp com DDD aqui
-        const msg = `Olá! Acabei de realizar um agendamento pelo site` +
-                    `*Cliente:* ${state.user.name}%0A` +
-                    `*Telefone:* ${state.user.phone}%0A` +
-                    `*Data:* ${formatDate(date)} às ${time}`;
-
-        window.open(`https://wa.me/${barberPhone}?text=${msg}`, '_blank');
-
-        state.booking = { serviceId: null, barberId: null, date: null, time: null };
         document.querySelector('.tab[data-tab="mine"]').click();
       } catch (err) {
         document.getElementById('bookError').textContent = err.message;
@@ -481,9 +428,26 @@ async function renderMyAppointments() {
     content.querySelectorAll('[data-cancel]').forEach(btn => {
       btn.onclick = async () => {
         if (!confirm('Cancelar este agendamento?')) return;
+        
+        const apptId = parseInt(btn.dataset.cancel, 10);
+        const appt = appointments.find(a => a.id === apptId);
+
         try {
-          await api(`/appointments/${btn.dataset.cancel}`, { method: 'DELETE', auth: true });
+          await api(`/appointments/${apptId}`, { method: 'DELETE', auth: true });
           toast('Agendamento cancelado.');
+
+          const barberPhone = '5587996289373';
+          let cancelMsg = `⚠️ *CANCELAMENTO DE AGENDAMENTO*%0A%0A` +
+                          `O cliente *${state.user ? state.user.name : 'Cliente'}* cancelou um agendamento.`;
+
+          if (appt) {
+            cancelMsg += `%0A%0A` +
+                         `*Serviço:* ${appt.service_name}%0A` +
+                         `*Data:* ${formatDate(appt.date)} às ${appt.start_time}`;
+          }
+
+          window.open(`https://wa.me/${barberPhone}?text=${cancelMsg}`, '_blank');
+
           renderMyAppointments();
         } catch (err) {
           toast(err.message, true);
@@ -528,7 +492,7 @@ async function renderAgenda() {
   const dateInput = document.getElementById('agendaDate');
   async function load() {
     const list = document.getElementById('agendaList');
-    if (!list) return;
+    list.innerHTML = '<p class="text-muted">Carregando...</p>';
     try {
       const { appointments } = await api(`/appointments/agenda?date=${dateInput.value}`, { auth: true });
       if (!appointments.length) {
@@ -577,15 +541,6 @@ async function renderAgenda() {
   }
   dateInput.onchange = load;
   load();
-
-  // Auto-refresh a cada 15s para atualização automática da agenda do barbeiro
-  const interval = setInterval(() => {
-    if (location.hash === '#barber' && document.getElementById('agendaDate')) {
-      load();
-    } else {
-      clearInterval(interval);
-    }
-  }, 15000);
 }
 
 async function renderServicesAdmin() {
