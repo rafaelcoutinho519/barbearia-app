@@ -362,7 +362,7 @@ async function renderBookingFlow() {
       const { serviceId, barberId, date, time } = state.booking;
       document.getElementById('bookError').textContent = '';
       try {
-        await api('/appointments', {
+        const responseData = await api('/appointments', {
           method: 'POST',
           auth: true,
           body: { 
@@ -373,7 +373,21 @@ async function renderBookingFlow() {
             start_time: time
           },
         });
+
         toast('Horário agendado com sucesso!');
+
+        // Dispara mensagem automática para o WhatsApp do Barbeiro na confirmação
+        const barberPhone = '5587996289373';
+        const selectedServiceOpt = serviceSelect.options[serviceSelect.selectedIndex].text.split('—')[0].trim();
+        const clientName = state.user ? state.user.name : 'Cliente';
+
+        let confirmMsg = `✨ *NOVO AGENDAMENTO*%0A%0A` +
+                         `*Cliente:* ${clientName}%0A` +
+                         `*Serviço:* ${selectedServiceOpt}%0A` +
+                         `*Data:* ${formatDate(date)} às ${time}`;
+
+        window.open(`https://wa.me/${barberPhone}?text=${confirmMsg}`, '_blank');
+
         document.querySelector('.tab[data-tab="mine"]').click();
       } catch (err) {
         document.getElementById('bookError').textContent = err.message;
@@ -415,7 +429,7 @@ async function renderMyAppointments() {
     `;
     content.querySelectorAll('[data-cancel]').forEach(btn => {
       btn.onclick = async () => {
-        if (!confirm('Cancelar este agendamento?')) return;
+        if (!confirm('Deseja realmente cancelar este agendamento?')) return;
         
         const apptId = parseInt(btn.dataset.cancel, 10);
         const appt = appointments.find(a => a.id === apptId);
@@ -424,9 +438,10 @@ async function renderMyAppointments() {
           await api(`/appointments/${apptId}`, { method: 'DELETE', auth: true });
           toast('Agendamento cancelado.');
 
+          // Dispara mensagem automática para o WhatsApp do Barbeiro no cancelamento
           const barberPhone = '5587996289373';
           let cancelMsg = `⚠️ *CANCELAMENTO DE AGENDAMENTO*%0A%0A` +
-                          `O cliente *${state.user ? state.user.name : 'Cliente'}* cancelou um agendamento.`;
+                          `O cliente *${state.user ? state.user.name : 'Cliente'}* cancelou um horário.`;
 
           if (appt) {
             cancelMsg += `%0A%0A` +
