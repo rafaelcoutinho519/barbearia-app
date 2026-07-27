@@ -180,9 +180,6 @@ function renderProfessionals() {
         <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Social Moderno</div>
       </div>
     </div>
-
-    `;
-}
   `;
 }
 
@@ -445,8 +442,8 @@ async function renderMyAppointments() {
 
           if (appt) {
             cancelMsg += `%0A%0A` +
-                         `*Serviço:* ${appt.service_name}%0A` +
-                         `*Data:* ${formatDate(appt.date)} às ${appt.start_time}`;
+                       `*Serviço:* ${appt.service_name}%0A` +
+                       `*Data:* ${formatDate(appt.date)} às ${appt.start_time}`;
           }
 
           window.open(`https://wa.me/${barberPhone}?text=${cancelMsg}`, '_blank');
