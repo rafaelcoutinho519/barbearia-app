@@ -180,6 +180,32 @@ function renderProfessionals() {
         <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Social Moderno</div>
       </div>
     </div>
+    // ---------- Conheça Nossos Profissionais ----------
+function renderProfessionals() {
+    appEl.innerHTML = `
+    <section class="hero" style="padding: 40px 20px;">
+    <h1>NOSSOS PROFISSIONAIS</h1>
+    <p>Profissionais qualificados focados em entregar o melhor estilo e atendimento.</p>
+    </section>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px;">
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+    <div style="flex: 1; min-width: 250px; text-align: center;">
+    <div style="width: 150px; height: 150px; border-radius: 50%; background: #c59b27; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+    JS
+    </div>
+    <h2 style="margin-bottom: 4px;">Júnior Soares</h2>
+    <p class="text-muted" style="margin-bottom: 16px;">Barbeiro Master & Fundador</p>
+
+    <div style="display: flex; gap: 12px; justify-content: center;">
+    <a href="https://instagram.com/SEU_INSTAGRAM" target="_blank" class="btn small" style="background: #E1306C; color: #fff; text-decoration: none;">Instagram</a>
+    <a href="https://wa.me/5587996289373" target="_blank" class="btn small" style="background: #25D366; color: #fff; text-decoration: none;">WhatsApp</a>
+    </div>
+    </div>
+    </div>
+    </div>
+    `;
+}
   `;
 }
 
