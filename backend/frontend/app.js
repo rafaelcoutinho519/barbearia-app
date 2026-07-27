@@ -183,19 +183,16 @@ function renderProfessionals() {
   `;
 }
 
-// ---------- Login ----------
+// ---------- Login (Apenas Telefone) ----------
 function renderLogin() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
       <h2>Entrar</h2>
+      <p class="text-muted" style="margin-bottom: 16px; font-size: 14px;">Informe seu telefone para acessar seus agendamentos.</p>
       <form id="loginForm">
         <div>
-          <label>E-mail</label>
-          <input type="email" name="email" required />
-        </div>
-        <div>
-          <label>Senha</label>
-          <input type="password" name="password" required />
+          <label>Telefone</label>
+          <input type="tel" name="phone" placeholder="(00) 00000-0000" required />
         </div>
         <p id="loginError" class="error-msg"></p>
         <button class="btn" type="submit">Entrar</button>
@@ -209,7 +206,7 @@ function renderLogin() {
     try {
       const { user, token } = await api('/auth/login', {
         method: 'POST',
-        body: { email: fd.get('email'), password: fd.get('password') },
+        body: { phone: fd.get('phone') },
       });
       saveSession(user, token);
       toast(`Bem-vindo, ${user.name.split(' ')[0]}!`);
@@ -221,27 +218,20 @@ function renderLogin() {
   };
 }
 
-// ---------- Cadastro (cliente) ----------
+// ---------- Cadastro Simples (Nome e Telefone) ----------
 function renderRegister() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
       <h2>Criar conta</h2>
+      <p class="text-muted" style="margin-bottom: 16px; font-size: 14px;">Rápido e fácil, apenas nome e telefone para marcar.</p>
       <form id="registerForm">
         <div>
           <label>Nome completo</label>
           <input type="text" name="name" required />
         </div>
         <div>
-          <label>E-mail</label>
-          <input type="email" name="email" required />
-        </div>
-        <div>
           <label>Telefone</label>
-          <input type="tel" name="phone" placeholder="(00) 00000-0000" />
-        </div>
-        <div>
-          <label>Senha (mín. 6 caracteres)</label>
-          <input type="password" name="password" minlength="6" required />
+          <input type="tel" name="phone" placeholder="(00) 00000-0000" required />
         </div>
         <p id="registerError" class="error-msg"></p>
         <button class="btn" type="submit">Criar conta</button>
@@ -257,9 +247,7 @@ function renderRegister() {
         method: 'POST',
         body: {
           name: fd.get('name'),
-          email: fd.get('email'),
           phone: fd.get('phone'),
-          password: fd.get('password'),
         },
       });
       saveSession(user, token);
