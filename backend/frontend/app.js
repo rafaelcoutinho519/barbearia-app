@@ -69,7 +69,6 @@ function navigate() {
   let hash = (location.hash || '#home').slice(1);
   if (!routes[hash]) hash = 'home';
 
-  // Protege rotas
   if (hash === 'dashboard' && (!state.user || state.user.role !== 'client')) hash = 'login';
   if (hash === 'barber' && (!state.user || !['barber', 'admin'].includes(state.user.role))) hash = 'login';
 
@@ -293,11 +292,11 @@ async function renderBookingFlow() {
       const d = new Date();
       d.setDate(d.getDate() + i);
       const iso = d.toISOString().slice(0, 10);
-      const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const weekDays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
       const weekDay = weekDays[d.getDay()];
       const dayNum = String(d.getDate()).padStart(2, '0');
       const monthNum = String(d.getMonth() + 1).padStart(2, '0');
-      availableDays.push({ iso, weekDay: i === 0 ? 'Hoje' : weekDay, label: `${dayNum}/${monthNum}` });
+      availableDays.push({ iso, weekDay: i === 0 ? 'HOJE' : weekDay, label: `${dayNum}/${monthNum}` });
     }
 
     content.innerHTML = `
@@ -325,8 +324,8 @@ async function renderBookingFlow() {
           <div id="dateCarousel" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
             ${availableDays.map(d => `
               <button type="button" class="date-card ${d.iso === defaultDate ? 'selected' : ''}" data-date="${d.iso}" style="flex: 0 0 85px; padding: 12px 8px; background: ${d.iso === defaultDate ? '#c59b27' : '#1a1a1a'}; color: ${d.iso === defaultDate ? '#1a1a1a' : '#fff'}; border: 1px solid ${d.iso === defaultDate ? '#c59b27' : '#333'}; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
-                <div style="font-size: 12px; text-transform: uppercase; font-weight: 600; opacity: 0.8;">${d.weekDay}</div>
-                <div style="font-size: 16px; font-weight: bold; margin-top: 4px;">${d.label}</div>
+                <div style="font-size: 11px; text-transform: uppercase; font-weight: 600; opacity: 0.8;">${d.weekDay}</div>
+                <div style="font-size: 15px; font-weight: bold; margin-top: 4px;">${d.label}</div>
               </button>
             `).join('')}
           </div>
@@ -421,7 +420,8 @@ async function renderBookingFlow() {
             barberId: Number(barberId), 
             date, 
             startTime: time,
-            start_time: time
+            start_time: time,
+            time: time
           },
         });
 
