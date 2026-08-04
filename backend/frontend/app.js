@@ -141,7 +141,7 @@ async function renderHome() {
   }
 }
 
-// ---------- Conheça Nossos Profissionais ----------
+// ---------- Conheça Nossos Profissionais (Com as novas fotos inseridas) ----------
 function renderProfessionals() {
   appEl.innerHTML = `
     <section class="hero" style="padding: 40px 20px;">
@@ -152,8 +152,9 @@ function renderProfessionals() {
     <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px;">
       <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
         <div style="flex: 1; min-width: 250px; text-align: center;">
-          <div style="width: 150px; height: 150px; border-radius: 50%; background: #c59b27; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #1a1a1a; font-weight: bold;">
-            JS
+          <!-- Foto de Perfil do Júnior Soares -->
+          <div style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin: 0 auto 16px; border: 3px solid #c59b27; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+            <img src="01.jpeg" alt="Júnior Soares" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/150?text=JS'" />
           </div>
           <h2 style="margin-bottom: 4px;">Júnior Soares</h2>
           <p class="text-muted" style="margin-bottom: 16px;">Barbeiro Master & Fundador</p>
@@ -176,10 +177,30 @@ function renderProfessionals() {
       </div>
 
       <h3 style="margin-top: 40px; margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;">Galeria de Trabalhos</h3>
-      <div class="grid cols-3" style="gap: 12px;">
-        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Corte Degradê</div>
-        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Barba Navalhada</div>
-        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Social Moderno</div>
+      <div class="grid cols-3" style="gap: 16px;">
+        <!-- Corte Degradê -->
+        <div style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center;">
+          <div style="height: 160px; overflow: hidden;">
+            <img src="2 degrade.jpeg" alt="Corte Degradê" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+          </div>
+          <div style="padding: 12px; font-weight: 500; font-size: 14px; color: #fff;">Corte Degradê</div>
+        </div>
+
+        <!-- Corte Americano -->
+        <div style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center;">
+          <div style="height: 160px; overflow: hidden;">
+            <img src="americano.jpeg" alt="Corte Americano" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+          </div>
+          <div style="padding: 12px; font-weight: 500; font-size: 14px; color: #fff;">Corte Americano</div>
+        </div>
+
+        <!-- Social Moderno -->
+        <div style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center;">
+          <div style="height: 160px; overflow: hidden;">
+            <img src="social.jpeg" alt="Social Moderno" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+          </div>
+          <div style="padding: 12px; font-weight: 500; font-size: 14px; color: #fff;">Social Moderno</div>
+        </div>
       </div>
     </div>
   `;
@@ -418,7 +439,6 @@ async function renderBookingFlow() {
         const sId = Number(serviceId);
         const bId = Number(barberId);
 
-        // Enviando todas as variações possíveis de nomes de campos para evitar o erro de FK do SQLite
         await api('/appointments', {
           method: 'POST',
           auth: true,
