@@ -449,33 +449,53 @@ async function renderBookingFlow() {
 
 async function renderMyAppointments() {
   const content = document.getElementById('tabContent');
-  content.innerHTML = '<p class="text-muted">Carregando...</p>';
+  content.innerHTML = '<p class="text-muted" style="text-align: center; padding: 40px;">Carregando seus agendamentos...</p>';
   try {
     const { appointments } = await api('/appointments/me', { auth: true });
     if (!appointments.length) {
-      content.innerHTML = '<div class="empty-state">Você ainda não tem agendamentos.</div>';
+      content.innerHTML = `
+        <div class="card" style="max-width: 700px; margin: 0 auto; text-align: center; padding: 40px;">
+          <h3 style="color: #c59b27; margin-bottom: 12px;">Nenhum agendamento encontrado</h3>
+          <p class="text-muted" style="margin-bottom: 20px;">Você ainda não marcou nenhum horário conosco.</p>
+          <button class="btn" onclick="document.querySelector('.tab[data-tab=\\'book\\']').click()">Fazer agendamento</button>
+        </div>
+      `;
       return;
     }
+
     content.innerHTML = `
-      <div class="card">
-        <table>
-          <thead><tr><th>Data</th><th>Horário</th><th>Serviço</th><th>Barbeiro</th><th>Valor</th><th>Status</th><th></th></tr></thead>
-          <tbody>
-            ${appointments.map(a => `
-              <tr>
-                <td>${formatDate(a.date)}</td>
-                <td>${a.start_time}</td>
-                <td>${a.service_name}</td>
-                <td>${a.barber_name === 'Administrador' ? 'Júnior Soares' : a.barber_name}</td>
-                <td>${formatPrice(a.price)}</td>
-                <td><span class="badge ${a.status}">${a.status}</span></td>
-                <td>${a.status === 'agendado' ? `<button class="btn small danger" data-cancel="${a.id}">Cancelar</button>` : ''}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+      <div style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
+        <h3 style="color: #c59b27; margin-bottom: 4px;">Meus Agendamentos</h3>
+        ${appointments.map(a => {
+          const isPending = a.status === 'agendado';
+          const badgeColor = a.status === 'concluido' ? '#25D366' : (isPending ? '#c59b27' : '#ff5252');
+          
+          return `
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; background: #1a1a1a; border: 1px solid #333; padding: 20px; border-radius: 12px;">
+              <div style="display: flex; gap: 16px; align-items: center;">
+                <div style="background: rgba(197,155,39,0.1); border: 1px solid #c59b27; border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 70px;">
+                  <div style="font-size: 12px; color: #c59b27; font-weight: bold; text-transform: uppercase;">${a.start_time}</div>
+                  <div style="font-size: 14px; color: #fff; margin-top: 2px; font-weight: 600;">${formatDate(a.date).slice(0, 5)}</div>
+                </div>
+                <div>
+                  <h4 style="margin: 0 0 4px 0; font-size: 16px; color: #fff;">${a.service_name}</h4>
+                  <p class="text-muted" style="margin: 0; font-size: 13px;">Profissional: <strong style="color: #ddd;">${a.barber_name === 'Administrador' ? 'Júnior Soares' : a.barber_name}</strong></p>
+                  <p class="text-muted" style="margin: 2px 0 0 0; font-size: 13px;">Valor: <strong style="color: #c59b27;">${formatPrice(a.price)}</strong></p>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
+                <span class="badge ${a.status}" style="background: ${badgeColor}22; color: ${badgeColor}; border: 1px solid ${badgeColor}; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase;">
+                  ${a.status}
+                </span>
+                ${isPending ? `<button class="btn small danger" data-cancel="${a.id}" style="background: transparent; border: 1px solid #ff5252; color: #ff5252; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Cancelar</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('')}
       </div>
     `;
+
     content.querySelectorAll('[data-cancel]').forEach(btn => {
       btn.onclick = async () => {
         if (!confirm('Deseja realmente cancelar este agendamento?')) return;
