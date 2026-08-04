@@ -284,44 +284,69 @@ async function renderBookingFlow() {
   content.innerHTML = `<p class="text-muted">Carregando serviços e barbeiros...</p>`;
   try {
     const [{ services }, { barbers }] = await Promise.all([api('/services'), api('/barbers')]);
-    state.booking = { serviceId: null, barberId: null, date: todayISO(), time: null };
+    
+    const defaultDate = todayISO();
+    state.booking = { serviceId: null, barberId: null, date: defaultDate, time: null };
+
+    const availableDays = [];
+    for (let i = 0; i < 14; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const iso = d.toISOString().slice(0, 10);
+      const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const weekDay = weekDays[d.getDay()];
+      const dayNum = String(d.getDate()).padStart(2, '0');
+      const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+      availableDays.push({ iso, weekDay: i === 0 ? 'Hoje' : weekDay, label: `${dayNum}/${monthNum}` });
+    }
 
     content.innerHTML = `
-      <div class="card">
-        <label>1. Escolha o serviço</label>
-        <select id="serviceSelect">
-          <option value="">Selecione...</option>
-          ${services.map(s => `<option value="${s.id}">${s.name} — ${formatPrice(s.price)} (${s.duration_minutes}min)</option>`).join('')}
-        </select>
+      <div class="card" style="max-width: 700px; margin: 0 auto;">
+        <h3 style="margin-bottom: 20px; color: #c59b27;">Novo Agendamento</h3>
+        
+        <div style="margin-bottom: 20px;">
+          <label style="display:block; margin-bottom: 8px; font-weight: 500;">1. Escolha o serviço</label>
+          <select id="serviceSelect" style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px;">
+            <option value="">Selecione um serviço...</option>
+            ${services.map(s => `<option value="${s.id}">${s.name} — ${formatPrice(s.price)} (${s.duration_minutes}min)</option>`).join('')}
+          </select>
+        </div>
 
-        <div class="mt-16">
-          <label>2. Escolha o barbeiro</label>
-          <select id="barberSelect">
-            <option value="">Selecione...</option>
+        <div style="margin-bottom: 20px;">
+          <label style="display:block; margin-bottom: 8px; font-weight: 500;">2. Escolha o profissional</label>
+          <select id="barberSelect" style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px;">
+            <option value="">Selecione um profissional...</option>
             ${barbers.map(b => `<option value="${b.id}">${b.name === 'Administrador' ? 'Júnior Soares' : b.name}</option>`).join('')}
           </select>
         </div>
 
-        <div class="mt-16">
-          <label>3. Escolha a data</label>
-          <input type="date" id="dateInput" min="${todayISO()}" value="${todayISO()}" />
+        <div style="margin-bottom: 20px;">
+          <label style="display:block; margin-bottom: 8px; font-weight: 500;">3. Escolha a data</label>
+          <div id="dateCarousel" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
+            ${availableDays.map(d => `
+              <button type="button" class="date-card ${d.iso === defaultDate ? 'selected' : ''}" data-date="${d.iso}" style="flex: 0 0 85px; padding: 12px 8px; background: ${d.iso === defaultDate ? '#c59b27' : '#1a1a1a'}; color: ${d.iso === defaultDate ? '#1a1a1a' : '#fff'}; border: 1px solid ${d.iso === defaultDate ? '#c59b27' : '#333'}; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
+                <div style="font-size: 12px; text-transform: uppercase; font-weight: 600; opacity: 0.8;">${d.weekDay}</div>
+                <div style="font-size: 16px; font-weight: bold; margin-top: 4px;">${d.label}</div>
+              </button>
+            `).join('')}
+          </div>
         </div>
 
-        <div class="mt-16">
-          <label>4. Escolha o horário</label>
-          <div id="slotsWrap" class="slots"><span class="text-muted">Selecione serviço, barbeiro e data.</span></div>
+        <div style="margin-bottom: 24px;">
+          <label style="display:block; margin-bottom: 8px; font-weight: 500;">4. Escolha o horário</label>
+          <div id="slotsWrap" class="slots" style="display: flex; flex-wrap: wrap; gap: 8px;"><span class="text-muted">Selecione serviço, barbeiro e data.</span></div>
         </div>
 
-        <div class="mt-24 flex-between">
-          <p id="bookError" class="error-msg"></p>
-          <button id="confirmBtn" class="btn" disabled>Confirmar agendamento</button>
+        <div class="flex-between" style="align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+          <p id="bookError" class="error-msg" style="color: #ff5252; margin: 0;"></p>
+          <button id="confirmBtn" class="btn" disabled style="padding: 12px 24px;">Confirmar agendamento</button>
         </div>
       </div>
     `;
 
     const serviceSelect = document.getElementById('serviceSelect');
     const barberSelect = document.getElementById('barberSelect');
-    const dateInput = document.getElementById('dateInput');
+    const dateCarousel = document.getElementById('dateCarousel');
     const confirmBtn = document.getElementById('confirmBtn');
 
     async function refreshSlots() {
@@ -340,10 +365,19 @@ async function renderBookingFlow() {
           wrap.innerHTML = '<span class="text-muted">Nenhum horário disponível nesta data.</span>';
           return;
         }
-        wrap.innerHTML = slots.map(s => `<button type="button" class="slot-btn" data-slot="${s}">${s}</button>`).join('');
+        wrap.innerHTML = slots.map(s => `<button type="button" class="slot-btn" data-slot="${s}" style="padding: 10px 16px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 6px; cursor: pointer;">${s}</button>`).join('');
+        
         wrap.querySelectorAll('.slot-btn').forEach(btn => {
           btn.onclick = () => {
-            wrap.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+            wrap.querySelectorAll('.slot-btn').forEach(b => {
+              b.style.background = '#1a1a1a';
+              b.style.borderColor = '#333';
+              b.style.color = '#fff';
+              b.classList.remove('selected');
+            });
+            btn.style.background = '#c59b27';
+            btn.style.borderColor = '#c59b27';
+            btn.style.color = '#1a1a1a';
             btn.classList.add('selected');
             state.booking.time = btn.dataset.slot;
             confirmBtn.disabled = false;
@@ -354,15 +388,32 @@ async function renderBookingFlow() {
       }
     }
 
+    dateCarousel.querySelectorAll('.date-card').forEach(btn => {
+      btn.onclick = () => {
+        dateCarousel.querySelectorAll('.date-card').forEach(b => {
+          b.style.background = '#1a1a1a';
+          b.style.color = '#fff';
+          b.style.borderColor = '#333';
+          b.classList.remove('selected');
+        });
+        btn.style.background = '#c59b27';
+        btn.style.color = '#1a1a1a';
+        btn.style.borderColor = '#c59b27';
+        btn.classList.add('selected');
+        
+        state.booking.date = btn.dataset.date;
+        refreshSlots();
+      };
+    });
+
     serviceSelect.onchange = () => { state.booking.serviceId = serviceSelect.value || null; refreshSlots(); };
     barberSelect.onchange = () => { state.booking.barberId = barberSelect.value || null; refreshSlots(); };
-    dateInput.onchange = () => { state.booking.date = dateInput.value; refreshSlots(); };
 
     confirmBtn.onclick = async () => {
       const { serviceId, barberId, date, time } = state.booking;
       document.getElementById('bookError').textContent = '';
       try {
-        const responseData = await api('/appointments', {
+        await api('/appointments', {
           method: 'POST',
           auth: true,
           body: { 
@@ -376,7 +427,6 @@ async function renderBookingFlow() {
 
         toast('Horário agendado com sucesso!');
 
-        // Dispara mensagem automática para o WhatsApp do Barbeiro na confirmação
         const barberPhone = '5587996289373';
         const selectedServiceOpt = serviceSelect.options[serviceSelect.selectedIndex].text.split('—')[0].trim();
         const clientName = state.user ? state.user.name : 'Cliente';
@@ -387,7 +437,6 @@ async function renderBookingFlow() {
                          `*Data:* ${formatDate(date)} às ${time}`;
 
         window.open(`https://wa.me/${barberPhone}?text=${confirmMsg}`, '_blank');
-
         document.querySelector('.tab[data-tab="mine"]').click();
       } catch (err) {
         document.getElementById('bookError').textContent = err.message;
@@ -438,7 +487,6 @@ async function renderMyAppointments() {
           await api(`/appointments/${apptId}`, { method: 'DELETE', auth: true });
           toast('Agendamento cancelado.');
 
-          // Dispara mensagem automática para o WhatsApp do Barbeiro no cancelamento
           const barberPhone = '5587996289373';
           let cancelMsg = `⚠️ *CANCELAMENTO DE AGENDAMENTO*%0A%0A` +
                           `O cliente *${state.user ? state.user.name : 'Cliente'}* cancelou um horário.`;
