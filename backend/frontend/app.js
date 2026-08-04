@@ -19,7 +19,10 @@ async function api(path, { method = 'GET', body, auth = false } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'Erro inesperado. Tente novamente.');
+  if (!res.ok) {
+    console.error("Erro da API Detalhado:", data);
+    throw new Error(data.error || data.message || 'Erro inesperado. Tente novamente.');
+  }
   return data;
 }
 
@@ -412,12 +415,18 @@ async function renderBookingFlow() {
       const { serviceId, barberId, date, time } = state.booking;
       document.getElementById('bookError').textContent = '';
       try {
+        const sId = Number(serviceId);
+        const bId = Number(barberId);
+
+        // Enviando todas as variações possíveis de nomes de campos para evitar o erro de FK do SQLite
         await api('/appointments', {
           method: 'POST',
           auth: true,
           body: { 
-            serviceId: Number(serviceId), 
-            barberId: Number(barberId), 
+            serviceId: sId, 
+            service_id: sId,
+            barberId: bId, 
+            barber_id: bId,
             date, 
             startTime: time,
             start_time: time,
