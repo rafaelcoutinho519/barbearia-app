@@ -1,3 +1,6 @@
+// ---------- Alerta de Teste de Versão ----------
+alert("Versão Nova Carregada com Sucesso!");
+
 // ---------- Estado global ----------
 const state = {
   token: localStorage.getItem('token') || null,
@@ -69,7 +72,6 @@ function navigate() {
   let hash = (location.hash || '#home').slice(1);
   if (!routes[hash]) hash = 'home';
 
-  // Protege rotas
   if (hash === 'dashboard' && (!state.user || state.user.role !== 'client')) hash = 'login';
   if (hash === 'barber' && (!state.user || !['barber', 'admin'].includes(state.user.role))) hash = 'login';
 
