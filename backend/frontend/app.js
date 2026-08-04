@@ -141,7 +141,7 @@ async function renderHome() {
   }
 }
 
-// ---------- Conheça Nossos Profissionais (Com as novas fotos inseridas) ----------
+// ---------- Conheça Nossos Profissionais (Com Galeria Interativa e Animações) ----------
 function renderProfessionals() {
   appEl.innerHTML = `
     <section class="hero" style="padding: 40px 20px;">
@@ -152,7 +152,6 @@ function renderProfessionals() {
     <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px;">
       <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
         <div style="flex: 1; min-width: 250px; text-align: center;">
-          <!-- Foto de Perfil do Júnior Soares -->
           <div style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin: 0 auto 16px; border: 3px solid #c59b27; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
             <img src="01.jpeg" alt="Júnior Soares" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/150?text=JS'" />
           </div>
@@ -177,33 +176,67 @@ function renderProfessionals() {
       </div>
 
       <h3 style="margin-top: 40px; margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;">Galeria de Trabalhos</h3>
+      
       <div class="grid cols-3" style="gap: 16px;">
         <!-- Corte Degradê -->
-        <div style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center;">
+        <div class="gallery-item" data-desc="é o estilo de cabelo masculino mais pedido nas barbearias atualmente, caracterizado por uma transição suave de comprimento onde o cabelo começa bem curto ou raspado na base e vai aumentando de tamanho até o topo" style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
           <div style="height: 160px; overflow: hidden;">
-            <img src="2 degrade.jpeg" alt="Corte Degradê" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+            <img src="2 degrade.jpeg" alt="Corte Degradê" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="gallery-img" onerror="this.style.display='none'" />
           </div>
           <div style="padding: 12px; font-weight: 500; font-size: 14px; color: #fff;">Corte Degradê</div>
         </div>
 
         <!-- Corte Americano -->
-        <div style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center;">
+        <div class="gallery-item" data-desc="Sua principal característica é a preservação do volume do topo do cabelo enquanto o degradê é feito de forma concentrada apenas nas costeletas e na nuca." style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
           <div style="height: 160px; overflow: hidden;">
-            <img src="americano.jpeg" alt="Corte Americano" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+            <img src="americano.jpeg" alt="Corte Americano" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="gallery-img" onerror="this.style.display='none'" />
           </div>
           <div style="padding: 12px; font-weight: 500; font-size: 14px; color: #fff;">Corte Americano</div>
         </div>
 
         <!-- Social Moderno -->
-        <div style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center;">
+        <div class="gallery-item" data-desc="O estilo social moderno reinterpreta a alfaiataria clássica trazendo mais leveza, conforto e personalidade tanto para o guarda-roupa masculino quanto feminino." style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
           <div style="height: 160px; overflow: hidden;">
-            <img src="social.jpeg" alt="Social Moderno" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+            <img src="social.jpeg" alt="Social Moderno" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="gallery-img" onerror="this.style.display='none'" />
           </div>
           <div style="padding: 12px; font-weight: 500; font-size: 14px; color: #fff;">Social Moderno</div>
         </div>
       </div>
+
+      <!-- Caixa de Descrição Dinâmica dos Cortes -->
+      <div id="cutDescriptionBox" style="margin-top: 20px; background: rgba(197, 155, 39, 0.08); border: 1px solid #c59b27; border-radius: 8px; padding: 16px; color: #ddd; font-size: 14px; line-height: 1.5; text-align: center; transition: all 0.3s ease;">
+        💡 <em>Passe o mouse ou toque em um dos cortes acima para ver os detalhes do estilo.</em>
+      </div>
     </div>
   `;
+
+  // Adicionando interatividade moderna (hover/click dinâmico)
+  const items = document.querySelectorAll('.gallery-item');
+  const descBox = document.getElementById('cutDescriptionBox');
+
+  items.forEach(item => {
+    const text = item.dataset.desc;
+    const img = item.querySelector('.gallery-img');
+
+    item.onmouseenter = () => {
+      item.style.transform = 'translateY(-6px)';
+      item.style.borderColor = '#c59b27';
+      if (img) img.style.transform = 'scale(1.1)';
+      descBox.innerHTML = `<strong>${item.querySelector('div:last-child').textContent}:</strong> ${text}`;
+      descBox.style.background = 'rgba(197, 155, 39, 0.15)';
+    };
+
+    item.onmouseleave = () => {
+      item.style.transform = 'translateY(0)';
+      item.style.borderColor = '#333';
+      if (img) img.style.transform = 'scale(1)';
+    };
+
+    item.onclick = () => {
+      descBox.innerHTML = `<strong>${item.querySelector('div:last-child').textContent}:</strong> ${text}`;
+      descBox.style.background = 'rgba(197, 155, 39, 0.2)';
+    };
+  });
 }
 
 // ---------- Login (Apenas Telefone) ----------
