@@ -28,7 +28,7 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-h1, h2, h3, .brand, .logo-font {
+h1, h2, h3, .logo-font {
   font-family: 'Bebas Neue', sans-serif;
   letter-spacing: 0.5px;
 }
@@ -58,12 +58,52 @@ h1, h2, h3, .brand, .logo-font {
   padding: 0 8px;
 }
 
+/* ---------- LOGO / NOME ELEGANTE E COM AÇÃO ---------- */
 .brand {
-  font-size: 26px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
   color: var(--text);
   text-decoration: none;
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 4px 6px;
 }
-.brand span { color: var(--gold); }
+
+.brand span {
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(212, 162, 78, 0.3);
+  transition: text-shadow 0.3s ease;
+}
+
+.brand:hover {
+  transform: translateY(-2px) scale(1.02);
+  color: #fff;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.brand:hover span {
+  color: var(--gold-light);
+  text-shadow: 0 0 20px rgba(212, 162, 78, 0.6);
+}
+
+.brand::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background: var(--gold);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px var(--gold);
+}
+
+.brand:hover::after {
+  width: 80%;
+}
 
 .nav {
   display: flex;
