@@ -712,5 +712,82 @@ async function renderAgenda() {
 
 async function renderServicesAdmin() {
   const content = document.getElementById('tabContent');
-  content.innerHTML = `...`; // Restante do código mantido
+  content.innerHTML = `
+    <div class="card">
+      <h3>Novo serviço</h3>
+      <form id="newServiceForm" class="grid cols-2">
+        <div><label>Nome</label><input name="name" required /></div>
+        <div><label>Preço (R$)</label><input name="price" type="number" step="0.01" min="0" required /></div>
+        <div><label>Duração (minutos)</label><input name="duration_minutes" type="number" min="5" step="5" required /></div>
+        <div><label>Descrição</label><input name="description" /></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Adicionar serviço</button></div>
+      </form>
+    </div>
+    <div id="servicesTableWrap" class="card mt-24"><p class="text-muted">Carregando...</p></div>
+  `;
+
+  document.getElementById('newServiceForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    try {
+      await api('/services', {
+        method: 'POST', auth: true,
+        body: {
+          name: fd.get('name'),
+          description: fd.get('description'),
+          price: parseFloat(fd.get('price')),
+          duration_minutes: parseInt(fd.get('duration_minutes'), 10),
+        },
+      });
+      toast('Serviço adicionado.');
+      e.target.reset();
+      loadServicesTable();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  };
+
+  async function loadServicesTable() {
+    const wrap = document.getElementById('servicesTableWrap');
+    try {
+      const { services } = await api('/services');
+      if (!services.length) {
+        wrap.innerHTML = '<p class="empty-state">Nenhum serviço cadastrado.</p>';
+        return;
+      }
+      wrap.innerHTML = `
+        <h3>Serviços cadastrados</h3>
+        <table>
+          <thead><tr><th>Nome</th><th>Preço</th><th>Duração</th><th></th></tr></thead>
+          <tbody>
+            ${services.map(s => `
+              <tr>
+                <td><strong>${s.name}</strong><br><span class="text-muted" style="font-size:12px">${s.description || ''}</span></td>
+                <td>${formatPrice(s.price)}</td>
+                <td>${s.duration_minutes} min</td>
+                <td><button class="btn small danger" data-del="${s.id}">Excluir</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      wrap.querySelectorAll('[data-del]').forEach(btn => {
+        btn.onclick = async () => {
+          if (!confirm('Deseja excluir este serviço?')) return;
+          try {
+            await api(`/services/${btn.dataset.del}`, { method: 'DELETE', auth: true });
+            toast('Serviço excluído.');
+            loadServicesTable();
+          } catch (err) {
+            toast(err.message, true);
+          }
+        };
+      });
+    } catch (err) {
+      wrap.innerHTML = `<p class="error-msg">${err.message}</p>`;
+    }
+  }
+  loadServicesTable();
 }
+
+navigate();
