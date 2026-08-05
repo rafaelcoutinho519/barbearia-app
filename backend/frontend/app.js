@@ -141,7 +141,7 @@ async function renderHome() {
   }
 }
 
-// ---------- Conheça Nossos Profissionais (Com Galeria Interativa e Animações) ----------
+// ---------- Conheça Nossos Profissionais (Com Galeria Interativa e Modal) ----------
 function renderProfessionals() {
   appEl.innerHTML = `
     <section class="hero" style="padding: 40px 20px;">
@@ -179,7 +179,7 @@ function renderProfessionals() {
       
       <div class="grid cols-3" style="gap: 16px;">
         <!-- Corte Degradê -->
-        <div class="gallery-item" data-desc="é o estilo de cabelo masculino mais pedido nas barbearias atualmente, caracterizado por uma transição suave de comprimento onde o cabelo começa bem curto ou raspado na base e vai aumentando de tamanho até o topo" style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
+        <div class="gallery-item" data-title="Corte Degradê" data-desc="É o estilo de cabelo masculino mais pedido nas barbearias atualmente, caracterizado por uma transição suave de comprimento onde o cabelo começa bem curto ou raspado na base e vai aumentando de tamanho até o topo." style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
           <div style="height: 160px; overflow: hidden;">
             <img src="2 degrade.jpeg" alt="Corte Degradê" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="gallery-img" onerror="this.style.display='none'" />
           </div>
@@ -187,7 +187,7 @@ function renderProfessionals() {
         </div>
 
         <!-- Corte Americano -->
-        <div class="gallery-item" data-desc="Sua principal característica é a preservação do volume do topo do cabelo enquanto o degradê é feito de forma concentrada apenas nas costeletas e na nuca." style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
+        <div class="gallery-item" data-title="Corte Americano" data-desc="Sua principal característica é a preservação do volume do topo do cabelo enquanto o degradê é feito de forma concentrada apenas nas costeletas e na nuca." style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
           <div style="height: 160px; overflow: hidden;">
             <img src="americano.jpeg" alt="Corte Americano" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="gallery-img" onerror="this.style.display='none'" />
           </div>
@@ -195,48 +195,53 @@ function renderProfessionals() {
         </div>
 
         <!-- Social Moderno -->
-        <div class="gallery-item" data-desc="O estilo social moderno reinterpreta a alfaiataria clássica trazendo mais leveza, conforto e personalidade tanto para o guarda-roupa masculino quanto feminino." style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
+        <div class="gallery-item" data-title="Social Moderno" data-desc="O estilo social moderno reinterpreta a alfaiataria clássica trazendo mais leveza, conforto e personalidade para o visual masculino." style="background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease;">
           <div style="height: 160px; overflow: hidden;">
             <img src="social.jpeg" alt="Social Moderno" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="gallery-img" onerror="this.style.display='none'" />
           </div>
           <div style="padding: 12px; font-weight: 500; font-size: 14px; color: #fff;">Social Moderno</div>
         </div>
       </div>
-
-      <!-- Caixa de Descrição Dinâmica dos Cortes -->
-      <div id="cutDescriptionBox" style="margin-top: 20px; background: rgba(197, 155, 39, 0.08); border: 1px solid #c59b27; border-radius: 8px; padding: 16px; color: #ddd; font-size: 14px; line-height: 1.5; text-align: center; transition: all 0.3s ease;">
-        💡 <em>Passe o mouse ou toque em um dos cortes acima para ver os detalhes do estilo.</em>
-      </div>
     </div>
   `;
 
-  // Adicionando interatividade moderna (hover/click dinâmico)
+  // Interatividade para abrir o Modal Moderno ao clicar em um corte da galeria
   const items = document.querySelectorAll('.gallery-item');
-  const descBox = document.getElementById('cutDescriptionBox');
-
   items.forEach(item => {
-    const text = item.dataset.desc;
+    const title = item.dataset.title;
+    const desc = item.dataset.desc;
     const img = item.querySelector('.gallery-img');
-
-    item.onmouseenter = () => {
-      item.style.transform = 'translateY(-6px)';
-      item.style.borderColor = '#c59b27';
-      if (img) img.style.transform = 'scale(1.1)';
-      descBox.innerHTML = `<strong>${item.querySelector('div:last-child').textContent}:</strong> ${text}`;
-      descBox.style.background = 'rgba(197, 155, 39, 0.15)';
-    };
-
-    item.onmouseleave = () => {
-      item.style.transform = 'translateY(0)';
-      item.style.borderColor = '#333';
-      if (img) img.style.transform = 'scale(1)';
-    };
+    const imgSrc = img ? img.src : '';
 
     item.onclick = () => {
-      descBox.innerHTML = `<strong>${item.querySelector('div:last-child').textContent}:</strong> ${text}`;
-      descBox.style.background = 'rgba(197, 155, 39, 0.2)';
+      abrirDetalhesCorte(title, desc, imgSrc);
     };
   });
+}
+
+// ---------- Funções Globais do Modal ----------
+function abrirDetalhesCorte(titulo, descricao, imagemSrc) {
+  const modal = document.getElementById('cutModal');
+  const titleEl = document.getElementById('modalTitle');
+  const descEl = document.getElementById('modalDescription');
+  const imgEl = document.getElementById('modalImage');
+
+  if (titleEl) titleEl.innerText = titulo;
+  if (descEl) descEl.innerText = descricao;
+  if (imgEl) imgEl.src = imagemSrc;
+  
+  if (modal) modal.classList.add('active');
+}
+
+function fecharModalBtn() {
+  const modal = document.getElementById('cutModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function fecharModal(event) {
+  if (event.target.id === 'cutModal') {
+    fecharModalBtn();
+  }
 }
 
 // ---------- Login (Apenas Telefone) ----------
@@ -715,32 +720,34 @@ async function renderServicesAdmin() {
 
   async function loadServicesTable() {
     const wrap = document.getElementById('servicesTableWrap');
-    wrap.innerHTML = '<p class="text-muted">Carregando...</p>';
     try {
-      const { services } = await api('/services/all', { auth: true });
+      const { services } = await api('/services');
+      if (!services.length) {
+        wrap.innerHTML = '<p class="empty-state">Nenhum serviço cadastrado.</p>';
+        return;
+      }
       wrap.innerHTML = `
-        <h3>Todos os serviços</h3>
+        <h3>Serviços cadastrados</h3>
         <table>
-          <thead><tr><th>Nome</th><th>Preço</th><th>Duração</th><th>Ativo</th><th></th></tr></thead>
+          <thead><tr><th>Nome</th><th>Preço</th><th>Duração</th><th></th></tr></thead>
           <tbody>
             ${services.map(s => `
               <tr>
-                <td>${s.name}</td>
+                <td><strong>${s.name}</strong><br><span class="text-muted" style="font-size:12px">${s.description || ''}</span></td>
                 <td>${formatPrice(s.price)}</td>
                 <td>${s.duration_minutes} min</td>
-                <td>${s.active ? 'Sim' : 'Não'}</td>
-                <td>${s.active ? `<button class="btn small danger" data-deactivate="${s.id}">Desativar</button>` : ''}</td>
+                <td><button class="btn small danger" data-del="${s.id}">Excluir</button></td>
               </tr>
             `).join('')}
           </tbody>
         </table>
       `;
-      wrap.querySelectorAll('[data-deactivate]').forEach(btn => {
+      wrap.querySelectorAll('[data-del]').forEach(btn => {
         btn.onclick = async () => {
-          if (!confirm('Desativar este serviço? Ele deixará de aparecer para os clientes.')) return;
+          if (!confirm('Deseja excluir este serviço?')) return;
           try {
-            await api(`/services/${btn.dataset.deactivate}`, { method: 'DELETE', auth: true });
-            toast('Serviço desativado.');
+            await api(`/services/${btn.dataset.del}`, { method: 'DELETE', auth: true });
+            toast('Serviço excluído.');
             loadServicesTable();
           } catch (err) {
             toast(err.message, true);
@@ -754,5 +761,4 @@ async function renderServicesAdmin() {
   loadServicesTable();
 }
 
-// ---------- Início ----------
 navigate();
