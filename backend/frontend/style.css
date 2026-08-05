@@ -17,7 +17,7 @@
 
 body {
   margin: 0;
-  background: linear-gradient(rgba(20, 17, 15, 0.78), rgba(20, 17, 15, 0.86)), url('fundo.jpg');
+  background: linear-gradient(rgba(20, 17, 15, 0.72), rgba(20, 17, 15, 0.80)), url('fundo.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -41,7 +41,7 @@ h2, h3, .logo-font {
 }
 
 .topbar {
-  background: rgba(28, 24, 21, 0.85);
+  background: rgba(28, 24, 21, 0.75);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(212, 162, 78, 0.2);
@@ -180,15 +180,15 @@ h2, h3, .logo-font {
 
 .hero p { color: var(--text-muted); font-size: 16px; max-width: 560px; margin: 0 auto 20px; }
 
-/* ---------- CARTÕES RÚSTICOS E MODERNOS (COM TRANSPARÊNCIA E VIDRO) ---------- */
+/* ---------- CARTÕES COM ALTA TRANSPARÊNCIA E VIDRO FUMÊ ---------- */
 .card {
-  background: rgba(25, 21, 18, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 162, 78, 0.2);
+  background: rgba(20, 16, 13, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 162, 78, 0.3);
   border-radius: var(--radius);
   padding: 22px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.6);
   width: 100%;
 }
 
@@ -211,8 +211,8 @@ h2, h3, .logo-font {
 .service-card:hover {
   transform: translateY(-4px);
   border-color: var(--gold);
-  box-shadow: 0 12px 28px rgba(212, 162, 78, 0.25);
-  background-color: rgba(35, 30, 26, 0.92);
+  box-shadow: 0 12px 28px rgba(212, 162, 78, 0.3);
+  background-color: rgba(30, 24, 20, 0.75);
 }
 
 .service-card:hover h3 {
@@ -221,7 +221,7 @@ h2, h3, .logo-font {
 
 .service-card:active {
   transform: scale(0.98);
-  background-color: rgba(45, 38, 33, 0.95);
+  background-color: rgba(40, 32, 26, 0.8);
 }
 
 .service-card h3 { color: var(--gold); margin: 0 0 6px; font-size: 20px; transition: color 0.2s ease; }
@@ -234,7 +234,7 @@ form { display: flex; flex-direction: column; gap: 14px; width: 100%; }
 label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; display:block; }
 input, select, textarea {
   width: 100%;
-  background: rgba(20, 17, 15, 0.9);
+  background: rgba(15, 12, 10, 0.8);
   border: 1px solid var(--border);
   color: var(--text);
   padding: 12px;
@@ -258,7 +258,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); }
 }
 
 .slot-btn {
-  background: rgba(20, 17, 15, 0.85);
+  background: rgba(15, 12, 10, 0.75);
   border: 1px solid var(--border);
   color: var(--text);
   padding: 12px 14px;
@@ -308,7 +308,7 @@ th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform
   left: 16px;
   right: 16px;
   margin: 0 auto;
-  background: rgba(34, 29, 25, 0.95);
+  background: rgba(25, 20, 16, 0.9);
   border: 1px solid var(--gold);
   color: var(--text);
   padding: 12px 16px;
@@ -327,9 +327,9 @@ th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform
 .mt-24 { margin-top: 24px; }
 .text-muted { color: var(--text-muted); }
 
-/* ---------- GALERIA INTERATIVA (COM HOVER E ZOOM) ---------- */
+/* ---------- GALERIA INTERATIVA ---------- */
 .gallery-item {
-  background: rgba(20, 17, 15, 0.9);
+  background: rgba(15, 12, 10, 0.75);
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid rgba(212, 162, 78, 0.2);
@@ -343,7 +343,7 @@ th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform
 .gallery-item:hover {
   transform: translateY(-6px);
   border-color: var(--gold);
-  box-shadow: 0 12px 28px rgba(212, 162, 78, 0.25);
+  box-shadow: 0 12px 28px rgba(212, 162, 78, 0.3);
 }
 
 .gallery-item:active {
@@ -392,7 +392,7 @@ th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform
 }
 
 .modal-content {
-  background: rgba(34, 29, 25, 0.95);
+  background: rgba(25, 20, 16, 0.95);
   border: 1px solid var(--gold);
   border-radius: 16px;
   width: 100%;
