@@ -205,7 +205,6 @@ function renderProfessionals() {
     </div>
   `;
 
-  // Interatividade para abrir o Modal Moderno ao clicar em um corte da galeria
   const items = document.querySelectorAll('.gallery-item');
   items.forEach(item => {
     const title = item.dataset.title;
@@ -244,47 +243,63 @@ function fecharModal(event) {
   }
 }
 
-// ---------- Login (Apenas Telefone) ----------
+// ---------- Login Inteligente (Auto-cadastro se o telefone não existir) ----------
 function renderLogin() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
       <h2>Entrar</h2>
-      <p class="text-muted" style="margin-bottom: 16px; font-size: 14px;">Informe seu telefone para acessar seus agendamentos.</p>
+      <p class="text-muted" style="margin-bottom: 16px; font-size: 14px;">Informe seu telefone. Se não tiver conta, criaremos uma automaticamente para você!</p>
       <form id="loginForm">
         <div>
           <label>Telefone</label>
           <input type="tel" name="phone" placeholder="(00) 00000-0000" required />
         </div>
         <p id="loginError" class="error-msg"></p>
-        <button class="btn" type="submit">Entrar</button>
+        <button class="btn" type="submit">Entrar / Cadastrar</button>
       </form>
-      <p class="auth-switch">Ainda não tem conta? <a href="#register">Cadastre-se</a></p>
+      <p class="auth-switch">Prefere cadastrar com nome? <a href="#register">Criar conta completa</a></p>
     </div>
   `;
   document.getElementById('loginForm').onsubmit = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
+    const phone = fd.get('phone');
+    
     try {
-      const { user, token } = await api('/auth/login', {
+      // Tenta fazer o login direto
+      const res = await api('/auth/login', {
         method: 'POST',
-        body: { phone: fd.get('phone') },
+        body: { phone },
       });
-      saveSession(user, token);
-      toast(`Bem-vindo, ${user.name.split(' ')[0]}!`);
-      location.hash = user.role === 'client' ? '#dashboard' : '#barber';
+      saveSession(res.user, res.token);
+      toast(`Bem-vindo de volta, ${res.user.name.split(' ')[0]}!`);
+      location.hash = res.user.role === 'client' ? '#dashboard' : '#barber';
       navigate();
     } catch (err) {
-      document.getElementById('loginError').textContent = err.message;
+      // Se der erro porque o telefone não existe, fazemos o cadastro automático como "Cliente"
+      try {
+        const defaultName = "Cliente " + phone.slice(-4);
+        const regRes = await api('/auth/register', {
+          method: 'POST',
+          body: { name: defaultName, phone },
+        });
+        saveSession(regRes.user, regRes.token);
+        toast(`Conta criada com sucesso para ${phone}!`);
+        location.hash = '#dashboard';
+        navigate();
+      } catch (regErr) {
+        document.getElementById('loginError').textContent = regErr.message;
+      }
     }
   };
 }
 
-// ---------- Cadastro Simples (Nome e Telefone) ----------
+// ---------- Cadastro Completo (Nome e Telefone) ----------
 function renderRegister() {
   appEl.innerHTML = `
     <div class="auth-wrap card">
       <h2>Criar conta</h2>
-      <p class="text-muted" style="margin-bottom: 16px; font-size: 14px;">Rápido e fácil, apenas nome e telefone para marcar.</p>
+      <p class="text-muted" style="margin-bottom: 16px; font-size: 14px;">Rápido e fácil, informe seu nome e telefone.</p>
       <form id="registerForm">
         <div>
           <label>Nome completo</label>
@@ -303,19 +318,37 @@ function renderRegister() {
   document.getElementById('registerForm').onsubmit = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
+    const name = fd.get('name');
+    const phone = fd.get('phone');
+
     try {
+      // Tenta registrar normalmente
       const { user, token } = await api('/auth/register', {
         method: 'POST',
-        body: {
-          name: fd.get('name'),
-          phone: fd.get('phone'),
-        },
+        body: { name, phone },
       });
       saveSession(user, token);
       toast(`Conta criada com sucesso, ${user.name.split(' ')[0]}!`);
       location.hash = '#dashboard';
       navigate();
     } catch (err) {
+      // Se o erro for porque o telefone já existe no banco, tentamos logar automaticamente com ele!
+      if (err.message && (err.message.toLowerCase().includes('já') || err.message.toLowerCase().includes('existe') || err.message.toLowerCase().includes('cadastrado'))) {
+        try {
+          const loginRes = await api('/auth/login', {
+            method: 'POST',
+            body: { phone },
+          });
+          saveSession(loginRes.user, loginRes.token);
+          toast(`Telefone já cadastrado. Bem-vindo de volta, ${loginRes.user.name.split(' ')[0]}!`);
+          location.hash = loginRes.user.role === 'client' ? '#dashboard' : '#barber';
+          navigate();
+          return;
+        } catch (loginErr) {
+          document.getElementById('registerError').textContent = err.message;
+          return;
+        }
+      }
       document.getElementById('registerError').textContent = err.message;
     }
   };
