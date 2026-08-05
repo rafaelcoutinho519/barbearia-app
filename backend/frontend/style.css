@@ -28,7 +28,7 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-h1, h2, h3, .logo-font {
+h2, h3, .logo-font {
   font-family: 'Bebas Neue', sans-serif;
   letter-spacing: 0.5px;
 }
@@ -58,7 +58,7 @@ h1, h2, h3, .logo-font {
   padding: 0 8px;
 }
 
-/* ---------- LOGO / NOME ELEGANTE E COM AÇÃO ---------- */
+/* ---------- LOGO / NOME DO TOPO ELEGANTE E COM AÇÃO ---------- */
 .brand {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 28px;
@@ -157,7 +157,27 @@ h1, h2, h3, .logo-font {
   padding: 40px 10px 24px;
   text-align: center;
 }
-.hero h1 { font-size: 38px; margin: 0 0 10px; color: var(--gold); }
+
+/* ---------- TÍTULO PRINCIPAL DA CAPA COM DEGRADÊ METÁLICO E AÇÃO ---------- */
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  margin: 0 0 12px;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, #f3e5ab 0%, #d4a24e 50%, #b8860b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  transition: transform 0.3s ease, filter 0.3s ease;
+  display: inline-block;
+  cursor: default;
+}
+
+.hero h1:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: drop-shadow(0 6px 20px rgba(212, 162, 78, 0.4));
+}
+
 .hero p { color: var(--text-muted); font-size: 16px; max-width: 560px; margin: 0 auto 20px; }
 
 .card {
