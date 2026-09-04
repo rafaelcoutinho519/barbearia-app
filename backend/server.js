@@ -16,13 +16,12 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Servir os arquivos estáticos da pasta frontend (que está um nível acima da pasta backend)
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Servir os arquivos estáticos diretamente da mesma pasta
+app.use(express.static(__dirname));
 
 // Inicialização do banco de dados SQLite
 const db = new Database('barbearia.db');
 
-// Rota de teste da API
 app.get('/api/status', (req, res) => {
     res.json({ message: 'API da Brooklyn Barbearia funcionando com sucesso!' });
 });
