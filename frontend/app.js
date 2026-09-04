@@ -112,8 +112,8 @@ function renderNav(active) {
 async function renderHome() {
   appEl.innerHTML = `
     <section class="hero">
-      <h1>SHOWROOM BARBEARIA</h1>
-      <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário em menos de um minuto.</p>
+      <h1>BROOKLYN BARBEARIA</h1>
+      <p>Cortes precisos, barba na navalha e um atendimento à altura. Escolha seu profissional favorito e agende seu horário em menos de um minuto.</p>
       <a href="#${state.user && state.user.role === 'client' ? 'dashboard' : (state.user ? 'barber' : 'register')}" class="btn">Agendar horário</a>
     </section>
     <h2 class="section-title">Nossos serviços</h2>
@@ -139,46 +139,91 @@ async function renderHome() {
   }
 }
 
-// ---------- Conheça Nossos Profissionais ----------
+// ---------- Conheça Nossos Profissionais (Karlos, David e Dorgival) ----------
 function renderProfessionals() {
   appEl.innerHTML = `
     <section class="hero" style="padding: 40px 20px;">
       <h1>NOSSOS PROFISSIONAIS</h1>
-      <p>Profissionais qualificados focados em entregar o melhor estilo e atendimento.</p>
+      <p>Conheça nossa equipe especializada da Brooklyn Barbearia.</p>
     </section>
 
-    <div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px;">
-      <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
-        <div style="flex: 1; min-width: 250px; text-align: center;">
-          <div style="width: 150px; height: 150px; border-radius: 50%; background: #c59b27; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #1a1a1a; font-weight: bold;">
-            JS
+    <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; padding: 0 20px 40px 20px;">
+      
+      <!-- Karlos -->
+      <div class="card" style="padding: 30px;">
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+          <div style="flex: 1; min-width: 220px; text-align: center;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: #c59b27; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: #1a1a1a; font-weight: bold;">
+              KA
+            </div>
+            <h2 style="margin-bottom: 4px;">Karlos</h2>
+            <p class="text-muted" style="margin-bottom: 16px;">Barbeiro Profissional</p>
           </div>
-          <h2 style="margin-bottom: 4px;">Júnior Soares</h2>
-          <p class="text-muted" style="margin-bottom: 16px;">Barbeiro Master & Fundador</p>
-          
-          <div style="display: flex; gap: 12px; justify-content: center;">
-            <a href="https://instagram.com/SEU_INSTAGRAM" target="_blank" class="btn small" style="background: #E1306C; color: #fff; text-decoration: none;">Instagram</a>
-            <a href="https://wa.me/5587996289373" target="_blank" class="btn small" style="background: #25D366; color: #fff; text-decoration: none;">WhatsApp</a>
+          <div style="flex: 2; min-width: 280px;">
+            <h3>Estilo & Atendimento</h3>
+            <p class="text-muted" style="margin-top: 8px; line-height: 1.6;">
+              Especialista em cortes modernos e acabamentos impecáveis. Foco total em garantir o visual perfeito para o seu dia a dia.
+            </p>
           </div>
         </div>
-
-        <div style="flex: 2; min-width: 280px;">
-          <h3>Sobre o profissional</h3>
-          <p class="text-muted" style="margin-top: 8px; line-height: 1.6;">
-            Especialista em cortes modernos, clássicos, barba na navalha e visagismo. Anos de experiência dedicados a elevar o padrão do atendimento e garantir a satisfação de cada cliente que passa pela cadeira.
-          </p>
-          <div class="mt-16">
-            <a href="#${state.user && state.user.role === 'client' ? 'dashboard' : 'register'}" class="btn">Agendar com Júnior</a>
-          </div>
+        <h3 style="margin-top: 24px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; font-size: 16px;">Galeria do Karlos</h3>
+        <div class="grid cols-3" style="gap: 12px;">
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Fade Alinhado</div>
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Pompadour</div>
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Crop Moderno</div>
         </div>
       </div>
 
-      <h3 style="margin-top: 40px; margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;">Galeria de Trabalhos</h3>
-      <div class="grid cols-3" style="gap: 12px;">
-        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Corte Degradê</div>
-        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Barba Navalhada</div>
-        <div style="background: #222; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Social Moderno</div>
+      <!-- David -->
+      <div class="card" style="padding: 30px;">
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+          <div style="flex: 1; min-width: 220px; text-align: center;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: #c59b27; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: #1a1a1a; font-weight: bold;">
+              DA
+            </div>
+            <h2 style="margin-bottom: 4px;">David</h2>
+            <p class="text-muted" style="margin-bottom: 16px;">Barbeiro Profissional</p>
+          </div>
+          <div style="flex: 2; min-width: 280px;">
+            <h3>Estilo & Atendimento</h3>
+            <p class="text-muted" style="margin-top: 8px; line-height: 1.6;">
+              Versatilidade em cortes clássicos e barbas desenhadas. Atendimento focado em precisão e conforto na navalha.
+            </p>
+          </div>
+        </div>
+        <h3 style="margin-top: 24px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; font-size: 16px;">Galeria do David</h3>
+        <div class="grid cols-3" style="gap: 12px;">
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Social Estilizado</div>
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Barba Lenhador</div>
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Low Fade</div>
+        </div>
       </div>
+
+      <!-- Dorgival -->
+      <div class="card" style="padding: 30px;">
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+          <div style="flex: 1; min-width: 220px; text-align: center;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: #c59b27; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: #1a1a1a; font-weight: bold;">
+              DO
+            </div>
+            <h2 style="margin-bottom: 4px;">Dorgival</h2>
+            <p class="text-muted" style="margin-bottom: 16px;">Barbeiro Profissional</p>
+          </div>
+          <div style="flex: 2; min-width: 280px;">
+            <h3>Estilo & Atendimento</h3>
+            <p class="text-muted" style="margin-top: 8px; line-height: 1.6;">
+              Domínio completo em tesoura, máquina e visagismo. Experiência para realçar o melhor estilo de cada cliente.
+            </p>
+          </div>
+        </div>
+        <h3 style="margin-top: 24px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; font-size: 16px;">Galeria do Dorgival</h3>
+        <div class="grid cols-3" style="gap: 12px;">
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Mid Fade</div>
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Corte Tesoura</div>
+          <div style="background: #222; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center;" class="text-muted">Buzz Cut</div>
+        </div>
+      </div>
+
     </div>
   `;
 }
@@ -307,10 +352,10 @@ async function renderBookingFlow() {
         </select>
 
         <div class="mt-16">
-          <label>2. Escolha o barbeiro</label>
+          <label>2. Escolha o profissional</label>
           <select id="barberSelect">
             <option value="">Selecione...</option>
-            ${barbers.map(b => `<option value="${b.id}">${b.name === 'Administrador' ? 'Júnior Soares' : b.name}</option>`).join('')}
+            ${barbers.map(b => `<option value="${b.id}">${b.name}</option>`).join('')}
           </select>
         </div>
 
@@ -321,7 +366,7 @@ async function renderBookingFlow() {
 
         <div class="mt-16">
           <label>4. Escolha o horário</label>
-          <div id="slotsWrap" class="slots"><span class="text-muted">Selecione serviço, barbeiro e data.</span></div>
+          <div id="slotsWrap" class="slots"><span class="text-muted">Selecione serviço, profissional e data.</span></div>
         </div>
 
         <div class="mt-24 flex-between">
@@ -342,7 +387,7 @@ async function renderBookingFlow() {
       confirmBtn.disabled = true;
       state.booking.time = null;
       if (!serviceId || !barberId || !date) {
-        wrap.innerHTML = '<span class="text-muted">Selecione serviço, barbeiro e data.</span>';
+        wrap.innerHTML = '<span class="text-muted">Selecione serviço, profissional e data.</span>';
         return;
       }
       wrap.innerHTML = '<span class="text-muted">Carregando horários...</span>';
@@ -408,14 +453,14 @@ async function renderMyAppointments() {
     content.innerHTML = `
       <div class="card">
         <table>
-          <thead><tr><th>Data</th><th>Horário</th><th>Serviço</th><th>Barbeiro</th><th>Valor</th><th>Status</th><th></th></tr></thead>
+          <thead><tr><th>Data</th><th>Horário</th><th>Serviço</th><th>Profissional</th><th>Valor</th><th>Status</th><th></th></tr></thead>
           <tbody>
             ${appointments.map(a => `
               <tr>
                 <td>${formatDate(a.date)}</td>
                 <td>${a.start_time}</td>
                 <td>${a.service_name}</td>
-                <td>${a.barber_name === 'Administrador' ? 'Júnior Soares' : a.barber_name}</td>
+                <td>${a.barber_name}</td>
                 <td>${formatPrice(a.price)}</td>
                 <td><span class="badge ${a.status}">${a.status}</span></td>
                 <td>${a.status === 'agendado' ? `<button class="btn small danger" data-cancel="${a.id}">Cancelar</button>` : ''}</td>
@@ -435,19 +480,6 @@ async function renderMyAppointments() {
         try {
           await api(`/appointments/${apptId}`, { method: 'DELETE', auth: true });
           toast('Agendamento cancelado.');
-
-          const barberPhone = '5587996289373';
-          let cancelMsg = `⚠️ *CANCELAMENTO DE AGENDAMENTO*%0A%0A` +
-                          `O cliente *${state.user ? state.user.name : 'Cliente'}* cancelou um agendamento.`;
-
-          if (appt) {
-            cancelMsg += `%0A%0A` +
-                         `*Serviço:* ${appt.service_name}%0A` +
-                         `*Data:* ${formatDate(appt.date)} às ${appt.start_time}`;
-          }
-
-          window.open(`https://wa.me/${barberPhone}?text=${cancelMsg}`, '_blank');
-
           renderMyAppointments();
         } catch (err) {
           toast(err.message, true);
