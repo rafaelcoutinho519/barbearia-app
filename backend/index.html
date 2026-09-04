@@ -35,7 +35,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 22px 8%;
+            padding: 15px 8%;
             background-color: rgba(12, 12, 12, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(212, 175, 55, 0.15);
@@ -44,19 +44,14 @@
             z-index: 1000;
         }
 
-        .logo {
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: var(--gold);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-decoration: none;
+        .logo-img {
+            height: 45px;
+            object-fit: contain;
             transition: opacity 0.3s;
-            cursor: pointer;
         }
 
-        .logo:hover {
-            opacity: 0.8;
+        .logo-img:hover {
+            opacity: 0.85;
         }
 
         nav ul {
@@ -83,19 +78,18 @@
         /* Hero / Início */
         .hero {
             text-align: center;
-            padding: 110px 20px;
+            padding: 90px 20px;
             background: linear-gradient(rgba(12,12,12,0.85), rgba(12,12,12,0.92)), url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
             border-bottom: 2px solid rgba(212, 175, 55, 0.3);
             position: relative;
         }
 
-        .hero h1 {
-            color: var(--gold);
-            font-size: 3.2rem;
-            letter-spacing: 4px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        .hero-logo {
+            max-width: 220px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
         }
 
         .hero p {
@@ -473,9 +467,11 @@
 </head>
 <body>
 
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho com Logo -->
     <header>
-        <a href="#inicio" class="logo">Brooklyn Barbearia</a>
+        <a href="#inicio">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="logo-img">
+        </a>
         <nav>
             <ul>
                 <li><a href="#inicio">Início</a></li>
@@ -487,9 +483,9 @@
         </nav>
     </header>
 
-    <!-- Hero / Início -->
+    <!-- Hero / Início com Logo em Destaque -->
     <section class="hero" id="inicio">
-        <h1>Brooklyn Barbearia</h1>
+        <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
         <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
     </section>
@@ -573,7 +569,7 @@
         <div class="pro-showcase-card">
             <div class="pro-top-content">
                 <div class="pro-profile-box">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Karlos" class="pro-avatar">
+                    <img src="Karlos/foto.jpg" alt="Karlos" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'">
                     <div class="pro-name">Karlos</div>
                     <div class="pro-subtitle">Master Barber</div>
                     <div class="social-buttons">
@@ -599,7 +595,7 @@
         <div class="pro-showcase-card">
             <div class="pro-top-content">
                 <div class="pro-profile-box">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="David" class="pro-avatar">
+                    <img src="David/foto.jpg" alt="David" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80'">
                     <div class="pro-name">David</div>
                     <div class="pro-subtitle">Barbeiro Sênior</div>
                     <div class="social-buttons">
@@ -625,7 +621,7 @@
         <div class="pro-showcase-card">
             <div class="pro-top-content">
                 <div class="pro-profile-box">
-                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" alt="Dorgivan" class="pro-avatar">
+                    <img src="Dorgivan/foto.jpg" alt="Dorgivan" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80'">
                     <div class="pro-name">Dorgivan</div>
                     <div class="pro-subtitle">Stylist & Barber</div>
                     <div class="social-buttons">
@@ -648,7 +644,7 @@
         </div>
     </div>
 
-    <!-- Modal de Autenticação (Nome e Telefone) -->
+    <!-- Modais de Autenticação e Agendamento -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('authModal')">&times;</button>
@@ -667,7 +663,6 @@
         </div>
     </div>
 
-    <!-- Modal de Agendamento -->
     <div id="scheduleModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('scheduleModal')">&times;</button>
@@ -723,7 +718,6 @@
         </div>
     </div>
 
-    <!-- Modal Meus Agendamentos -->
     <div id="appointmentsModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('appointmentsModal')">&times;</button>
