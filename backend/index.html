@@ -44,15 +44,23 @@
             z-index: 1000;
         }
 
+        .logo-link {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-link:active {
+            transform: scale(0.95);
+        }
+
         .logo-img {
             height: 45px;
             object-fit: contain;
-            mix-blend-mode: screen; /* Remove o fundo preto caso seja JPG/PNG opaco */
-            transition: opacity 0.3s;
-        }
-
-        .logo-img:hover {
-            opacity: 0.85;
+            mix-blend-mode: screen;
         }
 
         nav ul {
@@ -97,6 +105,13 @@
             justify-content: center;
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
             overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .hero-logo-container:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
         }
 
         .hero-logo {
@@ -261,9 +276,23 @@
             font-size: 0.85rem;
         }
 
+        /* Seção de Profissionais com Fundo Personalizado (Fundoprofissional.png) */
+        .profissionais-section {
+            position: relative;
+            background: linear-gradient(rgba(12, 12, 12, 0.90), rgba(12, 12, 12, 0.94)), url('Fundoprofissional.png') no-repeat center center/cover;
+            padding: 80px 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .profissionais-section .container {
+            margin: 0 auto;
+        }
+
         /* Profissionais Elegantes */
         .pro-showcase-card {
-            background: linear-gradient(145deg, #181818, #111111);
+            background: linear-gradient(145deg, rgba(24, 24, 24, 0.9), rgba(17, 17, 17, 0.9));
+            backdrop-filter: blur(5px);
             border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 45px;
@@ -481,9 +510,9 @@
 </head>
 <body>
 
-    <!-- Cabeçalho com Logo -->
+    <!-- Cabeçalho com Logo Interativa -->
     <header>
-        <a href="#inicio">
+        <a href="#inicio" class="logo-link">
             <img src="logo.png" alt="Brooklyn Barbearia" class="logo-img">
         </a>
         <nav>
@@ -497,9 +526,9 @@
         </nav>
     </header>
 
-    <!-- Hero / Início com Logo em Destaque Circular -->
+    <!-- Hero / Início com Logo Circular Interativa -->
     <section class="hero" id="inicio">
-        <div class="hero-logo-container">
+        <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
             <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
         </div>
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
@@ -522,7 +551,7 @@
         </div>
     </div>
 
-    <!-- Serviços (Com clique para agendar direto) -->
+    <!-- Serviços -->
     <div class="container" id="servicos">
         <h2 class="section-title">Nossos <span>Serviços</span></h2>
         <div class="services-grid">
@@ -577,85 +606,87 @@
         </div>
     </div>
 
-    <!-- Profissionais: Karlos, David e Dorgivan -->
-    <div class="container" id="profissionais">
-        <h2 class="section-title">Nossos <span>Profissionais</span></h2>
+    <!-- Seção de Profissionais com Fundo 'Fundoprofissional.png' -->
+    <div class="profissionais-section" id="profissionais">
+        <div class="container" style="margin: 0 auto; max-width: 1100px;">
+            <h2 class="section-title">Nossos <span>Profissionais</span></h2>
 
-        <!-- Karlos -->
-        <div class="pro-showcase-card">
-            <div class="pro-top-content">
-                <div class="pro-profile-box">
-                    <img src="Karlos/foto.jpg" alt="Karlos" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'">
-                    <div class="pro-name">Karlos</div>
-                    <div class="pro-subtitle">Master Barber</div>
-                    <div class="social-buttons">
-                        <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
-                        <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+            <!-- Karlos -->
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="Karlos/foto.jpg" alt="Karlos" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'">
+                        <div class="pro-name">Karlos</div>
+                        <div class="pro-subtitle">Master Barber</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
                     </div>
                 </div>
-                <div class="pro-details">
-                    <h3>Sobre o Profissional</h3>
-                    <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
-                    <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
+                <div class="gallery-title">Galeria de Trabalhos</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=400&q=80"><span>Degradê</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80"><span>Americano</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=400&q=80"><span>Social</span></div>
                 </div>
             </div>
-            <div class="gallery-title">Galeria de Trabalhos</div>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=400&q=80"><span>Degradê</span></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80"><span>Americano</span></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=400&q=80"><span>Social</span></div>
-            </div>
-        </div>
 
-        <!-- David -->
-        <div class="pro-showcase-card">
-            <div class="pro-top-content">
-                <div class="pro-profile-box">
-                    <img src="David/foto.jpg" alt="David" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80'">
-                    <div class="pro-name">David</div>
-                    <div class="pro-subtitle">Barbeiro Sênior</div>
-                    <div class="social-buttons">
-                        <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
-                        <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+            <!-- David -->
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="David/foto.jpg" alt="David" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80'">
+                        <div class="pro-name">David</div>
+                        <div class="pro-subtitle">Barbeiro Sênior</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
                     </div>
                 </div>
-                <div class="pro-details">
-                    <h3>Sobre o Profissional</h3>
-                    <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
-                    <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
+                <div class="gallery-title">Galeria de Trabalhos</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1517832606293-7ae2fcff00aa?auto=format&fit=crop&w=400&q=80"><span>Navalhado</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80"><span>Fade</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80"><span>Estilo VIP</span></div>
                 </div>
             </div>
-            <div class="gallery-title">Galeria de Trabalhos</div>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1517832606293-7ae2fcff00aa?auto=format&fit=crop&w=400&q=80"><span>Navalhado</span></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80"><span>Fade</span></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80"><span>Estilo VIP</span></div>
-            </div>
-        </div>
 
-        <!-- Dorgivan -->
-        <div class="pro-showcase-card">
-            <div class="pro-top-content">
-                <div class="pro-profile-box">
-                    <img src="Dorgivan/foto.jpg" alt="Dorgivan" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80'">
-                    <div class="pro-name">Dorgivan</div>
-                    <div class="pro-subtitle">Stylist & Barber</div>
-                    <div class="social-buttons">
-                        <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
-                        <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+            <!-- Dorgivan -->
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="Dorgivan/foto.jpg" alt="Dorgivan" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80'">
+                        <div class="pro-name">Dorgivan</div>
+                        <div class="pro-subtitle">Stylist & Barber</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
                     </div>
                 </div>
-                <div class="pro-details">
-                    <h3>Sobre o Profissional</h3>
-                    <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
-                    <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
+                <div class="gallery-title">Galeria de Trabalhos</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80"><span>Platinado</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80"><span>Urban Cut</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80"><span>Luzes</span></div>
                 </div>
-            </div>
-            <div class="gallery-title">Galeria de Trabalhos</div>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80"><span>Platinado</span></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80"><span>Urban Cut</span></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80"><span>Luzes</span></div>
             </div>
         </div>
     </div>
