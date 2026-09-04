@@ -10,6 +10,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -49,6 +50,7 @@
             color: #ccc;
             font-size: 0.95rem;
             transition: color 0.3s;
+            cursor: pointer;
         }
 
         nav ul li a:hover {
@@ -58,14 +60,14 @@
         /* Hero Section */
         .hero {
             text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            padding: 90px 20px;
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
             border-bottom: 2px solid #d4af37;
         }
 
         .hero h1 {
             color: #d4af37;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             letter-spacing: 3px;
             margin-bottom: 15px;
             text-transform: uppercase;
@@ -76,6 +78,7 @@
             max-width: 600px;
             margin: 0 auto 30px auto;
             font-size: 1rem;
+            line-height: 1.6;
         }
 
         .btn-primary {
@@ -88,31 +91,37 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: background 0.3s;
+            transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
         }
 
         .btn-primary:hover {
             background-color: #f1c40f;
+            transform: scale(1.05);
         }
 
-        /* Seção de Conteúdo / Serviços */
+        /* Containers e Seções */
         .container {
             max-width: 1200px;
-            margin: 50px auto;
+            margin: 60px auto;
             padding: 0 20px;
         }
 
         .section-title {
             text-align: center;
             color: #fff;
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 40px;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
+        .section-title span {
+            color: #d4af37;
+        }
+
+        /* Serviços Grid */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -124,12 +133,13 @@
             border: 1px solid #333;
             border-radius: 8px;
             padding: 25px;
-            transition: transform 0.3s, border-color 0.3s;
+            transition: all 0.3s;
         }
 
         .service-card:hover {
             border-color: #d4af37;
             transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.1);
         }
 
         .service-card h3 {
@@ -163,19 +173,179 @@
             color: #666;
             font-size: 0.85rem;
         }
+
+        /* Seção Profissionais (Mais viva e moderna) */
+        .professionals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .pro-card {
+            background: linear-gradient(145deg, #181818, #121212);
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .pro-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.15);
+        }
+
+        .pro-image-container {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pro-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .pro-card:hover .pro-image-container img {
+            transform: scale(1.08);
+        }
+
+        .pro-info {
+            padding: 25px;
+        }
+
+        .pro-info h3 {
+            color: #fff;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .pro-role {
+            color: #d4af37;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .pro-bio {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-schedule {
+            background-color: transparent;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-schedule:hover {
+            background-color: #d4af37;
+            color: #121212;
+        }
+
+        /* Modais Simples para Entrar / Criar Conta */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #d4af37;
+            padding: 40px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .modal-content h2 {
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            border-color: #d4af37;
+            outline: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Cabeçalho com abas -->
+    <!-- Cabeçalho com Abas Funcionais -->
     <header>
         <div class="logo">Brooklyn Barbearia</div>
         <nav>
             <ul>
                 <li><a href="#inicio">Início</a></li>
                 <li><a href="#profissionais">Profissionais</a></li>
-                <li><a href="#entrar">Entrar</a></li>
-                <li><a href="#criar-conta">Criar conta</a></li>
+                <li><a href="#" onclick="openModal('loginModal')">Entrar</a></li>
+                <li><a href="#" onclick="openModal('registerModal')">Criar conta</a></li>
             </ul>
         </nav>
     </header>
@@ -184,12 +354,12 @@
     <section class="hero" id="inicio">
         <h1>Brooklyn Barbearia</h1>
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Escolha seu profissional favorito e agende seu horário em menos de um minuto.</p>
-        <a href="#servicos" class="btn-primary">Agendar horário</a>
+        <a href="#servicos" class="btn-primary">Agendar Horário</a>
     </section>
 
     <!-- Seção de Serviços -->
     <div class="container" id="servicos">
-        <h2 class="section-title">Nossos Serviços</h2>
+        <h2 class="section-title">Nossos <span>Serviços</span></h2>
         <div class="services-grid">
             
             <div class="service-card">
@@ -230,6 +400,112 @@
 
         </div>
     </div>
+
+    <!-- Seção de Profissionais (3 Barbeiros com visual vibrante) -->
+    <div class="container" id="profissionais">
+        <h2 class="section-title">Nossos <span>Profissionais</span></h2>
+        <div class="professionals-grid">
+            
+            <!-- Profissional 1 -->
+            <div class="pro-card">
+                <div class="pro-image-container">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Karlos">
+                </div>
+                <div class="pro-info">
+                    <h3>Karlos</h3>
+                    <div class="pro-role">Master Barber</div>
+                    <p class="pro-bio">Especialista em cortes clássicos, fade impecável e visagismo moderno.</p>
+                    <button class="btn-schedule" onclick="alert('Agendamento com Karlos em breve!')">Selecionar Karlos</button>
+                </div>
+            </div>
+
+            <!-- Profissional 2 -->
+            <div class="pro-card">
+                <div class="pro-image-container">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Dorgival">
+                </div>
+                <div class="pro-info">
+                    <h3>Dorgival</h3>
+                    <div class="pro-role">Barbeiro Sênior</div>
+                    <p class="pro-bio">Mestre na navalha tradicional, tratamentos de barba e acabamento perfeito.</p>
+                    <button class="btn-schedule" onclick="alert('Agendamento com Dorgival em breve!')">Selecionar Dorgival</button>
+                </div>
+            </div>
+
+            <!-- Profissional 3 -->
+            <div class="pro-card">
+                <div class="pro-image-container">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" alt="Profissional 3">
+                </div>
+                <div class="pro-info">
+                    <h3>Gabriel</h3>
+                    <div class="pro-role">Stylist & Barber</div>
+                    <p class="pro-bio">Focado nas últimas tendências de cortes urbanos, pigmentação e freestyle.</p>
+                    <button class="btn-schedule" onclick="alert('Agendamento com Gabriel em breve!')">Selecionar Gabriel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal de Entrar -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
+            <h2>Entrar</h2>
+            <form onsubmit="event.preventDefault(); alert('Login simulado com sucesso!'); closeModal('loginModal');">
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" required placeholder="********">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Criar Conta -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('registerModal')">&times;</button>
+            <h2>Criar Conta</h2>
+            <form onsubmit="event.preventDefault(); alert('Conta criada com sucesso!'); closeModal('registerModal');">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" required placeholder="Seu nome">
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" required placeholder="********">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Fechar modal ao clicar fora da caixa
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
 
 </body>
 </html>
