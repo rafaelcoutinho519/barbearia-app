@@ -28,9 +28,16 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
+            padding-bottom: 70px; /* Espaço para a barra inferior no mobile */
         }
 
-        /* Header Moderno com Efeito Glass */
+        @media(min-width: 769px) {
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        /* Header Padrão (Desktop) */
         header {
             display: flex;
             justify-content: space-between;
@@ -44,6 +51,12 @@
             z-index: 1000;
         }
 
+        @media(max-width: 768px) {
+            header {
+                display: none; /* Esconde o menu antigo no celular */
+            }
+        }
+
         .logo-link {
             display: inline-block;
             transition: transform 0.3s ease;
@@ -51,10 +64,6 @@
 
         .logo-link:hover {
             transform: scale(1.05);
-        }
-
-        .logo-link:active {
-            transform: scale(0.95);
         }
 
         .logo-img {
@@ -81,6 +90,51 @@
         }
 
         nav ul li a:hover {
+            color: var(--gold);
+        }
+
+        /* Barra de Navegação Inferior para Mobile (App-like) */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(212, 175, 55, 0.25);
+            z-index: 2000;
+            justify-content: space-around;
+            padding: 10px 5px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
+        }
+
+        @media(max-width: 768px) {
+            .mobile-bottom-nav {
+                display: flex;
+            }
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mobile-nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .mobile-nav-item:hover, .mobile-nav-item.active {
             color: var(--gold);
         }
 
@@ -276,7 +330,7 @@
             font-size: 0.85rem;
         }
 
-        /* Seção de Profissionais com Fundo Otimizado para Mobile e PC */
+        /* Seção de Profissionais */
         .profissionais-section {
             position: relative;
             background: linear-gradient(rgba(12, 12, 12, 0.85), rgba(12, 12, 12, 0.92)), url('Fundoprofissional.png') no-repeat center center;
@@ -290,7 +344,6 @@
             margin: 0 auto;
         }
 
-        /* Profissionais Elegantes com Fundo Sólido no Celular para Legibilidade */
         .pro-showcase-card {
             background: #161616;
             border: 1px solid var(--card-border);
@@ -428,7 +481,6 @@
             color: #0c0c0c;
         }
 
-        /* Galeria Estilizada */
         .gallery-title {
             color: #fff;
             font-size: 0.95rem;
@@ -477,7 +529,7 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(5px);
-            z-index: 2000;
+            z-index: 3000;
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -528,7 +580,7 @@
 </head>
 <body>
 
-    <!-- Cabeçalho com Logo Interativa -->
+    <!-- Cabeçalho (Apenas Desktop) -->
     <header>
         <a href="#inicio" class="logo-link">
             <img src="logo.png" alt="Brooklyn Barbearia" class="logo-img">
@@ -544,10 +596,34 @@
         </nav>
     </header>
 
-    <!-- Hero / Início com Logo Circular Interativa -->
+    <!-- Barra de Navegação Inferior Fixa (Apenas Mobile) -->
+    <div class="mobile-bottom-nav">
+        <a href="#inicio" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Início
+        </a>
+        <a href="#servicos" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Serviços
+        </a>
+        <a href="#profissionais" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            Profissionais
+        </a>
+        <a href="#" onclick="openAppointments()" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+            Agenda
+        </a>
+        <a href="#" onclick="openModal('authModal')" class="mobile-nav-item" id="mobileAuthBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            Entrar
+        </a>
+    </div>
+
+    <!-- Hero / Início -->
     <section class="hero" id="inicio">
         <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
-            <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="logo-logo">
         </div>
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
         <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
@@ -624,7 +700,7 @@
         </div>
     </div>
 
-    <!-- Seção de Profissionais com Fundo Otimizado -->
+    <!-- Seção de Profissionais -->
     <div class="profissionais-section" id="profissionais">
         <div class="container" style="margin: 0 auto; max-width: 1100px;">
             <h2 class="section-title">Nossos <span>Profissionais</span></h2>
@@ -709,7 +785,7 @@
         </div>
     </div>
 
-    <!-- Modais de Autenticação e Agendamento -->
+    <!-- Modais -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('authModal')">&times;</button>
@@ -798,10 +874,26 @@
 
         function updateNav() {
             const nav = document.getElementById('userAuthNav');
+            const mobileAuthBtn = document.getElementById('mobileAuthBtn');
+            
             if (currentUser) {
-                nav.innerHTML = `<a href="#" onclick="openAppointments()" style="color: var(--gold);">Olá, ${currentUser.name.split(' ')[0]}</a>`;
+                if(nav) nav.innerHTML = `<a href="#" onclick="openAppointments()" style="color: var(--gold);">Olá, ${currentUser.name.split(' ')[0]}</a>`;
+                if(mobileAuthBtn) {
+                    mobileAuthBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-5h2v5h-2zm0-7v-2h2v2h-2z"/></svg>
+                        Conta
+                    `;
+                    mobileAuthBtn.onclick = function() { openAppointments(); };
+                }
             } else {
-                nav.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
+                if(nav) nav.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
+                if(mobileAuthBtn) {
+                    mobileAuthBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        Entrar
+                    `;
+                    mobileAuthBtn.onclick = function() { openModal('authModal'); };
+                }
             }
         }
         updateNav();
@@ -862,7 +954,7 @@
             }
 
             const pro = document.getElementById('schedPro').value;
-            const service = document.getElementById('schedService').value;
+            const service = document.getElementById('schedService'].value;
             const date = document.getElementById('schedDate').value;
             const time = document.getElementById('schedTime').value;
 
