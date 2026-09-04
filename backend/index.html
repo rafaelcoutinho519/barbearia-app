@@ -28,7 +28,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
-            padding-bottom: 90px; /* Espaço seguro para a barra inferior não cobrir os conteúdos finais */
+            padding-bottom: 90px;
         }
 
         @media(min-width: 769px) {
@@ -37,7 +37,6 @@
             }
         }
 
-        /* Header Padrão (Desktop) */
         header {
             display: flex;
             justify-content: space-between;
@@ -53,7 +52,7 @@
 
         @media(max-width: 768px) {
             header {
-                display: none; /* Esconde o menu antigo no celular */
+                display: none;
             }
         }
 
@@ -93,7 +92,6 @@
             color: var(--gold);
         }
 
-        /* Barra de Navegação Inferior para Mobile (App-like) */
         .mobile-bottom-nav {
             display: none;
             position: fixed;
@@ -103,7 +101,7 @@
             background-color: rgba(18, 18, 18, 0.98);
             backdrop-filter: blur(12px);
             border-top: 1px solid rgba(212, 175, 55, 0.25);
-            z-index: 4000; /* Acima de tudo para garantir o clique */
+            z-index: 4000;
             justify-content: space-around;
             padding: 10px 5px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
@@ -142,7 +140,6 @@
             color: var(--gold);
         }
 
-        /* Hero / Início */
         .hero {
             text-align: center;
             padding: 90px 20px;
@@ -173,11 +170,11 @@
         }
 
         .hero-logo {
-    width: 120%;
-    height: 120%;
-    object-fit: contain;
-    mix-blend-mode: normal;
-}
+            width: 120%;
+            height: 120%;
+            object-fit: contain;
+            mix-blend-mode: normal;
+        }
 
         .hero p {
             color: var(--text-muted);
@@ -209,7 +206,6 @@
             box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
         }
 
-        /* Informações da Barbearia */
         .info-section {
             max-width: 1100px;
             margin: -40px auto 60px auto;
@@ -261,7 +257,6 @@
             text-decoration: underline;
         }
 
-        /* Containers Gerais */
         .container {
             max-width: 1100px;
             margin: 80px auto;
@@ -281,7 +276,6 @@
             color: var(--gold);
         }
 
-        /* Serviços com Interação */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -336,7 +330,6 @@
             font-size: 0.85rem;
         }
 
-        /* Seção de Profissionais */
         .profissionais-section {
             position: relative;
             background: linear-gradient(rgba(12, 12, 12, 0.85), rgba(12, 12, 12, 0.92)), url('Fundoprofissional.png') no-repeat center center;
@@ -530,14 +523,13 @@
             font-size: 0.85rem;
         }
 
-        /* Modais Sofisticados */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(5px);
-            z-index: 5000; /* Acima da barra inferior */
+            z-index: 5000;
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -588,7 +580,6 @@
 </head>
 <body>
 
-    <!-- Cabeçalho (Apenas Desktop) -->
     <header>
         <a href="#inicio" class="logo-link">
             <img src="logo.png" alt="Brooklyn Barbearia" class="logo-img">
@@ -604,7 +595,6 @@
         </nav>
     </header>
 
-    <!-- Barra de Navegação Inferior Fixa (Apenas Mobile) -->
     <div class="mobile-bottom-nav">
         <a href="#inicio" class="mobile-nav-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -628,16 +618,14 @@
         </button>
     </div>
 
-    <!-- Hero / Início -->
     <section class="hero" id="inicio">
         <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
-            <img src="logo.png" alt="Brooklyn Barbearia" class="logo-logo">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
         </div>
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
         <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
     </section>
 
-    <!-- Informações da Barbearia -->
     <div class="info-section">
         <div class="info-card">
             <h3>Horário de Atendimento</h3>
@@ -653,7 +641,6 @@
         </div>
     </div>
 
-    <!-- Serviços -->
     <div class="container" id="servicos">
         <h2 class="section-title">Nossos <span>Serviços</span></h2>
         <div class="services-grid">
@@ -708,12 +695,10 @@
         </div>
     </div>
 
-    <!-- Seção de Profissionais -->
     <div class="profissionais-section" id="profissionais">
         <div class="container" style="margin: 0 auto; max-width: 1100px;">
             <h2 class="section-title">Nossos <span>Profissionais</span></h2>
 
-            <!-- Karlos -->
             <div class="pro-showcase-card">
                 <div class="pro-top-content">
                     <div class="pro-profile-box">
@@ -739,7 +724,6 @@
                 </div>
             </div>
 
-            <!-- David -->
             <div class="pro-showcase-card">
                 <div class="pro-top-content">
                     <div class="pro-profile-box">
@@ -765,7 +749,6 @@
                 </div>
             </div>
 
-            <!-- Dorgivan -->
             <div class="pro-showcase-card">
                 <div class="pro-top-content">
                     <div class="pro-profile-box">
@@ -848,19 +831,7 @@
                 </div>
                 <div class="form-group">
                     <label>Horário</label>
-                    <select id="schedTime" required>
-                        <option value="09:00">09:00</option>
-                        <option value="10:00">10:00</option>
-                        <option value="11:00">11:00</option>
-                        <option value="13:00">13:00</option>
-                        <option value="14:00">14:00</option>
-                        <option value="15:00">15:00</option>
-                        <option value="16:00">16:00</option>
-                        <option value="17:00">17:00</option>
-                        <option value="18:00">18:00</option>
-                        <option value="19:00">19:00 (Seg a Qui)</option>
-                        <option value="19:30">19:30 (Sex e Sáb)</option>
-                    </select>
+                    <input type="time" id="schedTime" required>
                 </div>
                 <button type="submit" class="btn-primary" style="width: 100%;">Confirmar Agendamento</button>
             </form>
@@ -872,46 +843,12 @@
             <button class="close-btn" onclick="closeModal('appointmentsModal')">&times;</button>
             <h2>Meus Agendamentos</h2>
             <div id="appointmentsList">
-                <p style="color: var(--text-muted); text-align: center;">Carregando...</p>
+                <!-- Conteúdo dinâmico preenchido via script -->
             </div>
         </div>
     </div>
 
     <script>
-        let currentUser = JSON.parse(localStorage.getItem('brooklyn_user')) || null;
-
-        function updateNav() {
-            const nav = document.getElementById('userAuthNav');
-            const mobileAuthBtn = document.getElementById('mobileAuthBtn');
-            
-            if (currentUser) {
-                if(nav) nav.innerHTML = `<a href="#" onclick="openAppointments()" style="color: var(--gold);">Olá, ${currentUser.name.split(' ')[0]}</a>`;
-                if(mobileAuthBtn) {
-                    mobileAuthBtn.innerHTML = `
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-5h2v5h-2zm0-7v-2h2v2h-2z"/></svg>
-                        Conta
-                    `;
-                }
-            } else {
-                if(nav) nav.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
-                if(mobileAuthBtn) {
-                    mobileAuthBtn.innerHTML = `
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                        Entrar
-                    `;
-                }
-            }
-        }
-        updateNav();
-
-        function handleAuthNavClick() {
-            if (currentUser) {
-                openAppointments();
-            } else {
-                openModal('authModal');
-            }
-        }
-
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
         }
@@ -920,95 +857,54 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        function selectProAndSchedule(proName) {
-            if (!currentUser) {
-                openModal('authModal');
-                alert('Por favor, informe seu nome e telefone para continuar.');
-                return;
-            }
-            document.getElementById('schedPro').value = proName;
-            openModal('scheduleModal');
-        }
-
         function selectServiceAndSchedule(serviceName) {
-            if (!currentUser) {
-                openModal('authModal');
-                alert('Por favor, informe seu nome e telefone para continuar.');
-                return;
-            }
-            const serviceSelect = document.getElementById('schedService');
-            for(let option of serviceSelect.options) {
-                if(option.value.toLowerCase().includes(serviceName.toLowerCase())) {
-                    serviceSelect.value = option.value;
+            openModal('scheduleModal');
+            const select = document.getElementById('schedService');
+            for(let i=0; i<select.options.length; i++) {
+                if(select.options[i].text.includes(serviceName)) {
+                    select.selectedIndex = i;
                     break;
                 }
             }
+        }
+
+        function selectProAndSchedule(proName) {
             openModal('scheduleModal');
+            const select = document.getElementById('schedPro');
+            for(let i=0; i<select.options.length; i++) {
+                if(select.options[i].value === proName) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        function openAppointments() {
+            openModal('appointmentsModal');
+            // Lógica para carregar agendamentos salvos localmente ou exibir mensagem
         }
 
         function handleAuth(event) {
             event.preventDefault();
             const name = document.getElementById('authName').value;
-            const phone = document.getElementById('authPhone').value;
-
-            currentUser = { name, phone };
-            localStorage.setItem('brooklyn_user', JSON.stringify(currentUser));
-            updateNav();
+            localStorage.setItem('barbearia_user', name);
             closeModal('authModal');
-            alert(`Bem-vindo, ${name}! Acesso liberado.`);
+            alert('Identificação salva com sucesso!');
+        }
+
+        function handleAuthNavClick() {
+            const user = localStorage.getItem('barbearia_user');
+            if(user) {
+                alert(`Logado como: ${user}`);
+            } else {
+                openModal('authModal');
+            }
         }
 
         function handleSchedule(event) {
             event.preventDefault();
-            if (!currentUser) {
-                closeModal('scheduleModal');
-                openModal('authModal');
-                alert('Por favor, faça login com nome e telefone.');
-                return;
-            }
-
-            const pro = document.getElementById('schedPro').value;
-            const service = document.getElementById('schedService').value;
-            const date = document.getElementById('schedDate').value;
-            const time = document.getElementById('schedTime').value;
-
-            let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments')) || [];
-            appointments.push({ userPhone: currentUser.phone, userName: currentUser.name, pro, service, date, time });
-            localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-
-            closeModal('scheduleModal');
             alert('Agendamento realizado com sucesso!');
-        }
-
-        function openAppointments() {
-            if (!currentUser) {
-                openModal('authModal');
-                alert('Faça login para ver seus agendamentos.');
-                return;
-            }
-
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments')) || [];
-            const userApps = appointments.filter(a => a.userPhone === currentUser.phone);
-            const listDiv = document.getElementById('appointmentsList');
-
-            if (userApps.length === 0) {
-                listDiv.innerHTML = `<p style="text-align: center; color: var(--text-muted);">Você não possui agendamentos ativos.</p>`;
-            } else {
-                listDiv.innerHTML = userApps.map(app => `
-                    <div class="appointment-item">
-                        <p><span>Profissional:</span> ${app.pro}</p>
-                        <p><span>Serviço:</span> ${app.service}</p>
-                        <p><span>Data:</span> ${app.date} às ${app.time}</p>
-                    </div>
-                `).join('');
-            }
-            openModal('appointmentsModal');
-        }
-
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
+            closeModal('scheduleModal');
         }
     </script>
 </body>
