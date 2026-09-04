@@ -28,7 +28,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
-            padding-bottom: 70px; /* Espaço para a barra inferior no mobile */
+            padding-bottom: 90px; /* Espaço seguro para a barra inferior não cobrir os conteúdos finais */
         }
 
         @media(min-width: 769px) {
@@ -100,10 +100,10 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(18, 18, 18, 0.95);
+            background-color: rgba(18, 18, 18, 0.98);
             backdrop-filter: blur(12px);
             border-top: 1px solid rgba(212, 175, 55, 0.25);
-            z-index: 2000;
+            z-index: 4000; /* Acima de tudo para garantir o clique */
             justify-content: space-around;
             padding: 10px 5px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
@@ -126,6 +126,10 @@
             transition: color 0.2s;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
         }
 
         .mobile-nav-item svg {
@@ -294,6 +298,8 @@
             justify-content: space-between;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            z-index: 2;
         }
 
         .service-card:hover {
@@ -352,6 +358,8 @@
             margin-bottom: 40px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             transition: border-color 0.3s;
+            position: relative;
+            z-index: 2;
         }
 
         @media(min-width: 769px) {
@@ -529,7 +537,7 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(5px);
-            z-index: 3000;
+            z-index: 5000; /* Acima da barra inferior */
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -610,14 +618,14 @@
             <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
             Profissionais
         </a>
-        <a href="#" onclick="openAppointments()" class="mobile-nav-item">
+        <button onclick="openAppointments()" class="mobile-nav-item">
             <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
             Agenda
-        </a>
-        <a href="#" onclick="openModal('authModal')" class="mobile-nav-item" id="mobileAuthBtn">
+        </button>
+        <button onclick="handleAuthNavClick()" class="mobile-nav-item" id="mobileAuthBtn">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             Entrar
-        </a>
+        </button>
     </div>
 
     <!-- Hero / Início -->
@@ -649,51 +657,51 @@
     <div class="container" id="servicos">
         <h2 class="section-title">Nossos <span>Serviços</span></h2>
         <div class="services-grid">
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba (R$ 10,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba')">
                 <h4>Barba</h4>
                 <div class="service-footer"><span class="price">R$ 10,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação (R$ 20,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação')">
                 <h4>Barba com Pigmentação</h4>
                 <div class="service-footer"><span class="price">R$ 20,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho (R$ 15,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho')">
                 <h4>Barba + Pezinho</h4>
                 <div class="service-footer"><span class="price">R$ 15,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo (R$ 20,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo')">
                 <h4>Cabelo</h4>
                 <div class="service-footer"><span class="price">R$ 20,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha (R$ 33,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha')">
                 <h4>Cabelo + Barba + Sobrancelha</h4>
                 <div class="service-footer"><span class="price">R$ 33,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação (R$ 40,00 - 80min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação')">
                 <h4>Corte com Pigmentação</h4>
                 <div class="service-footer"><span class="price">R$ 40,00</span><span class="duration">⏱ 80 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal (R$ 40,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal')">
                 <h4>Luzes Normal</h4>
                 <div class="service-footer"><span class="price">R$ 40,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada (R$ 60,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada')">
                 <h4>Luzes Platinada</h4>
                 <div class="service-footer"><span class="price">R$ 60,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Pezinho (R$ 5,00 - 20min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Pezinho')">
                 <h4>Pezinho</h4>
                 <div class="service-footer"><span class="price">R$ 5,00</span><span class="duration">⏱ 20 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Platinado (R$ 100,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Platinado')">
                 <h4>Platinado</h4>
                 <div class="service-footer"><span class="price">R$ 100,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Progressiva (R$ 50,00 - 40min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Progressiva')">
                 <h4>Progressiva</h4>
                 <div class="service-footer"><span class="price">R$ 50,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha (R$ 5,00 - 20min)')">
+            <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha')">
                 <h4>Sobrancelha</h4>
                 <div class="service-footer"><span class="price">R$ 5,00</span><span class="duration">⏱ 20 min</span></div>
             </div>
@@ -883,7 +891,6 @@
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-5h2v5h-2zm0-7v-2h2v2h-2z"/></svg>
                         Conta
                     `;
-                    mobileAuthBtn.onclick = function() { openAppointments(); };
                 }
             } else {
                 if(nav) nav.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
@@ -892,11 +899,18 @@
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                         Entrar
                     `;
-                    mobileAuthBtn.onclick = function() { openModal('authModal'); };
                 }
             }
         }
         updateNav();
+
+        function handleAuthNavClick() {
+            if (currentUser) {
+                openAppointments();
+            } else {
+                openModal('authModal');
+            }
+        }
 
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
@@ -924,7 +938,7 @@
             }
             const serviceSelect = document.getElementById('schedService');
             for(let option of serviceSelect.options) {
-                if(option.value.includes(serviceName.split(' ')[0])) {
+                if(option.value.toLowerCase().includes(serviceName.toLowerCase())) {
                     serviceSelect.value = option.value;
                     break;
                 }
@@ -954,7 +968,7 @@
             }
 
             const pro = document.getElementById('schedPro').value;
-            const service = document.getElementById('schedService'].value;
+            const service = document.getElementById('schedService').value;
             const date = document.getElementById('schedDate').value;
             const time = document.getElementById('schedTime').value;
 
