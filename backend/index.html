@@ -47,6 +47,7 @@
         .logo-img {
             height: 45px;
             object-fit: contain;
+            mix-blend-mode: screen; /* Remove o fundo preto caso seja JPG/PNG opaco */
             transition: opacity 0.3s;
         }
 
@@ -84,12 +85,25 @@
             position: relative;
         }
 
+        .hero-logo-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px auto;
+            border-radius: 50%;
+            background: #000;
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+            overflow: hidden;
+        }
+
         .hero-logo {
-            max-width: 220px;
-            width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
+            width: 120%;
+            height: 120%;
+            object-fit: contain;
+            mix-blend-mode: screen;
         }
 
         .hero p {
@@ -483,9 +497,11 @@
         </nav>
     </header>
 
-    <!-- Hero / Início com Logo em Destaque -->
+    <!-- Hero / Início com Logo em Destaque Circular -->
     <section class="hero" id="inicio">
-        <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
+        <div class="hero-logo-container">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
+        </div>
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
         <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
     </section>
