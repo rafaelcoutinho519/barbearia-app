@@ -893,9 +893,9 @@
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - Karlos</h4>
                     <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg', 'Classic Flow')">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg', 'Corte na Tesoura')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg" alt="Tesoura" class="cut-img">
-                            <div class="cut-title">Classic Flow</div>
+                            <div class="cut-title">Corte na Tesoura</div>
                         </div>
                         <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/low-fade.jpeg', 'Low Fade')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/low-fade.jpeg" alt="Low Fade" class="cut-img">
@@ -1204,7 +1204,7 @@
                 localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
                 
                 renderAppointmentsList();
-                updateAvailableTimes(); // Atualiza horários caso o modal esteja aberto
+                updateAvailableTimes();
                 alert('Agendamento cancelado com sucesso.');
 
                 if (appToCancel && barberPhones[appToCancel.pro]) {
@@ -1249,7 +1249,6 @@
 
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             
-            // Pega todos os horários já ocupados para esse profissional nesta data específica
             const bookedTimes = appointments
                 .filter(a => a.pro === pro && a.date === date)
                 .map(a => a.time);
@@ -1314,7 +1313,6 @@
                 return;
             }
 
-            // Dupla checagem de segurança contra agendamento duplicado
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             const isAlreadyBooked = appointments.some(a => a.pro === pro && a.date === date && a.time === time);
             
