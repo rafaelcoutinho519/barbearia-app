@@ -566,16 +566,6 @@
             position: absolute; top: 15px; right: 20px; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; background: none; border: none; transition: color 0.2s;
         }
         .close-btn:hover { color: #fff; }
-
-        .appointment-item {
-            background: #0c0c0c;
-            border: 1px solid var(--card-border);
-            padding: 18px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .appointment-item p { color: #ccc; font-size: 0.95rem; margin-bottom: 6px; }
-        .appointment-item span { color: var(--gold); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -699,10 +689,11 @@
         <div class="container" style="margin: 0 auto; max-width: 1100px;">
             <h2 class="section-title">Nossos <span>Profissionais</span></h2>
 
+            <!-- CARD KARLOS ATUALIZADO (CAMINHOS CURTOS E LIMPOS) -->
             <div class="pro-showcase-card">
                 <div class="pro-top-content">
                     <div class="pro-profile-box">
-                        <img src="Karlos/foto.jpg" alt="Karlos" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'">
+                        <img src="Karlos/perfil.png" alt="Karlos" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'">
                         <div class="pro-name">Karlos</div>
                         <div class="pro-subtitle">Master Barber</div>
                         <div class="social-buttons">
@@ -718,12 +709,13 @@
                 </div>
                 <div class="gallery-title">Galeria de Trabalhos</div>
                 <div class="gallery-grid">
-                    <div class="gallery-item"><img src="Karlos/trabalho1.jpg" onerror="this.src='https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=400&q=80'"><span>Degradê</span></div>
-                    <div class="gallery-item"><img src="Karlos/trabalho2.jpg" onerror="this.src='https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80'"><span>Americano</span></div>
-                    <div class="gallery-item"><img src="Karlos/trabalho3.jpg" onerror="this.src='https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=400&q=80'"><span>Social</span></div>
+                    <div class="gallery-item"><img src="Karlos/low-fade.jpeg" onerror="this.src='https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=400&q=80'"><span>Low Fade</span></div>
+                    <div class="gallery-item"><img src="Karlos/tesoura.jpeg" onerror="this.src='https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80'"><span>Corte na tesoura</span></div>
+                    <div class="gallery-item"><img src="Karlos/mid-fade.jpeg" onerror="this.src='https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=400&q=80'"><span>Mid Fade</span></div>
                 </div>
             </div>
 
+            <!-- DAVID -->
             <div class="pro-showcase-card">
                 <div class="pro-top-content">
                     <div class="pro-profile-box">
@@ -749,6 +741,7 @@
                 </div>
             </div>
 
+            <!-- DORGIVAN -->
             <div class="pro-showcase-card">
                 <div class="pro-top-content">
                     <div class="pro-profile-box">
@@ -825,7 +818,6 @@
                         <option value="Sobrancelha (R$ 5,00 - 20min)">Sobrancelha - R$ 5,00 (20 min)</option>
                     </select>
                 </div>
-                <!-- Restante do formulário permanece igual -->
             </form>
         </div>
     </div>
