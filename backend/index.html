@@ -14,6 +14,7 @@
             --gold-hover: #e6c547;
             --text-main: #f0f0f0;
             --text-muted: #999;
+            --danger: #ff4d4d;
         }
 
         * {
@@ -73,11 +74,11 @@
         nav ul {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 25px;
             align-items: center;
         }
 
-        nav ul li a {
+        nav ul li a, nav ul li button {
             text-decoration: none;
             color: var(--text-muted);
             font-size: 0.9rem;
@@ -85,9 +86,11 @@
             transition: color 0.3s;
             cursor: pointer;
             letter-spacing: 0.5px;
+            background: none;
+            border: none;
         }
 
-        nav ul li a:hover {
+        nav ul li a:hover, nav ul li button:hover {
             color: var(--gold);
         }
 
@@ -337,10 +340,6 @@
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .profissionais-section .container {
-            margin: 0 auto;
-        }
-
         .pro-showcase-card {
             background: #161616;
             border: 1px solid var(--card-border);
@@ -359,10 +358,6 @@
                 backdrop-filter: blur(8px);
                 padding: 45px;
             }
-        }
-
-        .pro-showcase-card:hover {
-            border-color: rgba(212, 175, 55, 0.4);
         }
 
         .pro-top-content {
@@ -513,10 +508,6 @@
             transition: transform 0.3s ease;
         }
 
-        .gallery-item:hover img {
-            transform: scale(1.08);
-        }
-
         .gallery-item span {
             display: block;
             padding: 10px;
@@ -524,7 +515,7 @@
             font-size: 0.85rem;
         }
 
-        /* Modais Gerais */
+        /* Modais */
         .modal {
             display: none;
             position: fixed;
@@ -601,48 +592,38 @@
             font-weight: 600;
         }
 
-        .auth-switch a:hover {
-            text-decoration: underline;
-        }
-
-        #imageModal .modal-image-content {
-            background: transparent;
-            border: none;
-            padding: 0;
-            max-width: 90vw;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: none;
-        }
-
-        #expandedImg {
-            max-width: 90vw;
-            max-height: 78vh;
-            border-radius: 10px;
-            border: 2px solid var(--gold);
-            object-fit: contain;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.95);
-        }
-
-        #imgCaption {
-            color: var(--gold-light);
-            margin-top: 18px;
-            font-size: 1.25rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-            font-family: 'Georgia', serif;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.4);
-            padding-bottom: 6px;
-        }
-
         .close-btn {
             position: absolute; top: 15px; right: 20px; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; background: none; border: none; transition: color 0.2s; z-index: 10;
         }
         .close-btn:hover { color: #fff; }
+
+        .appointment-card {
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: left;
+            position: relative;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-cancel:hover {
+            background: var(--danger);
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -657,7 +638,9 @@
                 <li><a href="#servicos">Serviços</a></li>
                 <li><a href="#profissionais">Profissionais</a></li>
                 <li><a href="#" onclick="openAppointments()">Meus Agendamentos</a></li>
-                <li id="userAuthNav"><a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a></li>
+                <li id="userAuthNav">
+                    <a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>
+                </li>
             </ul>
         </nav>
     </header>
@@ -774,28 +757,13 @@
                         <div class="pro-name">Karlos</div>
                         <div class="social-buttons">
                             <a href="https://www.instagram.com/karllosbarbeiro?stkn=MWEzbnU4bng3MnJ1NA%3D%3D" target="_blank" class="btn-social insta">Instagram</a>
-                            <a href="https://wa.me/5581999999999" target="_blank" class="btn-social">WhatsApp</a>
+                            <a href="https://wa.me/5587996289373" target="_blank" class="btn-social">WhatsApp</a>
                         </div>
                     </div>
                     <div class="pro-details">
                         <h3>Sobre o Profissional</h3>
                         <p>Especialista em cortes modernos, degradê navalhado e visagismo. Foco total em entregar um atendimento de alto padrão e estilo único para cada cliente.</p>
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
-                    </div>
-                </div>
-                <div class="gallery-title">Galeria de Trabalhos</div>
-                <div class="gallery-grid">
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/low-fade.jpeg">
-                        <span>Low Fade</span>
-                    </div>
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg">
-                        <span>Corte na tesoura</span>
-                    </div>
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/mid-fade.jpeg">
-                        <span>Mid Fade</span>
                     </div>
                 </div>
             </div>
@@ -817,21 +785,6 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
                     </div>
                 </div>
-                <div class="gallery-title">Galeria de Trabalhos</div>
-                <div class="gallery-grid">
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/moicano.jpg">
-                        <span>Moicano</span>
-                    </div>
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/barba-pigmentada.jpg">
-                        <span>Barba Pigmentada</span>
-                    </div>
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte-americano.jpg">
-                        <span>Corte Americano</span>
-                    </div>
-                </div>
             </div>
 
             <!-- DAVID -->
@@ -849,21 +802,6 @@
                         <h3>Sobre o Profissional</h3>
                         <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
-                    </div>
-                </div>
-                <div class="gallery-title">Galeria de Trabalhos</div>
-                <div class="gallery-grid">
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg">
-                        <span>Navalhado</span>
-                    </div>
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg">
-                        <span>Fade</span>
-                    </div>
-                    <div class="gallery-item" onclick="openImageModal(this)">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg">
-                        <span>Estilo VIP</span>
                     </div>
                 </div>
             </div>
@@ -950,32 +888,38 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3>Meus Agendamentos</h3>
-            <div id="appointmentsList" style="color: var(--text-muted); text-align: center; padding: 20px 0;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 15px;">* Em caso de cancelamento, avise com pelo menos 1h de antecedência.</p>
+            <div id="appointmentsList" style="color: var(--text-muted); text-align: center; padding: 10px 0;">
                 Você ainda não possui agendamentos ativos.
             </div>
         </div>
     </div>
 
-    <!-- Modal para Expandir Imagem do Corte -->
-    <div id="imageModal" class="modal" onclick="closeImageModal()">
-        <div class="modal-image-content" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeImageModal()">&times;</button>
-            <img id="expandedImg" src="" alt="Corte Ampliado">
-            <div id="imgCaption"></div>
-        </div>
-    </div>
-
     <script>
-        // Estado do Usuário Global (Simulado)
-        let currentUser = localStorage.getItem('brooklyn_user') ? JSON.parse(localStorage.getItem('brooklyn_user')) : null;
+        // Mapeamento de contatos dos barbeiros (Números para WhatsApp)
+        const barberPhones = {
+            "Karlos": "5587996289373",
+            "Dorgivan": "5581999999999", // Atualizar depois se necessário
+            "David": "5581999999999"      // Atualizar depois se necessário
+        };
+
+        // Banco de Contas Salvas no Navegador (Simulando Banco de Dados Local)
+        let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
+        let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
         let isRegistering = false;
 
         function updateAuthUI() {
             const navLink = document.getElementById('userAuthNav');
             const mobileBtn = document.getElementById('mobileAuthBtn');
+            
             if (currentUser) {
-                navLink.innerHTML = `<a href="#" onclick="openAppointments()" style="color: var(--gold);">Olá, ${currentUser.name.split(' ')[0]}</a>`;
-                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Perfil`;
+                navLink.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="color: var(--gold); font-weight: 600;">Olá, ${currentUser.name.split(' ')[0]}</span>
+                        <button onclick="logoutUser()" style="color: var(--text-muted); background: none; border: 1px solid var(--card-border); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Sair</button>
+                    </div>
+                `;
+                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Sair`;
             } else {
                 navLink.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
                 mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Entrar`;
@@ -984,10 +928,19 @@
 
         function handleAuthNavClick() {
             if (currentUser) {
-                openAppointments();
+                if (confirm('Deseja sair da sua conta?')) {
+                    logoutUser();
+                }
             } else {
                 openModal('authModal');
             }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('brooklyn_current_user');
+            updateAuthUI();
+            alert('Você saiu da sua conta com sucesso.');
         }
 
         function openModal(modalId) {
@@ -1008,6 +961,10 @@
                 return;
             }
             openModal('appointmentsModal');
+            renderAppointmentsList();
+        }
+
+        function renderAppointmentsList() {
             const listContainer = document.getElementById('appointmentsList');
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             const userApps = appointments.filter(a => a.email === currentUser.email);
@@ -1015,13 +972,34 @@
             if (userApps.length === 0) {
                 listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Você ainda não possui agendamentos ativos.</p>';
             } else {
-                listContainer.innerHTML = userApps.map(app => `
-                    <div style="background: #0c0c0c; border: 1px solid var(--card-border); padding: 15px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
-                        <p style="color: var(--gold); font-weight: bold; margin-bottom: 5px;">${app.service}</p>
+                listContainer.innerHTML = userApps.map((app, index) => `
+                    <div class="appointment-card">
+                        <p style="color: var(--gold); font-weight: bold; margin-bottom: 4px;">${app.service}</p>
                         <p style="font-size: 0.9rem; color: #fff;">Profissional: ${app.pro}</p>
                         <p style="font-size: 0.85rem; color: var(--text-muted);">Data: ${app.date} às ${app.time}</p>
+                        <button class="btn-cancel" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
                     </div>
                 `).join('');
+            }
+        }
+
+        function cancelAppointment(appId) {
+            if (confirm('Tem certeza que deseja cancelar este agendamento? Lembre-se de avisar o barbeiro com pelo menos 1h de antecedência.')) {
+                let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+                const appToCancel = appointments.find(a => a.id === appId);
+                
+                appointments = appointments.filter(a => a.id !== appId);
+                localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+                
+                renderAppointmentsList();
+                alert('Agendamento cancelado com sucesso.');
+
+                // Notificar barbeiro via WhatsApp sobre o cancelamento
+                if (appToCancel && barberPhones[appToCancel.pro]) {
+                    const phone = barberPhones[appToCancel.pro];
+                    const msg = `*CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}.`;
+                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+                }
             }
         }
 
@@ -1048,13 +1026,35 @@
         function handleAuthSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('authEmail').value;
-            const name = isRegistering ? document.getElementById('authName').value : (email.split('@')[0]);
+            const password = document.getElementById('authPassword').value;
 
-            currentUser = { name, email };
-            localStorage.setItem('brooklyn_user', JSON.stringify(currentUser));
+            if (isRegistering) {
+                const name = document.getElementById('authName').value;
+                const existingUser = usersDB.find(u => u.email === email);
+                if (existingUser) {
+                    alert('Este e-mail já está cadastrado. Faça login.');
+                    return;
+                }
+                const newUser = { name, email, password };
+                usersDB.push(newUser);
+                localStorage.setItem('brooklyn_users_db', JSON.stringify(usersDB));
+                
+                currentUser = { name, email };
+                localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
+                alert('Cadastro realizado com sucesso!');
+            } else {
+                const foundUser = usersDB.find(u => u.email === email && u.password === password);
+                if (!foundUser) {
+                    alert('E-mail ou senha incorretos, ou conta não cadastrada.');
+                    return;
+                }
+                currentUser = { name: foundUser.name, email: foundUser.email };
+                localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
+                alert('Login realizado com sucesso!');
+            }
+
             updateAuthUI();
             closeAllModals();
-            alert(isRegistering ? 'Cadastro realizado com sucesso!' : 'Login realizado com sucesso!');
         }
 
         function handleScheduleSubmit(e) {
@@ -1070,32 +1070,31 @@
             const date = document.getElementById('scheduleDate').value;
             const time = document.getElementById('scheduleTime').value;
 
-            const newAppointment = { service, pro, date, time, email: currentUser.email };
+            const newAppointment = {
+                id: Date.now(),
+                service,
+                pro,
+                date,
+                time,
+                email: currentUser.email,
+                clientName: currentUser.name
+            };
+
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             appointments.push(newAppointment);
             localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
 
             closeAllModals();
             alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
+
+            // Enviar notificação automática via WhatsApp para o barbeiro selecionado
+            if (barberPhones[pro]) {
+                const phone = barberPhones[pro];
+                const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(textMessage)}`, '_blank');
+            }
         }
 
-        function openImageModal(element) {
-            const img = element.querySelector('img');
-            const span = element.querySelector('span');
-            const modal = document.getElementById('imageModal');
-            const expandedImg = document.getElementById('expandedImg');
-            const imgCaption = document.getElementById('imgCaption');
-
-            expandedImg.src = img.src;
-            imgCaption.textContent = span ? span.textContent : '';
-            modal.style.display = 'flex';
-        }
-
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
-        }
-
-        // Inicializar estado do usuário ao carregar a página
         window.onload = function() {
             updateAuthUI();
         };
