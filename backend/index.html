@@ -68,7 +68,6 @@
         .logo-img {
             height: 45px;
             object-fit: contain;
-            mix-blend-mode: screen;
         }
 
         nav ul {
@@ -170,10 +169,9 @@
         }
 
         .hero-logo {
-            width: 120%;
-            height: 120%;
-            object-fit: contain;
-            mix-blend-mode: normal;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .hero p {
@@ -332,7 +330,7 @@
 
         .profissionais-section {
             position: relative;
-            background: linear-gradient(rgba(12, 12, 12, 0.85), rgba(12, 12, 12, 0.92)), url('Fundoprofissional.png') no-repeat center center;
+            background: linear-gradient(rgba(12, 12, 12, 0.85), rgba(12, 12, 12, 0.92)), url('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/backend/Fundoprofissional.jpg') no-repeat center center;
             background-size: cover;
             padding: 80px 20px;
             border-top: 1px solid rgba(212, 175, 55, 0.2);
@@ -572,7 +570,7 @@
 
     <header>
         <a href="#inicio" class="logo-link">
-            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/logo.png" alt="Brooklyn Barbearia" class="logo-img" onerror="this.style.display='none'">
+            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/backend/logo.png" alt="Brooklyn Barbearia" class="logo-img">
         </a>
         <nav>
             <ul>
@@ -610,7 +608,7 @@
 
     <section class="hero" id="inicio">
         <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
-            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/logo.png" alt="Brooklyn Barbearia" class="hero-logo">
+            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/backend/logo.png" alt="Brooklyn Barbearia" class="hero-logo">
         </div>
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
         <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
