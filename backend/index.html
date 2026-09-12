@@ -524,6 +524,7 @@
             font-size: 0.85rem;
         }
 
+        /* Modais Gerais */
         .modal {
             display: none;
             position: fixed;
@@ -539,7 +540,7 @@
         .modal-content {
             background: #161616;
             border: 1px solid var(--gold);
-            padding: 40px;
+            padding: 35px 25px;
             border-radius: 12px;
             width: 100%;
             max-width: 480px;
@@ -547,6 +548,61 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-content h3 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--gold);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .auth-switch a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
         }
 
         #imageModal .modal-image-content {
@@ -814,6 +870,92 @@
         </div>
     </div>
 
+    <!-- MODAL DE AGENDAMENTO -->
+    <div id="scheduleModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3>Agendar Horário</h3>
+            <form onsubmit="handleScheduleSubmit(event)">
+                <div class="form-group">
+                    <label>Serviço</label>
+                    <select id="scheduleService" required>
+                        <option value="">Selecione o serviço</option>
+                        <option value="Barba">Barba - R$ 10,00</option>
+                        <option value="Barba com Pigmentação">Barba com Pigmentação - R$ 20,00</option>
+                        <option value="Cabelo">Cabelo - R$ 20,00</option>
+                        <option value="Cabelo + Barba + Sobrancelha">Cabelo + Barba + Sobrancelha - R$ 33,00</option>
+                        <option value="Corte com Pigmentação">Corte com Pigmentação - R$ 40,00</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Profissional</label>
+                    <select id="schedulePro" required>
+                        <option value="">Selecione o profissional</option>
+                        <option value="Karlos">Karlos</option>
+                        <option value="Dorgivan">Dorgivan</option>
+                        <option value="David">David</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="scheduleDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Horário</label>
+                    <select id="scheduleTime" required>
+                        <option value="">Selecione o horário</option>
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Confirmar Agendamento</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE LOGIN / CADASTRO -->
+    <div id="authModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3 id="authModalTitle">Entrar na Conta</h3>
+            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                <div class="form-group" id="nameGroup" style="display: none;">
+                    <label>Nome Completo</label>
+                    <input type="text" id="authName" placeholder="Seu nome">
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="authEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="authPassword" placeholder="******" required>
+                </div>
+                <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Entrar</button>
+                <div class="auth-switch">
+                    <span id="authSwitchText">Não tem uma conta?</span> <a href="#" onclick="toggleAuthMode(event)" id="authSwitchLink">Cadastre-se</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE MEUS AGENDAMENTOS -->
+    <div id="appointmentsModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3>Meus Agendamentos</h3>
+            <div id="appointmentsList" style="color: var(--text-muted); text-align: center; padding: 20px 0;">
+                Você ainda não possui agendamentos ativos.
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para Expandir Imagem do Corte -->
     <div id="imageModal" class="modal" onclick="closeImageModal()">
         <div class="modal-image-content" onclick="event.stopPropagation()">
@@ -824,6 +966,119 @@
     </div>
 
     <script>
+        // Estado do Usuário Global (Simulado)
+        let currentUser = localStorage.getItem('brooklyn_user') ? JSON.parse(localStorage.getItem('brooklyn_user')) : null;
+        let isRegistering = false;
+
+        function updateAuthUI() {
+            const navLink = document.getElementById('userAuthNav');
+            const mobileBtn = document.getElementById('mobileAuthBtn');
+            if (currentUser) {
+                navLink.innerHTML = `<a href="#" onclick="openAppointments()" style="color: var(--gold);">Olá, ${currentUser.name.split(' ')[0]}</a>`;
+                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Perfil`;
+            } else {
+                navLink.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
+                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Entrar`;
+            }
+        }
+
+        function handleAuthNavClick() {
+            if (currentUser) {
+                openAppointments();
+            } else {
+                openModal('authModal');
+            }
+        }
+
+        function openModal(modalId) {
+            closeAllModals();
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        function openAppointments() {
+            if (!currentUser) {
+                alert('Você precisa entrar na sua conta para ver os agendamentos!');
+                openModal('authModal');
+                return;
+            }
+            openModal('appointmentsModal');
+            const listContainer = document.getElementById('appointmentsList');
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            const userApps = appointments.filter(a => a.email === currentUser.email);
+
+            if (userApps.length === 0) {
+                listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Você ainda não possui agendamentos ativos.</p>';
+            } else {
+                listContainer.innerHTML = userApps.map(app => `
+                    <div style="background: #0c0c0c; border: 1px solid var(--card-border); padding: 15px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
+                        <p style="color: var(--gold); font-weight: bold; margin-bottom: 5px;">${app.service}</p>
+                        <p style="font-size: 0.9rem; color: #fff;">Profissional: ${app.pro}</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Data: ${app.date} às ${app.time}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function selectServiceAndSchedule(serviceName) {
+            openModal('scheduleModal');
+            document.getElementById('scheduleService').value = serviceName;
+        }
+
+        function selectProAndSchedule(proName) {
+            openModal('scheduleModal');
+            document.getElementById('schedulePro').value = proName;
+        }
+
+        function toggleAuthMode(e) {
+            e.preventDefault();
+            isRegistering = !isRegistering;
+            document.getElementById('authModalTitle').textContent = isRegistering ? 'Criar Conta' : 'Entrar na Conta';
+            document.getElementById('nameGroup').style.display = isRegistering ? 'block' : 'none';
+            document.getElementById('authSubmitBtn').textContent = isRegistering ? 'Cadastrar' : 'Entrar';
+            document.getElementById('authSwitchText').textContent = isRegistering ? 'Já tem uma conta?' : 'Não tem uma conta?';
+            document.getElementById('authSwitchLink').textContent = isRegistering ? 'Faça login' : 'Cadastre-se';
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const name = isRegistering ? document.getElementById('authName').value : (email.split('@')[0]);
+
+            currentUser = { name, email };
+            localStorage.setItem('brooklyn_user', JSON.stringify(currentUser));
+            updateAuthUI();
+            closeAllModals();
+            alert(isRegistering ? 'Cadastro realizado com sucesso!' : 'Login realizado com sucesso!');
+        }
+
+        function handleScheduleSubmit(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                alert('Por favor, faça login ou cadastre-se para concluir o agendamento.');
+                openModal('authModal');
+                return;
+            }
+
+            const service = document.getElementById('scheduleService').value;
+            const pro = document.getElementById('schedulePro').value;
+            const date = document.getElementById('scheduleDate').value;
+            const time = document.getElementById('scheduleTime').value;
+
+            const newAppointment = { service, pro, date, time, email: currentUser.email };
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            appointments.push(newAppointment);
+            localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+
+            closeAllModals();
+            alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
+        }
+
         function openImageModal(element) {
             const img = element.querySelector('img');
             const span = element.querySelector('span');
@@ -839,6 +1094,11 @@
         function closeImageModal() {
             document.getElementById('imageModal').style.display = 'none';
         }
+
+        // Inicializar estado do usuário ao carregar a página
+        window.onload = function() {
+            updateAuthUI();
+        };
     </script>
 </body>
 </html>
