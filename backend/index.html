@@ -472,6 +472,57 @@
             color: #0c0c0c;
         }
 
+        /* Galeria de Modelos de Cortes por Profissional */
+        .pro-cuts-gallery {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 25px;
+            margin-top: 20px;
+        }
+
+        .pro-cuts-gallery h4 {
+            color: #fff;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .cuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+        }
+
+        .cut-item {
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .cut-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold);
+        }
+
+        .cut-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .cut-title {
+            padding: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
         /* Seletor Visual de Profissionais com Foto */
         .pro-selector-grid {
             display: grid;
@@ -579,19 +630,6 @@
 
         .form-group input:focus, .form-group select:focus {
             border-color: var(--gold);
-        }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .auth-switch a {
-            color: var(--gold);
-            text-decoration: none;
-            font-weight: 600;
         }
 
         .close-btn {
@@ -813,6 +851,28 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
                     </div>
                 </div>
+                <!-- Galeria de Cortes do Karlos -->
+                <div class="pro-cuts-gallery">
+                    <h4>Modelos de Trabalhos - Karlos</h4>
+                    <div class="cuts-grid">
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/corte1.png" alt="Corte Karlos 1" class="cut-img">
+                            <div class="cut-title">Degradê Navalhado</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/corte2.png" alt="Corte Karlos 2" class="cut-img">
+                            <div class="cut-title">Social Moderno</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/corte3.png" alt="Corte Karlos 3" class="cut-img">
+                            <div class="cut-title">Barba Desenhada</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/corte4.png" alt="Corte Karlos 4" class="cut-img">
+                            <div class="cut-title">Fade com Pigmentação</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- DORGIVAN -->
@@ -832,6 +892,28 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
                     </div>
                 </div>
+                <!-- Galeria de Cortes do Dorgivan -->
+                <div class="pro-cuts-gallery">
+                    <h4>Modelos de Trabalhos - Dorgivan</h4>
+                    <div class="cuts-grid">
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte1.jpg" alt="Corte Dorgivan 1" class="cut-img">
+                            <div class="cut-title">Low Fade</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte2.jpg" alt="Corte Dorgivan 2" class="cut-img">
+                            <div class="cut-title">Mid Fade</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte3.jpg" alt="Corte Dorgivan 3" class="cut-img">
+                            <div class="cut-title">Platinado</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte4.jpg" alt="Corte Dorgivan 4" class="cut-img">
+                            <div class="cut-title">Barba Completa</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- DAVID -->
@@ -849,6 +931,28 @@
                         <h3>Sobre o Profissional</h3>
                         <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
+                    </div>
+                </div>
+                <!-- Galeria de Cortes do David -->
+                <div class="pro-cuts-gallery">
+                    <h4>Modelos de Trabalhos - David</h4>
+                    <div class="cuts-grid">
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte1.jpg" alt="Corte David 1" class="cut-img">
+                            <div class="cut-title">Pompadour</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte2.jpg" alt="Corte David 2" class="cut-img">
+                            <div class="cut-title">Buzz Cut</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte3.jpg" alt="Corte David 3" class="cut-img">
+                            <div class="cut-title">Social Texturizado</div>
+                        </div>
+                        <div class="cut-item">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte4.jpg" alt="Corte David 4" class="cut-img">
+                            <div class="cut-title">High Fade</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -922,7 +1026,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE LOGIN / CADASTRO (Apenas Nome e Telefone) -->
+    <!-- MODAL DE LOGIN / CADASTRO -->
     <div id="authModal" class="modal" onclick="closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
@@ -1106,7 +1210,6 @@
             currentUser = { name, phone };
             localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
 
-            // Salvar também no banco de usuários se não existir
             if (!usersDB.some(u => u.phone === phone)) {
                 usersDB.push(currentUser);
                 localStorage.setItem('brooklyn_users_db', JSON.stringify(usersDB));
