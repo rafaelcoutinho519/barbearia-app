@@ -1042,7 +1042,7 @@
 
                 <div class="form-group">
                     <label>Data</label>
-                    <input type="date" id="scheduleDate" required onchange="updateAvailableTimes()">
+                    <input type="date" id="scheduleDate" required onchange="validateDateAndTimes()">
                 </div>
                 <div class="form-group">
                     <label>Horário</label>
@@ -1234,6 +1234,26 @@
             if (targetCard) {
                 targetCard.classList.add('selected');
             }
+            updateAvailableTimes();
+        }
+
+        function validateDateAndTimes() {
+            const dateInput = document.getElementById('scheduleDate');
+            const selectedDateStr = dateInput.value;
+
+            if (selectedDateStr) {
+                const [year, month, day] = selectedDateStr.split('-');
+                const dateObj = new Date(year, month - 1, day);
+                
+                // 0 representa Domingo
+                if (dateObj.getDay() === 0) {
+                    alert('A barbearia não funciona aos domingos. Por favor, escolha outro dia.');
+                    dateInput.value = '';
+                    document.getElementById('scheduleTime').innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
+                    return;
+                }
+            }
+
             updateAvailableTimes();
         }
 
