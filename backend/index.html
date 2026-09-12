@@ -472,47 +472,49 @@
             color: #0c0c0c;
         }
 
-        .gallery-title {
-            color: #fff;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 18px;
-        }
-
-        .gallery-grid {
+        /* Seletor Visual de Profissionais com Foto */
+        .pro-selector-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 5px;
         }
 
-        .gallery-item {
-            background: #121212;
+        .pro-option-card {
+            background: #0c0c0c;
             border: 1px solid var(--card-border);
             border-radius: 8px;
-            overflow: hidden;
+            padding: 10px;
             text-align: center;
-            transition: transform 0.3s;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .gallery-item:hover {
-            transform: scale(1.03);
+        .pro-option-card:hover {
             border-color: rgba(212, 175, 55, 0.5);
         }
 
-        .gallery-item img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+        .pro-option-card.selected {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.08);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
 
-        .gallery-item span {
+        .pro-option-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+            margin: 0 auto 6px auto;
             display: block;
-            padding: 10px;
-            color: #ccc;
-            font-size: 0.85rem;
+        }
+
+        .pro-option-name {
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
         /* Modais */
@@ -597,30 +599,75 @@
         }
         .close-btn:hover { color: #fff; }
 
-        .appointment-card {
-            background: #0c0c0c;
+        /* Estilo Moderno para Agendamentos */
+        .appointment-card-modern {
+            background: linear-gradient(145deg, #121212, #181818);
             border: 1px solid var(--card-border);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            border-left: 4px solid var(--gold);
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
             text-align: left;
             position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        .btn-cancel {
-            background: transparent;
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            padding: 5px 10px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.2s;
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+
+        .appointment-service {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1rem;
             text-transform: uppercase;
         }
 
-        .btn-cancel:hover {
+        .appointment-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .appointment-pro-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            object-fit: cover;
+        }
+
+        .appointment-details p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .appointment-details strong {
+            color: #fff;
+        }
+
+        .btn-cancel-modern {
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .btn-cancel-modern:hover {
             background: var(--danger);
             color: #fff;
         }
@@ -820,20 +867,38 @@
                         <option value="">Selecione o serviço</option>
                         <option value="Barba">Barba - R$ 10,00</option>
                         <option value="Barba com Pigmentação">Barba com Pigmentação - R$ 20,00</option>
+                        <option value="Barba + Pezinho">Barba + Pezinho - R$ 15,00</option>
                         <option value="Cabelo">Cabelo - R$ 20,00</option>
                         <option value="Cabelo + Barba + Sobrancelha">Cabelo + Barba + Sobrancelha - R$ 33,00</option>
                         <option value="Corte com Pigmentação">Corte com Pigmentação - R$ 40,00</option>
+                        <option value="Luzes Normal">Luzes Normal - R$ 40,00</option>
+                        <option value="Luzes Platinada">Luzes Platinada - R$ 60,00</option>
+                        <option value="Pezinho">Pezinho - R$ 5,00</option>
+                        <option value="Platinado">Platinado - R$ 100,00</option>
+                        <option value="Progressiva">Progressiva - R$ 50,00</option>
+                        <option value="Sobrancelha">Sobrancelha - R$ 5,00</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label>Profissional</label>
-                    <select id="schedulePro" required>
-                        <option value="">Selecione o profissional</option>
-                        <option value="Karlos">Karlos</option>
-                        <option value="Dorgivan">Dorgivan</option>
-                        <option value="David">David</option>
-                    </select>
+                    <input type="hidden" id="schedulePro" required>
+                    <div class="pro-selector-grid">
+                        <div class="pro-option-card" id="card-Karlos" onclick="selectProOption('Karlos')">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/perfil.png" class="pro-option-img" alt="Karlos">
+                            <span class="pro-option-name">Karlos</span>
+                        </div>
+                        <div class="pro-option-card" id="card-Dorgivan" onclick="selectProOption('Dorgivan')">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/perfil.jpg" class="pro-option-img" alt="Dorgivan">
+                            <span class="pro-option-name">Dorgivan</span>
+                        </div>
+                        <div class="pro-option-card" id="card-David" onclick="selectProOption('David')">
+                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg" class="pro-option-img" alt="David">
+                            <span class="pro-option-name">David</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label>Data</label>
                     <input type="date" id="scheduleDate" required>
@@ -857,28 +922,22 @@
         </div>
     </div>
 
-    <!-- MODAL DE LOGIN / CADASTRO -->
+    <!-- MODAL DE LOGIN / CADASTRO (Apenas Nome e Telefone) -->
     <div id="authModal" class="modal" onclick="closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <h3 id="authModalTitle">Entrar na Conta</h3>
+            <h3 id="authModalTitle">Identificação</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">Insira seu nome e número de WhatsApp para acessar ou cadastrar.</p>
             <form id="authForm" onsubmit="handleAuthSubmit(event)">
-                <div class="form-group" id="nameGroup" style="display: none;">
+                <div class="form-group">
                     <label>Nome Completo</label>
-                    <input type="text" id="authName" placeholder="Seu nome">
+                    <input type="text" id="authName" placeholder="Ex: João Silva" required>
                 </div>
                 <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="authEmail" placeholder="seu@email.com" required>
+                    <label>Telefone / WhatsApp</label>
+                    <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" required>
                 </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="authPassword" placeholder="******" required>
-                </div>
-                <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Entrar</button>
-                <div class="auth-switch">
-                    <span id="authSwitchText">Não tem uma conta?</span> <a href="#" onclick="toggleAuthMode(event)" id="authSwitchLink">Cadastre-se</a>
-                </div>
+                <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Continuar</button>
             </form>
         </div>
     </div>
@@ -888,7 +947,7 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3>Meus Agendamentos</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 15px;">* Em caso de cancelamento, avise com pelo menos 1h de antecedência.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">* Em caso de cancelamento, avise com pelo menos 1h de antecedência.</p>
             <div id="appointmentsList" style="color: var(--text-muted); text-align: center; padding: 10px 0;">
                 Você ainda não possui agendamentos ativos.
             </div>
@@ -896,17 +955,20 @@
     </div>
 
     <script>
-        // Mapeamento de contatos dos barbeiros (Números para WhatsApp)
         const barberPhones = {
             "Karlos": "5587996289373",
-            "Dorgivan": "5581999999999", // Atualizar depois se necessário
-            "David": "5581999999999"      // Atualizar depois se necessário
+            "Dorgivan": "5581999999999",
+            "David": "5581999999999"
         };
 
-        // Banco de Contas Salvas no Navegador (Simulando Banco de Dados Local)
+        const barberImages = {
+            "Karlos": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/perfil.png",
+            "Dorgivan": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/perfil.jpg",
+            "David": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg"
+        };
+
         let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
-        let isRegistering = false;
 
         function updateAuthUI() {
             const navLink = document.getElementById('userAuthNav');
@@ -956,7 +1018,7 @@
 
         function openAppointments() {
             if (!currentUser) {
-                alert('Você precisa entrar na sua conta para ver os agendamentos!');
+                alert('Você precisa se identificar com nome e telefone para ver os agendamentos!');
                 openModal('authModal');
                 return;
             }
@@ -967,17 +1029,25 @@
         function renderAppointmentsList() {
             const listContainer = document.getElementById('appointmentsList');
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const userApps = appointments.filter(a => a.email === currentUser.email);
+            const userApps = appointments.filter(a => a.phone === currentUser.phone);
 
             if (userApps.length === 0) {
                 listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Você ainda não possui agendamentos ativos.</p>';
             } else {
-                listContainer.innerHTML = userApps.map((app, index) => `
-                    <div class="appointment-card">
-                        <p style="color: var(--gold); font-weight: bold; margin-bottom: 4px;">${app.service}</p>
-                        <p style="font-size: 0.9rem; color: #fff;">Profissional: ${app.pro}</p>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Data: ${app.date} às ${app.time}</p>
-                        <button class="btn-cancel" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
+                listContainer.innerHTML = userApps.map((app) => `
+                    <div class="appointment-card-modern">
+                        <div class="appointment-header">
+                            <span class="appointment-service">${app.service}</span>
+                            <span style="font-size: 0.8rem; color: var(--gold);">Ativo</span>
+                        </div>
+                        <div class="appointment-info">
+                            <img src="${barberImages[app.pro]}" alt="${app.pro}" class="appointment-pro-img">
+                            <div class="appointment-details">
+                                <p>Profissional: <strong>${app.pro}</strong></p>
+                                <p>Data e Hora: <strong>${app.date} às ${app.time}</strong></p>
+                            </div>
+                        </div>
+                        <button class="btn-cancel-modern" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
                     </div>
                 `).join('');
             }
@@ -994,7 +1064,6 @@
                 renderAppointmentsList();
                 alert('Agendamento cancelado com sucesso.');
 
-                // Notificar barbeiro via WhatsApp sobre o cancelamento
                 if (appToCancel && barberPhones[appToCancel.pro]) {
                     const phone = barberPhones[appToCancel.pro];
                     const msg = `*CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}.`;
@@ -1010,57 +1079,48 @@
 
         function selectProAndSchedule(proName) {
             openModal('scheduleModal');
-            document.getElementById('schedulePro').value = proName;
+            selectProOption(proName);
         }
 
-        function toggleAuthMode(e) {
-            e.preventDefault();
-            isRegistering = !isRegistering;
-            document.getElementById('authModalTitle').textContent = isRegistering ? 'Criar Conta' : 'Entrar na Conta';
-            document.getElementById('nameGroup').style.display = isRegistering ? 'block' : 'none';
-            document.getElementById('authSubmitBtn').textContent = isRegistering ? 'Cadastrar' : 'Entrar';
-            document.getElementById('authSwitchText').textContent = isRegistering ? 'Já tem uma conta?' : 'Não tem uma conta?';
-            document.getElementById('authSwitchLink').textContent = isRegistering ? 'Faça login' : 'Cadastre-se';
+        function selectProOption(proName) {
+            document.getElementById('schedulePro').value = proName;
+            document.querySelectorAll('.pro-option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            const targetCard = document.getElementById(`card-${proName}`);
+            if (targetCard) {
+                targetCard.classList.add('selected');
+            }
         }
 
         function handleAuthSubmit(e) {
             e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
+            const name = document.getElementById('authName').value.trim();
+            const phone = document.getElementById('authPhone').value.trim();
 
-            if (isRegistering) {
-                const name = document.getElementById('authName').value;
-                const existingUser = usersDB.find(u => u.email === email);
-                if (existingUser) {
-                    alert('Este e-mail já está cadastrado. Faça login.');
-                    return;
-                }
-                const newUser = { name, email, password };
-                usersDB.push(newUser);
+            if (!name || !phone) {
+                alert('Preencha o nome e o telefone.');
+                return;
+            }
+
+            currentUser = { name, phone };
+            localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
+
+            // Salvar também no banco de usuários se não existir
+            if (!usersDB.some(u => u.phone === phone)) {
+                usersDB.push(currentUser);
                 localStorage.setItem('brooklyn_users_db', JSON.stringify(usersDB));
-                
-                currentUser = { name, email };
-                localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
-                alert('Cadastro realizado com sucesso!');
-            } else {
-                const foundUser = usersDB.find(u => u.email === email && u.password === password);
-                if (!foundUser) {
-                    alert('E-mail ou senha incorretos, ou conta não cadastrada.');
-                    return;
-                }
-                currentUser = { name: foundUser.name, email: foundUser.email };
-                localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
-                alert('Login realizado com sucesso!');
             }
 
             updateAuthUI();
             closeAllModals();
+            alert(`Bem-vindo, ${name}! Identificação realizada com sucesso.`);
         }
 
         function handleScheduleSubmit(e) {
             e.preventDefault();
             if (!currentUser) {
-                alert('Por favor, faça login ou cadastre-se para concluir o agendamento.');
+                alert('Por favor, informe seu nome e telefone antes de concluir o agendamento.');
                 openModal('authModal');
                 return;
             }
@@ -1070,13 +1130,18 @@
             const date = document.getElementById('scheduleDate').value;
             const time = document.getElementById('scheduleTime').value;
 
+            if (!pro) {
+                alert('Por favor, selecione um profissional clicando em uma das fotos.');
+                return;
+            }
+
             const newAppointment = {
                 id: Date.now(),
                 service,
                 pro,
                 date,
                 time,
-                email: currentUser.email,
+                phone: currentUser.phone,
                 clientName: currentUser.name
             };
 
@@ -1087,11 +1152,10 @@
             closeAllModals();
             alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
 
-            // Enviar notificação automática via WhatsApp para o barbeiro selecionado
             if (barberPhones[pro]) {
-                const phone = barberPhones[pro];
-                const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
-                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(textMessage)}`, '_blank');
+                const phoneNum = barberPhones[pro];
+                const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
+                window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
             }
         }
 
