@@ -499,6 +499,7 @@
             border-radius: 8px;
             overflow: hidden;
             transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
         }
 
         .cut-item:hover {
@@ -511,15 +512,25 @@
             height: 120px;
             object-fit: cover;
             display: block;
+            transition: transform 0.3s ease;
         }
 
+        .cut-item:hover .cut-img {
+            transform: scale(1.05);
+        }
+
+        /* Nome do corte destacado e elegante */
         .cut-title {
-            padding: 8px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            padding: 10px 8px;
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            background: linear-gradient(180deg, #111 0%, #181818 100%);
             text-align: center;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
         .pro-selector-grid {
@@ -597,6 +608,40 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             font-size: 1.3rem;
+            text-align: center;
+        }
+
+        /* Modal específico de Zoom da Foto */
+        #imageZoomModal {
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 6000;
+        }
+
+        .zoom-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .zoomed-image {
+            max-width: 85vw;
+            max-height: 75vh;
+            border-radius: 8px;
+            border: 2px solid var(--gold);
+            object-fit: contain;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .zoom-caption {
+            color: var(--gold-light);
+            margin-top: 15px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
             text-align: center;
         }
 
@@ -847,19 +892,19 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
                     </div>
                 </div>
-                <!-- Galeria Karlos (Nomes exatos do GitHub) -->
+                <!-- Galeria Karlos -->
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - Karlos</h4>
                     <div class="cuts-grid">
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg', 'Só na Tesoura')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg" alt="Tesoura" class="cut-img">
                             <div class="cut-title">Só na Tesoura</div>
                         </div>
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/low-fade.jpeg', 'Low Fade')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/low-fade.jpeg" alt="Low Fade" class="cut-img">
                             <div class="cut-title">Low Fade</div>
                         </div>
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/mid-fade.jpeg', 'Mid Fade')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/mid-fade.jpeg" alt="Mid Fade" class="cut-img">
                             <div class="cut-title">Mid Fade</div>
                         </div>
@@ -884,19 +929,19 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
                     </div>
                 </div>
-                <!-- Galeria Dorgivan (Nomes exatos do GitHub) -->
+                <!-- Galeria Dorgivan -->
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - Dorgivan</h4>
                     <div class="cuts-grid">
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte-americano.jpg', 'Corte Americano')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte-americano.jpg" alt="Corte Americano" class="cut-img">
                             <div class="cut-title">Corte Americano</div>
                         </div>
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/moicano.jpg', 'Moicano')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/moicano.jpg" alt="Moicano" class="cut-img">
                             <div class="cut-title">Moicano</div>
                         </div>
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/barba-pigmentada.jpg', 'Barba Pigmentada')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/barba-pigmentada.jpg" alt="Barba Pigmentada" class="cut-img">
                             <div class="cut-title">Barba Pigmentada</div>
                         </div>
@@ -924,25 +969,34 @@
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - David</h4>
                     <div class="cuts-grid">
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte1.jpg', 'Pompadour')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte1.jpg" alt="Corte David 1" class="cut-img">
                             <div class="cut-title">Pompadour</div>
                         </div>
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte2.jpg', 'Buzz Cut')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte2.jpg" alt="Corte David 2" class="cut-img">
                             <div class="cut-title">Buzz Cut</div>
                         </div>
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte3.jpg', 'Social Texturizado')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte3.jpg" alt="Corte David 3" class="cut-img">
                             <div class="cut-title">Social Texturizado</div>
                         </div>
-                        <div class="cut-item">
+                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte4.jpg', 'High Fade')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte4.jpg" alt="Corte David 4" class="cut-img">
                             <div class="cut-title">High Fade</div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ZOOM DA FOTO -->
+    <div id="imageZoomModal" class="modal" onclick="closeAllModals()">
+        <div class="zoom-container" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <img id="zoomedImg" src="" alt="Zoom" class="zoomed-image">
+            <div id="zoomedCaption" class="zoom-caption"></div>
         </div>
     </div>
 
@@ -1099,6 +1153,13 @@
         function openModal(modalId) {
             closeAllModals();
             document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function openZoom(imgSrc, captionText) {
+            closeAllModals();
+            document.getElementById('zoomedImg').src = imgSrc;
+            document.getElementById('zoomedCaption').innerText = captionText;
+            document.getElementById('imageZoomModal').style.display = 'flex';
         }
 
         function closeAllModals() {
