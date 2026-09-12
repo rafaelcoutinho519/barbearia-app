@@ -784,7 +784,7 @@
             <form onsubmit="handleAuth(event)">
                 <div class="form-group">
                     <label>Seu Nome Completo</label>
-                    <input type="text" id="authName" required placeholder="Ex: Rafael Coutinho">
+                    <input type="text" id="authName" required placeholder="Digite seu nome">
                 </div>
                 <div class="form-group">
                     <label>Número de Telefone (WhatsApp)</label>
@@ -849,6 +849,11 @@
     </div>
 
     <script>
+        // Executa ao carregar a página para verificar se já existe usuário logado
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+        });
+
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
         }
@@ -880,22 +885,58 @@
         }
 
         function openAppointments() {
+            const user = localStorage.getItem('barbearia_user');
+            if(!user) {
+                alert('Por favor, faça sua identificação primeiro!');
+                openModal('authModal');
+                return;
+            }
             openModal('appointmentsModal');
-            // Lógica para carregar agendamentos salvos localmente ou exibir mensagem
+            loadAppointments();
         }
 
         function handleAuth(event) {
             event.preventDefault();
             const name = document.getElementById('authName').value;
+            const phone = document.getElementById('authPhone').value;
+            
+            // Salvando dados no localStorage
             localStorage.setItem('barbearia_user', name);
+            localStorage.setItem('barbearia_phone', phone);
+            
+            updateAuthUI();
             closeModal('authModal');
-            alert('Identificação salva com sucesso!');
+            alert(`Bem-vindo, ${name}! Identificação salva com sucesso.`);
+        }
+
+        function updateAuthUI() {
+            const user = localStorage.getItem('barbearia_user');
+            const desktopNav = document.getElementById('userAuthNav');
+            const mobileBtn = document.getElementById('mobileAuthBtn');
+
+            if(user) {
+                // Atualiza o menu desktop para mostrar o nome e opção de trocar
+                if(desktopNav) {
+                    desktopNav.innerHTML = `<a href="#" onclick="handleAuthNavClick()" style="color: var(--gold);">Olá, ${user.split(' ')[0]}</a>`;
+                }
+                // Atualiza o botão mobile
+                if(mobileBtn) {
+                    mobileBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        ${user.split(' ')[0]}
+                    `;
+                }
+            }
         }
 
         function handleAuthNavClick() {
             const user = localStorage.getItem('barbearia_user');
             if(user) {
-                alert(`Logado como: ${user}`);
+                if(confirm(`Logado como: ${user}. Deseja alterar a identificação?`)) {
+                    localStorage.removeItem('barbearia_user');
+                    localStorage.removeItem('barbearia_phone');
+                    location.reload();
+                }
             } else {
                 openModal('authModal');
             }
@@ -903,8 +944,54 @@
 
         function handleSchedule(event) {
             event.preventDefault();
+            const user = localStorage.getItem('barbearia_user');
+            if(!user) {
+                alert('Você precisa se identificar antes de agendar!');
+                closeModal('scheduleModal');
+                openModal('authModal');
+                return;
+            }
+
+            const pro = document.getElementById('schedPro').value;
+            const service = document.getElementById('schedService').value;
+            const date = document.getElementById('schedDate').value;
+            const time = document.getElementById('schedTime').value;
+
+            const newAppointment = { user, pro, service, date, time };
+
+            // Pega agendamentos existentes ou cria array vazio
+            let appointments = JSON.parse(localStorage.getItem('barbearia_appointments')) || [];
+            appointments.push(newAppointment);
+            localStorage.setItem('barbearia_appointments', JSON.stringify(appointments));
+
             alert('Agendamento realizado com sucesso!');
             closeModal('scheduleModal');
+        }
+
+        function loadAppointments() {
+            const container = document.getElementById('appointmentsList');
+            let appointments = JSON.parse(localStorage.getItem('barbearia_appointments')) || [];
+            const currentUser = localStorage.getItem('barbearia_user');
+
+            // Filtra apenas os agendamentos do usuário atual
+            const userAppointments = appointments.filter(a => a.user === currentUser);
+
+            if(userAppointments.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum agendamento encontrado.</p>';
+                return;
+            }
+
+            let html = '';
+            userAppointments.forEach(app => {
+                html += `
+                    <div class="appointment-item">
+                        <p>Serviço: <span>${app.service}</span></p>
+                        <p>Profissional: <span>${app.pro}</span></p>
+                        <p>Data: <span>${app.date} às ${app.time}</span></p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
         }
     </script>
 </body>
