@@ -519,7 +519,6 @@
             transform: scale(1.05);
         }
 
-        /* Nome do corte destacado e elegante */
         .cut-title {
             padding: 10px 8px;
             font-size: 0.8rem;
@@ -611,7 +610,6 @@
             text-align: center;
         }
 
-        /* Modal específico de Zoom da Foto */
         #imageZoomModal {
             background: rgba(0, 0, 0, 0.95);
             z-index: 6000;
@@ -892,7 +890,6 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
                     </div>
                 </div>
-                <!-- Galeria Karlos -->
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - Karlos</h4>
                     <div class="cuts-grid">
@@ -929,7 +926,6 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
                     </div>
                 </div>
-                <!-- Galeria Dorgivan -->
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - Dorgivan</h4>
                     <div class="cuts-grid">
@@ -1027,7 +1023,7 @@
 
                 <div class="form-group">
                     <label>Profissional</label>
-                    <input type="hidden" id="schedulePro" required>
+                    <input type="hidden" id="schedulePro" required onchange="updateAvailableTimes()">
                     <div class="pro-selector-grid">
                         <div class="pro-option-card" id="card-Karlos" onclick="selectProOption('Karlos')">
                             <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/perfil.png" class="pro-option-img" alt="Karlos">
@@ -1046,20 +1042,12 @@
 
                 <div class="form-group">
                     <label>Data</label>
-                    <input type="date" id="scheduleDate" required>
+                    <input type="date" id="scheduleDate" required onchange="updateAvailableTimes()">
                 </div>
                 <div class="form-group">
                     <label>Horário</label>
                     <select id="scheduleTime" required>
-                        <option value="">Selecione o horário</option>
-                        <option value="09:00">09:00</option>
-                        <option value="10:00">10:00</option>
-                        <option value="11:00">11:00</option>
-                        <option value="14:00">14:00</option>
-                        <option value="15:00">15:00</option>
-                        <option value="16:00">16:00</option>
-                        <option value="17:00">17:00</option>
-                        <option value="18:00">18:00</option>
+                        <option value="">Selecione o profissional e a data primeiro</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Confirmar Agendamento</button>
@@ -1111,6 +1099,8 @@
             "Dorgivan": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/perfil.jpg",
             "David": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg"
         };
+
+        const allPossibleTimes = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
         let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
@@ -1214,6 +1204,7 @@
                 localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
                 
                 renderAppointmentsList();
+                updateAvailableTimes(); // Atualiza horários caso o modal esteja aberto
                 alert('Agendamento cancelado com sucesso.');
 
                 if (appToCancel && barberPhones[appToCancel.pro]) {
@@ -1243,6 +1234,43 @@
             if (targetCard) {
                 targetCard.classList.add('selected');
             }
+            updateAvailableTimes();
+        }
+
+        function updateAvailableTimes() {
+            const pro = document.getElementById('schedulePro').value;
+            const date = document.getElementById('scheduleDate').value;
+            const timeSelect = document.getElementById('scheduleTime');
+
+            if (!pro || !date) {
+                timeSelect.innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
+                return;
+            }
+
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            
+            // Pega todos os horários já ocupados para esse profissional nesta data específica
+            const bookedTimes = appointments
+                .filter(a => a.pro === pro && a.date === date)
+                .map(a => a.time);
+
+            let optionsHtml = '<option value="">Selecione o horário</option>';
+            let availableCount = 0;
+
+            allPossibleTimes.forEach(time => {
+                if (bookedTimes.includes(time)) {
+                    optionsHtml += `<option value="${time}" disabled style="color: #555; background: #111;">${time} (Indisponível)</option>`;
+                } else {
+                    optionsHtml += `<option value="${time}">${time}</option>`;
+                    availableCount++;
+                }
+            });
+
+            if (availableCount === 0) {
+                optionsHtml = '<option value="">Nenhum horário disponível para esta data</option>';
+            }
+
+            timeSelect.innerHTML = optionsHtml;
         }
 
         function handleAuthSubmit(e) {
@@ -1286,6 +1314,16 @@
                 return;
             }
 
+            // Dupla checagem de segurança contra agendamento duplicado
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            const isAlreadyBooked = appointments.some(a => a.pro === pro && a.date === date && a.time === time);
+            
+            if (isAlreadyBooked) {
+                alert('Este horário já acabou de ser reservado para este profissional. Por favor, escolha outro.');
+                updateAvailableTimes();
+                return;
+            }
+
             const newAppointment = {
                 id: Date.now(),
                 service,
@@ -1296,7 +1334,6 @@
                 clientName: currentUser.name
             };
 
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             appointments.push(newAppointment);
             localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
 
