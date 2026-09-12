@@ -3,83 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nossos Profissionais - Karlos</title>
+    <title>Brooklyn Barbearia</title>
     <style>
+        :root {
+            --bg-color: #0c0c0c;
+            --card-bg: #161616;
+            --card-border: #262626;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-hover: #e6c547;
+            --text-main: #f0f0f0;
+            --text-muted: #999;
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: #0b0b0c;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        @media(min-width: 769px) {
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 8%;
+            background-color: rgba(12, 12, 12, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        @media(max-width: 768px) {
+            header {
+                display: none;
+            }
+        }
+
+        .logo-link {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-img {
+            height: 45px;
+            object-fit: contain;
+            mix-blend-mode: screen;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+
+        nav ul li a:hover {
+            color: var(--gold);
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(18, 18, 18, 0.98);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(212, 175, 55, 0.25);
+            z-index: 4000;
+            justify-content: space-around;
+            padding: 10px 5px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
+        }
+
+        @media(max-width: 768px) {
+            .mobile-bottom-nav {
+                display: flex;
+            }
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .mobile-nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .mobile-nav-item:hover, .mobile-nav-item.active {
+            color: var(--gold);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 90px 20px;
+            background: linear-gradient(rgba(12,12,12,0.85), rgba(12,12,12,0.92)), url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+        }
+
+        .hero-logo-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px auto;
+            border-radius: 50%;
+            background: #000;
+            border: 2px solid var(--gold);
+            display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
 
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: #f3ba2f;
-            margin-bottom: 30px;
-            text-align: center;
+        .hero-logo-container:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
         }
 
-        .card-container {
-            background-color: #121316;
-            border: 1px solid #222328;
+        .hero-logo {
+            width: 120%;
+            height: 120%;
+            object-fit: contain;
+            mix-blend-mode: normal;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 35px auto;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #aa8c2c);
+            color: #0c0c0c;
+            padding: 14px 35px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #e6c547, #d4af37);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .info-section {
+            max-width: 1100px;
+            margin: -40px auto 60px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 35px 25px;
             border-radius: 12px;
-            width: 100%;
-            max-width: 900px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s, border-color 0.3s;
         }
 
-        .profile-section {
-            display: flex;
-            align-items: flex-start;
-            gap: 40px;
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        .info-card h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            letter-spacing: 1.5px;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .info-card a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .info-card a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #fff;
+            font-size: 2.2rem;
             margin-bottom: 50px;
-            flex-wrap: wrap;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
         }
 
-        .profile-pic-container {
+        .section-title span {
+            color: var(--gold);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .service-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+            background-color: #1a1a1a;
+        }
+
+        .service-card h4 {
+            color: #fff;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 15px;
+        }
+
+        .price {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.15rem;
+        }
+
+        .duration {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .profissionais-section {
+            position: relative;
+            background: linear-gradient(rgba(12, 12, 12, 0.85), rgba(12, 12, 12, 0.92)), url('Fundoprofissional.png') no-repeat center center;
+            background-size: cover;
+            padding: 80px 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .profissionais-section .container {
+            margin: 0 auto;
+        }
+
+        .pro-showcase-card {
+            background: #161616;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 35px 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            transition: border-color 0.3s;
+            position: relative;
+            z-index: 2;
+        }
+
+        @media(min-width: 769px) {
+            .pro-showcase-card {
+                background: linear-gradient(145deg, rgba(22, 22, 22, 0.95), rgba(16, 16, 16, 0.95));
+                backdrop-filter: blur(8px);
+                padding: 45px;
+            }
+        }
+
+        .pro-showcase-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .pro-top-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 35px;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        @media(max-width: 768px) {
+            .pro-top-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        .pro-profile-box {
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
         }
 
-        .profile-pic {
-            width: 140px;
-            height: 140px;
+        .pro-avatar {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            border: 3px solid #f3ba2f;
+            border: 3px solid var(--gold);
             object-fit: cover;
-            box-shadow: 0 0 20px rgba(243, 186, 47, 0.3);
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
         }
 
-        .profile-name {
-            font-size: 1.25rem;
+        .pro-name {
+            color: #fff;
+            font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: 1px;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
         }
 
-        .profile-role {
+        .pro-subtitle {
+            color: var(--gold);
             font-size: 0.85rem;
-            color: #f3ba2f;
             font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 18px;
             letter-spacing: 1px;
-            margin-bottom: 15px;
         }
 
         .social-buttons {
@@ -88,166 +425,574 @@
         }
 
         .btn-social {
-            padding: 6px 14px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
             text-decoration: none;
-            color: #ffffff;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-instagram {
-            background-color: #e1306c;
-        }
-
-        .btn-whatsapp {
+            color: #fff;
             background-color: #25d366;
+            transition: opacity 0.3s, transform 0.2s;
         }
 
-        .profile-info {
-            flex: 1;
-            min-width: 280px;
-        }
+        .btn-social.insta { background-color: #e1306c; }
+        .btn-social:hover { opacity: 0.85; transform: scale(1.05); }
 
-        .info-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+        .pro-details h3 {
+            color: #fff;
+            font-size: 1.15rem;
+            text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
-            color: #ffffff;
+            border-left: 3px solid var(--gold);
+            padding-left: 12px;
         }
 
-        .info-title::before {
-            content: '';
-            display: block;
-            width: 3px;
-            height: 16px;
-            background-color: #f3ba2f;
+        @media(max-width: 768px) {
+            .pro-details h3 {
+                border-left: none;
+                padding-left: 0;
+            }
         }
 
-        .info-desc {
+        .pro-details p {
+            color: var(--text-muted);
             font-size: 0.95rem;
-            color: #a0a0a5;
-            line-height: 1.6;
-            margin-bottom: 30px;
+            line-height: 1.7;
+            margin-bottom: 25px;
         }
 
-        .btn-schedule {
-            display: inline-block;
+        .btn-agendar-pro {
             background-color: transparent;
-            color: #f3ba2f;
-            border: 1px solid #f3ba2f;
+            color: var(--gold);
+            border: 2px solid var(--gold);
             padding: 12px 30px;
+            font-weight: bold;
             border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 260px;
         }
 
-        .btn-schedule:hover {
-            background-color: #f3ba2f;
-            color: #0b0b0c;
+        .btn-agendar-pro:hover {
+            background-color: var(--gold);
+            color: #0c0c0c;
         }
 
         .gallery-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            color: #cccccc;
+            color: #fff;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 18px;
         }
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 15px;
         }
 
         .gallery-item {
-            background-color: #18191c;
+            background: #121212;
+            border: 1px solid var(--card-border);
             border-radius: 8px;
             overflow: hidden;
-            border: 1px solid #222328;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .gallery-img-placeholder {
-            height: 100px;
-            background-color: #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-size: 0.75rem;
-        }
-
-        .gallery-label {
-            padding: 10px;
-            font-size: 0.75rem;
             text-align: center;
-            color: #a0a0a5;
+            transition: transform 0.3s;
         }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .gallery-item span {
+            display: block;
+            padding: 10px;
+            color: #ccc;
+            font-size: 0.85rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #161616;
+            border: 1px solid var(--gold);
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-content h2 {
+            color: var(--gold);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; color: var(--text-muted); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 15px; background: #0c0c0c; border: 1px solid var(--card-border); border-radius: 6px; color: #fff; font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; background: none; border: none; transition: color 0.2s;
+        }
+        .close-btn:hover { color: #fff; }
+
+        .appointment-item {
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .appointment-item p { color: #ccc; font-size: 0.95rem; margin-bottom: 6px; }
+        .appointment-item span { color: var(--gold); font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="header-title">NOSSOS PROFISSIONAIS</div>
+    <header>
+        <a href="#inicio" class="logo-link">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="logo-img">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#profissionais">Profissionais</a></li>
+                <li><a href="#" onclick="openAppointments()">Meus Agendamentos</a></li>
+                <li id="userAuthNav"><a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div class="card-container">
-        <div class="profile-section">
-            <div class="profile-pic-container">
-                <!-- Usando a nova foto enviada -->
-                <img src="image_064b88.jpg" alt="Karlos Master Barber" class="profile-pic">
-                <div class="profile-name">KARLOS</div>
-                <div class="profile-role">MASTER BARBER</div>
-                <div class="social-buttons">
-                    <a href="#" class="btn-social btn-instagram">Instagram</a>
-                    <a href="#" class="btn-social btn-whatsapp">WhatsApp</a>
-                </div>
-            </div>
+    <div class="mobile-bottom-nav">
+        <a href="#inicio" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Início
+        </a>
+        <a href="#servicos" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Serviços
+        </a>
+        <a href="#profissionais" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            Profissionais
+        </a>
+        <button onclick="openAppointments()" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+            Agenda
+        </button>
+        <button onclick="handleAuthNavClick()" class="mobile-nav-item" id="mobileAuthBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            Entrar
+        </button>
+    </div>
 
-            <div class="profile-info">
-                <div class="info-title">SOBRE O PROFISSIONAL</div>
-                <div class="info-desc">
-                    Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.
-                </div>
-                <a href="#" class="btn-schedule">AGENDAR COM KARLOS</a>
-            </div>
+    <section class="hero" id="inicio">
+        <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
         </div>
+        <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
+        <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
+    </section>
 
-        <div class="gallery-title">GALERIA DE TRABALHOS</div>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <div class="gallery-img-placeholder">Foto</div>
-                <div class="gallery-label">Corte só na tesoura</div>
+    <div class="info-section">
+        <div class="info-card">
+            <h3>Horário de Atendimento</h3>
+            <p><strong>Segunda a Quinta:</strong> 09h às 19:30<br><strong>Sexta e Sábado:</strong> 09h às 20:00</p>
+        </div>
+        <div class="info-card">
+            <h3>Localização</h3>
+            <p>Praça João Borrego<br>Capoeiras - PE, 55365-000</p>
+        </div>
+        <div class="info-card">
+            <h3>Redes Sociais</h3>
+            <p>Acompanhe nosso Instagram oficial:<br><a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank">@brooklynbarbearia_87</a></p>
+        </div>
+    </div>
+
+    <div class="container" id="servicos">
+        <h2 class="section-title">Nossos <span>Serviços</span></h2>
+        <div class="services-grid">
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba')">
+                <h4>Barba</h4>
+                <div class="service-footer"><span class="price">R$ 10,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="gallery-item">
-                <div class="gallery-img-placeholder">Foto</div>
-                <div class="gallery-label">Low Fade</div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação')">
+                <h4>Barba com Pigmentação</h4>
+                <div class="service-footer"><span class="price">R$ 20,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="gallery-item">
-                <div class="gallery-img-placeholder">Foto</div>
-                <div class="gallery-label">Mid Fade</div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho')">
+                <h4>Barba + Pezinho</h4>
+                <div class="service-footer"><span class="price">R$ 15,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="gallery-item">
-                <div class="gallery-img-placeholder">Foto</div>
-                <div class="gallery-label">Barba Italiana</div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo')">
+                <h4>Cabelo</h4>
+                <div class="service-footer"><span class="price">R$ 20,00</span><span class="duration">⏱ 40 min</span></div>
             </div>
-            <div class="gallery-item">
-                <div class="gallery-img-placeholder">Foto</div>
-                <div class="gallery-label">Americano</div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha')">
+                <h4>Cabelo + Barba + Sobrancelha</h4>
+                <div class="service-footer"><span class="price">R$ 33,00</span><span class="duration">⏱ 40 min</span></div>
+            </div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação')">
+                <h4>Corte com Pigmentação</h4>
+                <div class="service-footer"><span class="price">R$ 40,00</span><span class="duration">⏱ 80 min</span></div>
+            </div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal')">
+                <h4>Luzes Normal</h4>
+                <div class="service-footer"><span class="price">R$ 40,00</span><span class="duration">⏱ 40 min</span></div>
+            </div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada')">
+                <h4>Luzes Platinada</h4>
+                <div class="service-footer"><span class="price">R$ 60,00</span><span class="duration">⏱ 40 min</span></div>
+            </div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Pezinho')">
+                <h4>Pezinho</h4>
+                <div class="service-footer"><span class="price">R$ 5,00</span><span class="duration">⏱ 20 min</span></div>
+            </div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Platinado')">
+                <h4>Platinado</h4>
+                <div class="service-footer"><span class="price">R$ 100,00</span><span class="duration">⏱ 40 min</span></div>
+            </div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Progressiva')">
+                <h4>Progressiva</h4>
+                <div class="service-footer"><span class="price">R$ 50,00</span><span class="duration">⏱ 40 min</span></div>
+            </div>
+            <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha')">
+                <h4>Sobrancelha</h4>
+                <div class="service-footer"><span class="price">R$ 5,00</span><span class="duration">⏱ 20 min</span></div>
             </div>
         </div>
     </div>
 
+    <div class="profissionais-section" id="profissionais">
+        <div class="container" style="margin: 0 auto; max-width: 1100px;">
+            <h2 class="section-title">Nossos <span>Profissionais</span></h2>
+
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="Karlos/foto.jpg" alt="Karlos" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'">
+                        <div class="pro-name">Karlos</div>
+                        <div class="pro-subtitle">Master Barber</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
+                    </div>
+                </div>
+                <div class="gallery-title">Galeria de Trabalhos</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=400&q=80"><span>Degradê</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80"><span>Americano</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=400&q=80"><span>Social</span></div>
+                </div>
+            </div>
+
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="David/foto.jpg" alt="David" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80'">
+                        <div class="pro-name">David</div>
+                        <div class="pro-subtitle">Barbeiro Sênior</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
+                    </div>
+                </div>
+                <div class="gallery-title">Galeria de Trabalhos</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1517832606293-7ae2fcff00aa?auto=format&fit=crop&w=400&q=80"><span>Navalhado</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80"><span>Fade</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80"><span>Estilo VIP</span></div>
+                </div>
+            </div>
+
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="Dorgivan/foto.jpg" alt="Dorgivan" class="pro-avatar" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80'">
+                        <div class="pro-name">Dorgivan</div>
+                        <div class="pro-subtitle">Stylist & Barber</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
+                    </div>
+                </div>
+                <div class="gallery-title">Galeria de Trabalhos</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80"><span>Platinado</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80"><span>Urban Cut</span></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80"><span>Luzes</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('authModal')">&times;</button>
+            <h2>Identificação</h2>
+            <form onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>Seu Nome Completo</label>
+                    <input type="text" id="authName" required placeholder="Digite seu nome">
+                </div>
+                <div class="form-group">
+                    <label>Número de Telefone (WhatsApp)</label>
+                    <input type="tel" id="authPhone" required placeholder="(00) 00000-0000">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Acessar / Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('scheduleModal')">&times;</button>
+            <h2>Agendar Horário</h2>
+            <form onsubmit="handleSchedule(event)">
+                <div class="form-group">
+                    <label>Profissional</label>
+                    <select id="schedPro" required>
+                        <option value="Karlos">Karlos</option>
+                        <option value="David">David</option>
+                        <option value="Dorgivan">Dorgivan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Serviço</label>
+                    <select id="schedService" required>
+                        <option value="Barba (R$ 10,00 - 40min)">Barba - R$ 10,00 (40 min)</option>
+                        <option value="Barba com Pigmentação (R$ 20,00 - 40min)">Barba com Pigmentação - R$ 20,00 (40 min)</option>
+                        <option value="Barba + Pezinho (R$ 15,00 - 40min)">Barba + Pezinho - R$ 15,00 (40 min)</option>
+                        <option value="Cabelo (R$ 20,00 - 40min)">Cabelo - R$ 20,00 (40 min)</option>
+                        <option value="Cabelo + Barba + Sobrancelha (R$ 33,00 - 40min)">Cabelo + Barba + Sobrancelha - R$ 33,00 (40 min)</option>
+                        <option value="Corte com Pigmentação (R$ 40,00 - 80min)">Corte com Pigmentação - R$ 40,00 (80 min)</option>
+                        <option value="Luzes Normal (R$ 40,00 - 40min)">Luzes Normal - R$ 40,00 (40 min)</option>
+                        <option value="Luzes Platinada (R$ 60,00 - 40min)">Luzes Platinada - R$ 60,00 (40 min)</option>
+                        <option value="Pezinho (R$ 5,00 - 20min)">Pezinho - R$ 5,00 (20 min)</option>
+                        <option value="Platinado (R$ 100,00 - 40min)">Platinado - R$ 100,00 (40 min)</option>
+                        <option value="Progressiva (R$ 50,00 - 40min)">Progressiva - R$ 50,00 (40 min)</option>
+                        <option value="Sobrancelha (R$ 5,00 - 20min)">Sobrancelha - R$ 5,00 (20 min)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="schedDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Horário</label>
+                    <input type="time" id="schedTime" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Confirmar Agendamento</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="appointmentsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('appointmentsModal')">&times;</button>
+            <h2>Meus Agendamentos</h2>
+            <div id="appointmentsList">
+                <!-- Conteúdo dinâmico preenchido via script -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Executa ao carregar a página para verificar se já existe usuário logado
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+        });
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function selectServiceAndSchedule(serviceName) {
+            openModal('scheduleModal');
+            const select = document.getElementById('schedService');
+            for(let i=0; i<select.options.length; i++) {
+                if(select.options[i].text.includes(serviceName)) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        function selectProAndSchedule(proName) {
+            openModal('scheduleModal');
+            const select = document.getElementById('schedPro');
+            for(let i=0; i<select.options.length; i++) {
+                if(select.options[i].value === proName) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        function openAppointments() {
+            const user = localStorage.getItem('barbearia_user');
+            if(!user) {
+                alert('Por favor, faça sua identificação primeiro!');
+                openModal('authModal');
+                return;
+            }
+            openModal('appointmentsModal');
+            loadAppointments();
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            const name = document.getElementById('authName').value;
+            const phone = document.getElementById('authPhone').value;
+            
+            // Salvando dados no localStorage
+            localStorage.setItem('barbearia_user', name);
+            localStorage.setItem('barbearia_phone', phone);
+            
+            updateAuthUI();
+            closeModal('authModal');
+            alert(`Bem-vindo, ${name}! Identificação salva com sucesso.`);
+        }
+
+        function updateAuthUI() {
+            const user = localStorage.getItem('barbearia_user');
+            const desktopNav = document.getElementById('userAuthNav');
+            const mobileBtn = document.getElementById('mobileAuthBtn');
+
+            if(user) {
+                // Atualiza o menu desktop para mostrar o nome e opção de trocar
+                if(desktopNav) {
+                    desktopNav.innerHTML = `<a href="#" onclick="handleAuthNavClick()" style="color: var(--gold);">Olá, ${user.split(' ')[0]}</a>`;
+                }
+                // Atualiza o botão mobile
+                if(mobileBtn) {
+                    mobileBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        ${user.split(' ')[0]}
+                    `;
+                }
+            }
+        }
+
+        function handleAuthNavClick() {
+            const user = localStorage.getItem('barbearia_user');
+            if(user) {
+                if(confirm(`Logado como: ${user}. Deseja alterar a identificação?`)) {
+                    localStorage.removeItem('barbearia_user');
+                    localStorage.removeItem('barbearia_phone');
+                    location.reload();
+                }
+            } else {
+                openModal('authModal');
+            }
+        }
+
+        function handleSchedule(event) {
+            event.preventDefault();
+            const user = localStorage.getItem('barbearia_user');
+            if(!user) {
+                alert('Você precisa se identificar antes de agendar!');
+                closeModal('scheduleModal');
+                openModal('authModal');
+                return;
+            }
+
+            const pro = document.getElementById('schedPro').value;
+            const service = document.getElementById('schedService').value;
+            const date = document.getElementById('schedDate').value;
+            const time = document.getElementById('schedTime').value;
+
+            const newAppointment = { user, pro, service, date, time };
+
+            // Pega agendamentos existentes ou cria array vazio
+            let appointments = JSON.parse(localStorage.getItem('barbearia_appointments')) || [];
+            appointments.push(newAppointment);
+            localStorage.setItem('barbearia_appointments', JSON.stringify(appointments));
+
+            alert('Agendamento realizado com sucesso!');
+            closeModal('scheduleModal');
+        }
+
+        function loadAppointments() {
+            const container = document.getElementById('appointmentsList');
+            let appointments = JSON.parse(localStorage.getItem('barbearia_appointments')) || [];
+            const currentUser = localStorage.getItem('barbearia_user');
+
+            // Filtra apenas os agendamentos do usuário atual
+            const userAppointments = appointments.filter(a => a.user === currentUser);
+
+            if(userAppointments.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum agendamento encontrado.</p>';
+                return;
+            }
+
+            let html = '';
+            userAppointments.forEach(app => {
+                html += `
+                    <div class="appointment-item">
+                        <p>Serviço: <span>${app.service}</span></p>
+                        <p>Profissional: <span>${app.pro}</span></p>
+                        <p>Data: <span>${app.date} às ${app.time}</span></p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+    </script>
 </body>
 </html>
