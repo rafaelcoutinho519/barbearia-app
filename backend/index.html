@@ -1100,8 +1100,6 @@
             "David": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg"
         };
 
-        const allPossibleTimes = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-
         let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
 
@@ -1245,7 +1243,6 @@
                 const [year, month, day] = selectedDateStr.split('-');
                 const dateObj = new Date(year, month - 1, day);
                 
-                // 0 representa Domingo
                 if (dateObj.getDay() === 0) {
                     alert('A barbearia não funciona aos domingos. Por favor, escolha outro dia.');
                     dateInput.value = '';
@@ -1257,20 +1254,55 @@
             updateAvailableTimes();
         }
 
+        // Nova função que gera os horários intervalados de 40 em 40 minutos
+        function generateTimeSlots(dayOfWeek) {
+            let slots = [];
+            // Segunda a Quinta (1 a 4) fecha às 19:30. Sexta e Sábado (5 e 6) fecha às 20:00.
+            let endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
+            let endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
+
+            let currentHour = 9;
+            let currentMinute = 0;
+
+            while (true) {
+                let hStr = String(currentHour).padStart(2, '0');
+                let mStr = String(currentMinute).padStart(2, '0');
+                slots.push(`${hStr}:${mStr}`);
+
+                // Adiciona 40 minutos
+                currentMinute += 40;
+                if (currentMinute >= 60) {
+                    currentHour += Math.floor(currentMinute / 60);
+                    currentMinute = currentMinute % 60;
+                }
+
+                // Para se ultrapassar o horário de fechamento
+                if (currentHour > endHour || (currentHour === endHour && currentMinute > endMinute)) {
+                    break;
+                }
+            }
+            return slots;
+        }
+
         function updateAvailableTimes() {
             const pro = document.getElementById('schedulePro').value;
-            const date = document.getElementById('scheduleDate').value;
+            const dateStr = document.getElementById('scheduleDate').value;
             const timeSelect = document.getElementById('scheduleTime');
 
-            if (!pro || !date) {
+            if (!pro || !dateStr) {
                 timeSelect.innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
                 return;
             }
 
+            const [year, month, day] = dateStr.split('-');
+            const dateObj = new Date(year, month - 1, day);
+            const dayOfWeek = dateObj.getDay(); // 0: Dom, 1: Seg ... 6: Sáb
+
+            const allPossibleTimes = generateTimeSlots(dayOfWeek);
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             
             const bookedTimes = appointments
-                .filter(a => a.pro === pro && a.date === date)
+                .filter(a => a.pro === pro && a.date === dateStr)
                 .map(a => a.time);
 
             let optionsHtml = '<option value="">Selecione o horário</option>';
@@ -1290,6 +1322,35 @@
             }
 
             timeSelect.innerHTML = optionsHtml;
+        }
+
+        // Sistema de verificação de lembrete/confirmação (1 hora antes)
+        function checkReminders() {
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            const now = new Date();
+
+            appointments.forEach(app => {
+                const [year, month, day] = app.date.split('-');
+                const [hour, minute] = app.time.split(':');
+                const appDate = new Date(year, month - 1, day, hour, minute);
+
+                // Diferença em minutos entre agora e o horário do corte
+                const diffMinutes = (appDate - now) / (1000 * 60);
+
+                // Dispara o alerta exato quando faltar entre 55 e 60 minutos para o corte, evitando múltiplos disparos
+                if (diffMinutes > 55 && diffMinutes <= 60 && !app.reminderSent) {
+                    app.reminderSent = true;
+                    localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+
+                    if (barberPhones[app.pro]) {
+                        const phoneNum = barberPhones[app.pro];
+                        const confirmMsg = `*LEMBRETE DE AGENDAMENTO - 1H ANTES*\n\nOlá, ${app.clientName}! Seu horário para *${app.service}* com *${app.pro}* é hoje às *${app.time}*.\n\nPor favor, responda se deseja *CONFIRMAR* ou *CANCELAR* (para liberar a vaga caso não compareça).`;
+                        
+                        // Abre o WhatsApp para o cliente/barbeiro confirmar
+                        window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(confirmMsg)}`, '_blank');
+                    }
+                }
+            });
         }
 
         function handleAuthSubmit(e) {
@@ -1349,7 +1410,8 @@
                 date,
                 time,
                 phone: currentUser.phone,
-                clientName: currentUser.name
+                clientName: currentUser.name,
+                reminderSent: false
             };
 
             appointments.push(newAppointment);
@@ -1367,6 +1429,8 @@
 
         window.onload = function() {
             updateAuthUI();
+            // Verifica a cada 1 minuto se há algum agendamento prestes a completar 1 hora de antecedência
+            setInterval(checkReminders, 60000);
         };
     </script>
 </body>
