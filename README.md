@@ -1,4 +1,4 @@
-# Barbearia Navalha de Ouro — Site de Agendamento
+# Broklyn barbearia — Site de Agendamento
 
 Site completo para barbearia com cadastro de clientes, login, agendamento de
 horários e um painel para o barbeiro gerenciar a agenda e os serviços/preços.
