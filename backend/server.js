@@ -57,26 +57,47 @@ app.get('/api/status', (req, res) => {
 });
 
 // ==========================================
-// ROTA DE TESTE MANUAL PARA FORÇAR DISPARO
+// ROTA DE TESTE: SIMULAR ANTECEDÊNCIA DE 1H
 // ==========================================
-app.get('/api/testar-lembretes', (req, res) => {
+app.get('/api/testar-antecendencia', (req, res) => {
     try {
-        // Busca qualquer agendamento pendente para testar o disparo imediatamente
-        const stmt = db.prepare(`SELECT * FROM agendamentos WHERE lembrete_enviado = 0`);
+        const agora = new Date();
+        const daquiUmaHora = new Date(agora.getTime() + 60 * 60 * 1000);
+
+        const ano = daquiUmaHora.getFullYear();
+        const mes = String(daquiUmaHora.getMonth() + 1).padStart(2, '0');
+        const dia = String(daquiUmaHora.getDate()).padStart(2, '0');
+        const hora = String(daquiUmaHora.getHours()).padStart(2, '0');
+        const minuto = String(daquiUmaHora.getMinutes()).padStart(2, '0');
+
+        const dataAlvo = `${ano}-${mes}-${dia}`;
+        const horarioAlvo = `${hora}:${minuto}`;
+
+        // Busca agendamentos pendentes para testar o disparo simulando a antecedência
+        const stmt = db.prepare(`
+            SELECT * FROM agendamentos 
+            WHERE lembrete_enviado = 0
+        `);
         const agendamentosParaAvisar = stmt.all();
 
         const disparados = [];
         for (const ag of agendamentosParaAvisar) {
-            console.log(`[TESTE MANUAL] Disparando lembrete para ${ag.cliente} (${ag.telefone}) - Horário: ${ag.horario}`);
+            console.log(`[TESTE ANTECEDÊNCIA 1H] Disparando lembrete para ${ag.cliente} (${ag.telefone}) - Agendado para: ${ag.data} às ${ag.horario}`);
             
-            // INSIRA SUA INTEGRAÇÃO COM A API DE WHATSAPP AQUI SE QUISER DISPARAR DE FATO
+            // INSIRA SUA INTEGRAÇÃO COM A API DE WHATSAPP AQUI
 
-            // Marca como enviado para simular o fluxo
+            // Marca como enviado para simular o controle
             db.prepare(`UPDATE agendamentos SET lembrete_enviado = 1 WHERE id = ?`).run(ag.id);
             disparados.push(ag);
         }
 
-        res.json({ success: true, mensagem: 'Varredura de teste executada com sucesso!', totalDisparados: disparados.length, disparados });
+        res.json({ 
+            success: true, 
+            mensagem: 'Teste de antecedência de 1h executado!', 
+            horarioAlvoSimulado: `${dataAlvo} ${horarioAlvo}`,
+            totalDisparados: disparados.length,
+            disparados 
+        });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
@@ -106,7 +127,7 @@ setInterval(() => {
         const agendamentosParaAvisar = stmt.all(dataAlvo, horarioAlvo);
 
         for (const ag of agendamentosParaAvisar) {
-            console.log(`[AUTOMAÇÃO] Disparando lembrete para ${ag.cliente} (${ag.telefone}) - Horário: ${ag.horario}`);
+            console.log(`[AUTOMAÇÃO 1H] Disparando lembrete para ${ag.cliente} (${ag.telefone}) - Horário: ${ag.horario}`);
 
             // INSIRA SUA INTEGRAÇÃO COM A API DE WHATSAPP AQUI
 
