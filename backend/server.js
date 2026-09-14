@@ -57,13 +57,37 @@ app.get('/api/status', (req, res) => {
 });
 
 // ==========================================
+// ROTA DE TESTE MANUAL PARA FORÇAR DISPARO
+// ==========================================
+app.get('/api/testar-lembretes', (req, res) => {
+    try {
+        // Busca qualquer agendamento pendente para testar o disparo imediatamente
+        const stmt = db.prepare(`SELECT * FROM agendamentos WHERE lembrete_enviado = 0`);
+        const agendamentosParaAvisar = stmt.all();
+
+        const disparados = [];
+        for (const ag of agendamentosParaAvisar) {
+            console.log(`[TESTE MANUAL] Disparando lembrete para ${ag.cliente} (${ag.telefone}) - Horário: ${ag.horario}`);
+            
+            // INSIRA SUA INTEGRAÇÃO COM A API DE WHATSAPP AQUI SE QUISER DISPARAR DE FATO
+
+            // Marca como enviado para simular o fluxo
+            db.prepare(`UPDATE agendamentos SET lembrete_enviado = 1 WHERE id = ?`).run(ag.id);
+            disparados.push(ag);
+        }
+
+        res.json({ success: true, mensagem: 'Varredura de teste executada com sucesso!', totalDisparados: disparados.length, disparados });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ==========================================
 // ROTINA AUTOMÁTICA DE LEMBRETES (24H no Ar)
 // ==========================================
 setInterval(() => {
     try {
         const agora = new Date();
-        
-        // Adiciona 1 hora na data/hora atual para buscar compromissos que acontecem daqui a 1 hora
         const daquiUmaHora = new Date(agora.getTime() + 60 * 60 * 1000);
 
         const ano = daquiUmaHora.getFullYear();
@@ -72,10 +96,9 @@ setInterval(() => {
         const hora = String(daquiUmaHora.getHours()).padStart(2, '0');
         const minuto = String(daquiUmaHora.getMinutes()).padStart(2, '0');
 
-        const dataAlvo = `${ano}-${mes}-${dia}`; // Formato YYYY-MM-DD
-        const horarioAlvo = `${hora}:${minuto}`; // Formato HH:MM
+        const dataAlvo = `${ano}-${mes}-${dia}`;
+        const horarioAlvo = `${hora}:${minuto}`;
 
-        // Busca agendamentos na mesma data e minuto exato cujo lembrete ainda não foi enviado
         const stmt = db.prepare(`
             SELECT * FROM agendamentos 
             WHERE data = ? AND horario = ? AND lembrete_enviado = 0
@@ -85,11 +108,8 @@ setInterval(() => {
         for (const ag of agendamentosParaAvisar) {
             console.log(`[AUTOMAÇÃO] Disparando lembrete para ${ag.cliente} (${ag.telefone}) - Horário: ${ag.horario}`);
 
-            // AQUI VOCÊ INTEGRA O DISPARO DA SUA API DE WHATSAPP (Ex: Evolution API, WPPConnect, etc.)
-            // Exemplo de payload ou chamada fetch para a sua API de WhatsApp:
-            // enviarMensagemWhatsApp(ag.telefone, `Olá ${ag.cliente}, lembrete do seu corte hoje às ${ag.horario} com ${ag.barbeiro}!`);
+            // INSIRA SUA INTEGRAÇÃO COM A API DE WHATSAPP AQUI
 
-            // Marca como enviado para não disparar novamente
             const updateStmt = db.prepare(`UPDATE agendamentos SET lembrete_enviado = 1 WHERE id = ?`);
             updateStmt.run(ag.id);
         }
