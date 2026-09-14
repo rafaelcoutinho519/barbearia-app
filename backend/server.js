@@ -56,7 +56,7 @@ app.post('/api/agendamentos', async (req, res) => {
         `);
         const info = stmt.run(cliente, telefone, barbeiro, servico, data, horario);
 
-        // Notifica o barbeiro sobre o novo agendamento
+        // Notifica sobre o novo agendamento
         const mensagemBarbeiro = `NOVO AGENDAMENTO - BROOKLYN BARBEARIA\n\nCliente: ${cliente}\nTelefone: ${telefone}\nServiço: ${servico}\nData: ${data}\nHorário: ${horario}`;
         await enviarMensagemWhatsApp(telefone, mensagemBarbeiro);
 
@@ -67,7 +67,7 @@ app.post('/api/agendamentos', async (req, res) => {
     }
 });
 
-// Rota para cancelar o agendamento (libera a vaga e avisa o barbeiro)
+// Rota para cancelar o agendamento (libera a vaga e avisa)
 app.post('/api/cancelar-agendamento', async (req, res) => {
     try {
         const { id } = req.body;
@@ -93,11 +93,24 @@ app.get('/api/status', (req, res) => {
 });
 
 // ==========================================
-// ROTA DE TESTE MANUAL (PUXA QUALQUER ATIVO)
+// ROTA PARA VER TODOS OS AGENDAMENTOS SALVOS
+// ==========================================
+app.get('/api/ver-agendamentos', (req, res) => {
+    try {
+        const todos = db.prepare(`SELECT * FROM agendamentos`).all();
+        res.json({ success: true, total: todos.length, todos });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ==========================================
+// ROTA DE TESTE MANUAL (DISPARA QUALQUER ATIVO)
 // ==========================================
 app.get('/api/testar-antecendencia', async (req, res) => {
     try {
-        // Pega todos os agendamentos ativos para garantir o teste imediato
+        // Reseta o lembrete_enviado para 1 para forçar o teste imediato de qualquer ativo
+        db.prepare(`UPDATE agendamentos SET lembrete_enviado = 0 WHERE status = 'Ativo'`).run();
         const agendamentosPendentes = db.prepare(`SELECT * FROM agendamentos WHERE status = 'Ativo'`).all();
 
         const disparados = [];
@@ -117,7 +130,7 @@ app.get('/api/testar-antecendencia', async (req, res) => {
 });
 
 // ==========================================
-// ROTINA AUTOMÁTICA DE 1 HORA ANTES (24H no Ar)
+// ROTINA AUTOMÁTICA DE 1 HORA ANTES
 // ==========================================
 setInterval(async () => {
     try {
