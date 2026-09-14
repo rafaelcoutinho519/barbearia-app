@@ -41,9 +41,6 @@ db.exec(`
 async function enviarMensagemWhatsApp(telefone, mensagem) {
     try {
         console.log(`[WHATSAPP] Enviando para ${telefone}:\n${mensagem}`);
-        // Se você estiver utilizando uma API externa de WhatsApp (como Evolution API, Z-API, etc), 
-        // o comando de fetch entra aqui. Como o projeto usa links/disparos configurados, 
-        // o console registra o envio autônomo no Railway 24h.
     } catch (error) {
         console.error('Erro ao enviar mensagem no WhatsApp:', error);
     }
@@ -61,7 +58,7 @@ app.post('/api/agendamentos', async (req, res) => {
 
         // Notifica o barbeiro sobre o novo agendamento
         const mensagemBarbeiro = `NOVO AGENDAMENTO - BROOKLYN BARBEARIA\n\nCliente: ${cliente}\nTelefone: ${telefone}\nServiço: ${servico}\nData: ${data}\nHorário: ${horario}`;
-        await enviarMensagemWhatsApp(telefone, mensagemBarbeiro); // Substitua pelo telefone do barbeiro se necessário
+        await enviarMensagemWhatsApp(telefone, mensagemBarbeiro);
 
         res.json({ success: true, id: info.lastInsertRowid });
     } catch (error) {
@@ -80,10 +77,8 @@ app.post('/api/cancelar-agendamento', async (req, res) => {
             return res.status(404).json({ success: false, error: 'Agendamento não encontrado.' });
         }
 
-        // Atualiza o status para cancelado
         db.prepare(`UPDATE agendamentos SET status = 'Cancelado' WHERE id = ?`).run(id);
 
-        // Notifica o barbeiro sobre o cancelamento
         const msgCancelamento = `CANCELAMENTO DE HORÁRIO\n\nO cliente ${agendamento.cliente} cancelou o agendamento de ${agendamento.servico} marcado para ${agendamento.data} às ${agendamento.horario}. (Vaga liberada)`;
         await enviarMensagemWhatsApp(agendamento.telefone, msgCancelamento);
 
@@ -98,20 +93,19 @@ app.get('/api/status', (req, res) => {
 });
 
 // ==========================================
-// ROTA DE TESTE MANUAL PARA O LEMBRETE DE 1H
+// ROTA DE TESTE MANUAL (PUXA QUALQUER ATIVO)
 // ==========================================
 app.get('/api/testar-antecendencia', async (req, res) => {
     try {
-        const agendamentosPendentes = db.prepare(`SELECT * FROM agendamentos WHERE lembrete_enviado = 0 AND status = 'Ativo'`).all();
+        // Pega todos os agendamentos ativos para garantir o teste imediato
+        const agendamentosPendentes = db.prepare(`SELECT * FROM agendamentos WHERE status = 'Ativo'`).all();
 
         const disparados = [];
         for (const ag of agendamentosPendentes) {
-            // Mensagem enviada para o cliente 1 hora antes perguntando se Confirma ou Cancela
             const mensagemCliente = `Olá ${ag.cliente}! Passando para lembrar que seu corte de *${ag.servico}* na Brooklyn Barbearia é hoje às *${ag.horario}* (daqui a 1 hora).\n\nVocê confirma presença ou deseja cancelar?\n\nResponda com SIM para confirmar ou NÃO para cancelar.`;
             
             await enviarMensagemWhatsApp(ag.telefone, mensagemCliente);
 
-            // Marca o lembrete como enviado para não repetir
             db.prepare(`UPDATE agendamentos SET lembrete_enviado = 1 WHERE id = ?`).run(ag.id);
             disparados.push(ag);
         }
@@ -139,7 +133,6 @@ setInterval(async () => {
         const dataAlvo = `${ano}-${mes}-${dia}`;
         const horarioAlvo = `${hora}:${minuto}`;
 
-        // Busca compromissos que acontecem exatamente daqui a 1 hora
         const agendamentosParaAvisar = db.prepare(`
             SELECT * FROM agendamentos 
             WHERE data = ? AND horario = ? AND lembrete_enviado = 0 AND status = 'Ativo'
@@ -156,7 +149,7 @@ setInterval(async () => {
     } catch (err) {
         console.error('Erro na rotina automática:', err);
     }
-}, 60 * 1000); // Roda a cada 1 minuto
+}, 60 * 1000);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
