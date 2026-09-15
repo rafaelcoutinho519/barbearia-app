@@ -3,1425 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brooklyn Barbearia</title>
+    <title>Brooklyn Barbearia - Agendamentos</title>
     <style>
-        :root {
-            --bg-color: #0c0c0c;
-            --card-bg: #161616;
-            --card-border: #262626;
-            --gold: #d4af37;
-            --gold-light: #f3e5ab;
-            --gold-hover: #e6c547;
-            --text-main: #f0f0f0;
-            --text-muted: #999;
-            --danger: #ff4d4d;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            scroll-behavior: smooth;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow-x: hidden;
-            padding-bottom: 90px;
-        }
-
-        @media(min-width: 769px) {
-            body {
-                padding-bottom: 0;
-            }
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 8%;
-            background-color: rgba(12, 12, 12, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        @media(max-width: 768px) {
-            header {
-                display: none;
-            }
-        }
-
-        .logo-link {
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-link:hover {
-            transform: scale(1.05);
-        }
-
-        .logo-img {
-            height: 45px;
-            object-fit: contain;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-            align-items: center;
-        }
-
-        nav ul li a, nav ul li button {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.3s;
-            cursor: pointer;
-            letter-spacing: 0.5px;
-            background: none;
-            border: none;
-        }
-
-        nav ul li a:hover, nav ul li button:hover {
-            color: var(--gold);
-        }
-
-        .mobile-bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(18, 18, 18, 0.98);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(212, 175, 55, 0.25);
-            z-index: 4000;
-            justify-content: space-around;
-            padding: 10px 5px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
-        }
-
-        @media(max-width: 768px) {
-            .mobile-bottom-nav {
-                display: flex;
-            }
-        }
-
-        .mobile-nav-item {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            transition: color 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .mobile-nav-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
-
-        .mobile-nav-item:hover, .mobile-nav-item.active {
-            color: var(--gold);
-        }
-
-        .hero {
-            text-align: center;
-            padding: 90px 20px;
-            background: linear-gradient(rgba(12,12,12,0.85), rgba(12,12,12,0.92)), url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-            position: relative;
-        }
-
-        .hero-logo-container {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 25px auto;
-            border-radius: 50%;
-            background: #000;
-            border: 2px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-
-        .hero-logo-container:hover {
-            transform: scale(1.04);
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
-        }
-
-        .hero-logo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .hero p {
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 35px auto;
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #d4af37, #aa8c2c);
-            color: #0c0c0c;
-            padding: 14px 35px;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #e6c547, #d4af37);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-        }
-
-        .info-section {
-            max-width: 1100px;
-            margin: -40px auto 60px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .info-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 35px 25px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-        }
-
-        .info-card h3 {
-            color: var(--gold);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-size: 1.1rem;
-            letter-spacing: 1.5px;
-        }
-
-        .info-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .info-card a {
-            color: var(--gold);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-
-        .info-card a:hover {
-            text-decoration: underline;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 80px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            color: #fff;
-            font-size: 2.2rem;
-            margin-bottom: 50px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-        }
-
-        .section-title span {
-            color: var(--gold);
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .service-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            z-index: 2;
-        }
-
-        .service-card:hover {
-            border-color: var(--gold);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
-            background-color: #1a1a1a;
-        }
-
-        .service-card h4 {
-            color: #fff;
-            font-size: 1.05rem;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .service-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding-top: 15px;
-        }
-
-        .price {
-            color: var(--gold);
-            font-weight: bold;
-            font-size: 1.15rem;
-        }
-
-        .duration {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .profissionais-section {
-            position: relative;
-            background: linear-gradient(rgba(12, 12, 12, 0.85), rgba(12, 12, 12, 0.92)), url('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/backend/Fundoprofissional.jpg') no-repeat center center;
-            background-size: cover;
-            padding: 80px 20px;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .pro-showcase-card {
-            background: #161616;
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 35px 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            transition: border-color 0.3s;
-            position: relative;
-            z-index: 2;
-        }
-
-        @media(min-width: 769px) {
-            .pro-showcase-card {
-                background: linear-gradient(145deg, rgba(22, 22, 22, 0.95), rgba(16, 16, 16, 0.95));
-                backdrop-filter: blur(8px);
-                padding: 45px;
-            }
-        }
-
-        .pro-top-content {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 35px;
-            align-items: center;
-            margin-bottom: 35px;
-        }
-
-        @media(max-width: 768px) {
-            .pro-top-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .section-title {
-                font-size: 1.8rem;
-            }
-        }
-
-        .pro-profile-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .pro-avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 3px solid var(--gold);
-            object-fit: cover;
-            margin-bottom: 15px;
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
-        }
-
-        .pro-name {
-            color: var(--gold-light);
-            font-size: 1.45rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 700;
-            font-family: 'Georgia', serif;
-            margin-bottom: 18px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 6px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .social-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-social {
-            padding: 7px 16px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-decoration: none;
-            color: #fff;
-            background-color: #25d366;
-            transition: opacity 0.3s, transform 0.2s;
-        }
-
-        .btn-social.insta { background-color: #e1306c; }
-        .btn-social:hover { opacity: 0.85; transform: scale(1.05); }
-
-        .pro-details h3 {
-            color: #fff;
-            font-size: 1.15rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            border-left: 3px solid var(--gold);
-            padding-left: 12px;
-        }
-
-        @media(max-width: 768px) {
-            .pro-details h3 {
-                border-left: none;
-                padding-left: 0;
-            }
-        }
-
-        .pro-details p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.7;
-            margin-bottom: 25px;
-        }
-
-        .btn-agendar-pro {
-            background-color: transparent;
-            color: var(--gold);
-            border: 2px solid var(--gold);
-            padding: 12px 30px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            width: 100%;
-            max-width: 260px;
-        }
-
-        .btn-agendar-pro:hover {
-            background-color: var(--gold);
-            color: #0c0c0c;
-        }
-
-        .pro-cuts-gallery {
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding-top: 25px;
-            margin-top: 20px;
-        }
-
-        .pro-cuts-gallery h4 {
-            color: #fff;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .cuts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-        }
-
-        .cut-item {
-            background: #0c0c0c;
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.2s, border-color 0.2s;
-            cursor: pointer;
-        }
-
-        .cut-item:hover {
-            transform: translateY(-3px);
-            border-color: var(--gold);
-        }
-
-        .cut-img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        .cut-item:hover .cut-img {
-            transform: scale(1.05);
-        }
-
-        .cut-title {
-            padding: 10px 8px;
-            font-size: 0.8rem;
-            color: var(--gold-light);
-            background: linear-gradient(180deg, #111 0%, #181818 100%);
-            text-align: center;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-        }
-
-        .pro-selector-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 5px;
-        }
-
-        .pro-option-card {
-            background: #0c0c0c;
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .pro-option-card:hover {
-            border-color: rgba(212, 175, 55, 0.5);
-        }
-
-        .pro-option-card.selected {
-            border-color: var(--gold);
-            background: rgba(212, 175, 55, 0.08);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
-        }
-
-        .pro-option-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--gold);
-            margin: 0 auto 6px auto;
-            display: block;
-        }
-
-        .pro-option-name {
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88);
-            backdrop-filter: blur(6px);
-            z-index: 5000;
-            justify-content: center;
-            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
             padding: 20px;
         }
-
-        .modal-content {
-            background: #161616;
-            border: 1px solid var(--gold);
-            padding: 35px 25px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 480px;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-
-        .modal-content h3 {
-            color: var(--gold);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 1.3rem;
-            text-align: center;
-        }
-
-        #imageZoomModal {
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 6000;
-        }
-
-        .zoom-container {
-            position: relative;
-            max-width: 90vw;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .zoomed-image {
-            max-width: 85vw;
-            max-height: 75vh;
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            padding: 20px;
             border-radius: 8px;
-            border: 2px solid var(--gold);
-            object-fit: contain;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-
-        .zoom-caption {
-            color: var(--gold-light);
-            margin-top: 15px;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
+        h1, h2 {
+            color: #d4af37;
             text-align: center;
         }
-
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 15px;
         }
-
-        .form-group label {
+        label {
             display: block;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            color: #b0b0b0;
         }
-
-        .form-group input, .form-group select {
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
             width: 100%;
             padding: 12px;
-            background: #0c0c0c;
-            border: 1px solid var(--card-border);
+            background: #d4af37;
+            color: #121212;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #c5a028;
+        }
+        .lista-agendamentos {
+            margin-top: 30px;
+        }
+        .card-agendamento {
+            background: #252525;
+            padding: 12px;
             border-radius: 6px;
-            color: #fff;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--gold);
-        }
-
-        .close-btn {
-            position: absolute; top: 15px; right: 20px; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; background: none; border: none; transition: color 0.2s; z-index: 10;
-        }
-        .close-btn:hover { color: #fff; }
-
-        .appointment-card-modern {
-            background: linear-gradient(145deg, #121212, #181818);
-            border: 1px solid var(--card-border);
-            border-left: 4px solid var(--gold);
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            text-align: left;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        .appointment-header {
+            margin-bottom: 10px;
+            border-left: 4px solid #d4af37;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 8px;
         }
-
-        .appointment-service {
-            color: var(--gold);
-            font-weight: bold;
-            font-size: 1rem;
-            text-transform: uppercase;
-        }
-
-        .appointment-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .appointment-pro-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            object-fit: cover;
-        }
-
-        .appointment-details p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .appointment-details strong {
-            color: #fff;
-        }
-
-        .btn-cancel-modern {
-            background: rgba(255, 77, 77, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(255, 77, 77, 0.3);
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            border-radius: 6px;
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            margin-top: 12px;
-            transition: all 0.2s;
-            text-transform: uppercase;
+            font-size: 14px;
             font-weight: bold;
-            display: inline-block;
+            width: auto;
         }
-
-        .btn-cancel-modern:hover {
-            background: var(--danger);
-            color: #fff;
+        .btn-whatsapp:hover {
+            background: #20ba5a;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="#inicio" class="logo-link">
-            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/backend/logo.png" alt="Brooklyn Barbearia" class="logo-img">
-        </a>
-        <nav>
-            <ul>
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#servicos">Serviços</a></li>
-                <li><a href="#profissionais">Profissionais</a></li>
-                <li><a href="#" onclick="openAppointments()">Meus Agendamentos</a></li>
-                <li id="userAuthNav">
-                    <a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+    <div class="container">
+        <h1>Brooklyn Barbearia</h1>
+        
+        <h2>Novo Agendamento</h2>
+        <form id="formAgendamento">
+            <div class="form-group">
+                <label>Nome do Cliente:</label>
+                <input type="text" id="nome_cliente" required placeholder="Ex: Izabaleee">
+            </div>
+            <div class="form-group">
+                <label>Telefone do Cliente (com DDD):</label>
+                <input type="text" id="telefone_cliente" required placeholder="Ex: 87996342515">
+            </div>
+            <div class="form-group">
+                <label>Barbeiro:</label>
+                <select id="barbeiro_id" required>
+                    <!-- Preenchido via JS -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Data e Horário:</label>
+                <input type="datetime-local" id="horario" required>
+            </div>
+            <button type="submit">Agendar e Enviar Confirmação</button>
+        </form>
 
-    <div class="mobile-bottom-nav">
-        <a href="#inicio" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Início
-        </a>
-        <a href="#servicos" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            Serviços
-        </a>
-        <a href="#profissionais" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            Profissionais
-        </a>
-        <button onclick="openAppointments()" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
-            Agenda
-        </button>
-        <button onclick="handleAuthNavClick()" class="mobile-nav-item" id="mobileAuthBtn">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            Entrar
-        </button>
-    </div>
-
-    <section class="hero" id="inicio">
-        <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
-            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/backend/logo.png" alt="Brooklyn Barbearia" class="hero-logo">
-        </div>
-        <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
-        <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
-    </section>
-
-    <div class="info-section">
-        <div class="info-card">
-            <h3>Horário de Atendimento</h3>
-            <p><strong>Segunda a Quinta:</strong> 09h às 19:30<br><strong>Sexta e Sábado:</strong> 09h às 20:00</p>
-        </div>
-        <div class="info-card">
-            <h3>Localização</h3>
-            <p>Praça João Borrego<br>Capoeiras - PE, 55365-000</p>
-        </div>
-        <div class="info-card">
-            <h3>Redes Sociais</h3>
-            <p>Acompanhe nosso Instagram oficial:<br><a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank">@brooklynbarbearia_87</a></p>
-        </div>
-    </div>
-
-    <div class="container" id="servicos">
-        <h2 class="section-title">Nossos <span>Serviços</span></h2>
-        <div class="services-grid">
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba')">
-                <h4>Barba</h4>
-                <div class="service-footer"><span class="price">R$ 10,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação')">
-                <h4>Barba com Pigmentação</h4>
-                <div class="service-footer"><span class="price">R$ 20,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho')">
-                <h4>Barba + Pezinho</h4>
-                <div class="service-footer"><span class="price">R$ 15,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo')">
-                <h4>Cabelo</h4>
-                <div class="service-footer"><span class="price">R$ 20,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha')">
-                <h4>Cabelo + Barba + Sobrancelha</h4>
-                <div class="service-footer"><span class="price">R$ 33,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação')">
-                <h4>Corte com Pigmentação</h4>
-                <div class="service-footer"><span class="price">R$ 40,00</span><span class="duration">⏱ 80 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal')">
-                <h4>Luzes Normal</h4>
-                <div class="service-footer"><span class="price">R$ 40,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada')">
-                <h4>Luzes Platinada</h4>
-                <div class="service-footer"><span class="price">R$ 60,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Pezinho')">
-                <h4>Pezinho</h4>
-                <div class="service-footer"><span class="price">R$ 5,00</span><span class="duration">⏱ 20 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Platinado')">
-                <h4>Platinado</h4>
-                <div class="service-footer"><span class="price">R$ 100,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Progressiva')">
-                <h4>Progressiva</h4>
-                <div class="service-footer"><span class="price">R$ 50,00</span><span class="duration">⏱ 40 min</span></div>
-            </div>
-            <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha')">
-                <h4>Sobrancelha</h4>
-                <div class="service-footer"><span class="price">R$ 5,00</span><span class="duration">⏱ 20 min</span></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="profissionais-section" id="profissionais">
-        <div class="container" style="margin: 0 auto; max-width: 1100px;">
-            <h2 class="section-title">Nossos <span>Profissionais</span></h2>
-
-            <!-- KARLOS -->
-            <div class="pro-showcase-card">
-                <div class="pro-top-content">
-                    <div class="pro-profile-box">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/perfil.png" alt="Karlos" class="pro-avatar">
-                        <div class="pro-name">Karlos</div>
-                        <div class="social-buttons">
-                            <a href="https://www.instagram.com/karllosbarbeiro?stkn=MWEzbnU4bng3MnJ1NA%3D%3D" target="_blank" class="btn-social insta">Instagram</a>
-                            <a href="https://wa.me/5587996289373" target="_blank" class="btn-social">WhatsApp</a>
-                        </div>
-                    </div>
-                    <div class="pro-details">
-                        <h3>Sobre o Profissional</h3>
-                        <p>Especialista em cortes modernos, degradê navalhado e visagismo. Foco total em entregar um atendimento de alto padrão e estilo único para cada cliente.</p>
-                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
-                    </div>
-                </div>
-                <div class="pro-cuts-gallery">
-                    <h4>Modelos de Trabalhos - Karlos</h4>
-                    <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg', 'Corte na Tesoura')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/tesoura.jpeg" alt="Tesoura" class="cut-img">
-                            <div class="cut-title">Corte na Tesoura</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/low-fade.jpeg', 'Low Fade')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/low-fade.jpeg" alt="Low Fade" class="cut-img">
-                            <div class="cut-title">Low Fade</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/mid-fade.jpeg', 'Mid Fade')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/mid-fade.jpeg" alt="Mid Fade" class="cut-img">
-                            <div class="cut-title">Mid Fade</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DORGIVAN -->
-            <div class="pro-showcase-card">
-                <div class="pro-top-content">
-                    <div class="pro-profile-box">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/perfil.jpg" alt="Dorgivan" class="pro-avatar">
-                        <div class="pro-name">Dorgivan</div>
-                        <div class="social-buttons">
-                            <a href="https://www.instagram.com/barbeiro_dorgi?stkn=MWpvaXdwbnRhZ2xnNQ%3D%3D" target="_blank" class="btn-social insta">Instagram</a>
-                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
-                        </div>
-                    </div>
-                    <div class="pro-details">
-                        <h3>Sobre o Profissional</h3>
-                        <p>Especialista em cortes modernos, acabamentos precisos e visagismo. Foco total em entregar um estilo único e de alta qualidade para cada cliente.</p>
-                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
-                    </div>
-                </div>
-                <div class="pro-cuts-gallery">
-                    <h4>Modelos de Trabalhos - Dorgivan</h4>
-                    <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte-americano.jpg', 'Corte Americano')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/corte-americano.jpg" alt="Corte Americano" class="cut-img">
-                            <div class="cut-title">Corte Americano</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/moicano.jpg', 'Moicano')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/moicano.jpg" alt="Moicano" class="cut-img">
-                            <div class="cut-title">Moicano</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/barba-pigmentada.jpg', 'Barba Pigmentada')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/barba-pigmentada.jpg" alt="Barba Pigmentada" class="cut-img">
-                            <div class="cut-title">Barba Pigmentada</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DAVID -->
-            <div class="pro-showcase-card">
-                <div class="pro-top-content">
-                    <div class="pro-profile-box">
-                        <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg" alt="David" class="pro-avatar">
-                        <div class="pro-name">David</div>
-                        <div class="social-buttons">
-                            <a href="https://www.instagram.com/barbeirodavid87?stkn=eWNyNDd4b21pbDdi" target="_blank" class="btn-social insta">Instagram</a>
-                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
-                        </div>
-                    </div>
-                    <div class="pro-details">
-                        <h3>Sobre o Profissional</h3>
-                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
-                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
-                    </div>
-                </div>
-                <div class="pro-cuts-gallery">
-                    <h4>Modelos de Trabalhos - David</h4>
-                    <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte1.jpg', 'Pompadour')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte1.jpg" alt="Corte David 1" class="cut-img">
-                            <div class="cut-title">Pompadour</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte2.jpg', 'Buzz Cut')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte2.jpg" alt="Corte David 2" class="cut-img">
-                            <div class="cut-title">Buzz Cut</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte3.jpg', 'Social Texturizado')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte3.jpg" alt="Corte David 3" class="cut-img">
-                            <div class="cut-title">Social Texturizado</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte4.jpg', 'High Fade')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/corte4.jpg" alt="Corte David 4" class="cut-img">
-                            <div class="cut-title">High Fade</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE ZOOM DA FOTO -->
-    <div id="imageZoomModal" class="modal" onclick="closeAllModals()">
-        <div class="zoom-container" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <img id="zoomedImg" src="" alt="Zoom" class="zoomed-image">
-            <div id="zoomedCaption" class="zoom-caption"></div>
-        </div>
-    </div>
-
-    <!-- MODAL DE AGENDAMENTO -->
-    <div id="scheduleModal" class="modal" onclick="closeAllModals()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <h3>Agendar Horário</h3>
-            <form onsubmit="handleScheduleSubmit(event)">
-                <div class="form-group">
-                    <label>Serviço</label>
-                    <select id="scheduleService" required>
-                        <option value="">Selecione o serviço</option>
-                        <option value="Barba">Barba - R$ 10,00</option>
-                        <option value="Barba com Pigmentação">Barba com Pigmentação - R$ 20,00</option>
-                        <option value="Barba + Pezinho">Barba + Pezinho - R$ 15,00</option>
-                        <option value="Cabelo">Cabelo - R$ 20,00</option>
-                        <option value="Cabelo + Barba + Sobrancelha">Cabelo + Barba + Sobrancelha - R$ 33,00</option>
-                        <option value="Corte com Pigmentação">Corte com Pigmentação - R$ 40,00</option>
-                        <option value="Luzes Normal">Luzes Normal - R$ 40,00</option>
-                        <option value="Luzes Platinada">Luzes Platinada - R$ 60,00</option>
-                        <option value="Pezinho">Pezinho - R$ 5,00</option>
-                        <option value="Platinado">Platinado - R$ 100,00</option>
-                        <option value="Progressiva">Progressiva - R$ 50,00</option>
-                        <option value="Sobrancelha">Sobrancelha - R$ 5,00</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Profissional</label>
-                    <input type="hidden" id="schedulePro" required onchange="updateAvailableTimes()">
-                    <div class="pro-selector-grid">
-                        <div class="pro-option-card" id="card-Karlos" onclick="selectProOption('Karlos')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/perfil.png" class="pro-option-img" alt="Karlos">
-                            <span class="pro-option-name">Karlos</span>
-                        </div>
-                        <div class="pro-option-card" id="card-Dorgivan" onclick="selectProOption('Dorgivan')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/perfil.jpg" class="pro-option-img" alt="Dorgivan">
-                            <span class="pro-option-name">Dorgivan</span>
-                        </div>
-                        <div class="pro-option-card" id="card-David" onclick="selectProOption('David')">
-                            <img src="https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg" class="pro-option-img" alt="David">
-                            <span class="pro-option-name">David</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Data</label>
-                    <input type="date" id="scheduleDate" required onchange="validateDateAndTimes()">
-                </div>
-                <div class="form-group">
-                    <label>Horário</label>
-                    <select id="scheduleTime" required>
-                        <option value="">Selecione o profissional e a data primeiro</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Confirmar Agendamento</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE LOGIN / CADASTRO -->
-    <div id="authModal" class="modal" onclick="closeAllModals()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <h3 id="authModalTitle">Identificação</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">Insira seu nome e número de WhatsApp para acessar ou cadastrar.</p>
-            <form id="authForm" onsubmit="handleAuthSubmit(event)">
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="authName" placeholder="Ex: João Silva" required>
-                </div>
-                <div class="form-group">
-                    <label>Telefone / WhatsApp</label>
-                    <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" required>
-                </div>
-                <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Continuar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE MEUS AGENDAMENTOS -->
-    <div id="appointmentsModal" class="modal" onclick="closeAllModals()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <h3>Meus Agendamentos</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">* Em caso de cancelamento, avise com pelo menos 1h de antecedência.</p>
-            <div id="appointmentsList" style="color: var(--text-muted); text-align: center; padding: 10px 0;">
-                Você ainda não possui agendamentos ativos.
-            </div>
+        <div class="lista-agendamentos">
+            <h2>Agendamentos Realizados</h2>
+            <div id="containerAgendamentos">Carregando...</div>
         </div>
     </div>
 
     <script>
-        const barberPhones = {
-            "Karlos": "5587996289373",
-            "Dorgivan": "5581999999999",
-            "David": "5581999999999"
-        };
-
-        const barberImages = {
-            "Karlos": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Karlos/perfil.png",
-            "Dorgivan": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/Dorgivan/perfil.jpg",
-            "David": "https://raw.githubusercontent.com/rafaelcoutinho519/barbearia-app/main/frontend/David/foto.jpg"
-        };
-
-        let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
-        let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
-
-        function updateAuthUI() {
-            const navLink = document.getElementById('userAuthNav');
-            const mobileBtn = document.getElementById('mobileAuthBtn');
-            
-            if (currentUser) {
-                navLink.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="color: var(--gold); font-weight: 600;">Olá, ${currentUser.name.split(' ')[0]}</span>
-                        <button onclick="logoutUser()" style="color: var(--text-muted); background: none; border: 1px solid var(--card-border); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Sair</button>
-                    </div>
-                `;
-                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Sair`;
-            } else {
-                navLink.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
-                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Entrar`;
+        // Carrega barbeiros ao iniciar
+        async function carregarBarbeiros() {
+            try {
+                const res = await fetch('/barbeiros');
+                const barbeiros = await res.json();
+                const select = document.getElementById('barbeiro_id');
+                select.innerHTML = '';
+                barbeiros.forEach(b => {
+                    const option = document.createElement('option');
+                    option.value = b.id;
+                    option.textContent = b.nome;
+                    select.appendChild(option);
+                });
+            } catch (err) {
+                console.error('Erro ao carregar barbeiros:', err);
             }
         }
 
-        function handleAuthNavClick() {
-            if (currentUser) {
-                if (confirm('Deseja sair da sua conta?')) {
-                    logoutUser();
-                }
-            } else {
-                openModal('authModal');
-            }
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            localStorage.removeItem('brooklyn_current_user');
-            updateAuthUI();
-            alert('Você saiu da sua conta com sucesso.');
-        }
-
-        function openModal(modalId) {
-            closeAllModals();
-            document.getElementById(modalId).style.display = 'flex';
-        }
-
-        function openZoom(imgSrc, captionText) {
-            closeAllModals();
-            document.getElementById('zoomedImg').src = imgSrc;
-            document.getElementById('zoomedCaption').innerText = captionText;
-            document.getElementById('imageZoomModal').style.display = 'flex';
-        }
-
-        function closeAllModals() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
-        }
-
-        function openAppointments() {
-            if (!currentUser) {
-                alert('Você precisa se identificar com nome e telefone para ver os agendamentos!');
-                openModal('authModal');
-                return;
-            }
-            openModal('appointmentsModal');
-            renderAppointmentsList();
-        }
-
-        function renderAppointmentsList() {
-            const listContainer = document.getElementById('appointmentsList');
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const userApps = appointments.filter(a => a.phone === currentUser.phone);
-
-            if (userApps.length === 0) {
-                listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Você ainda não possui agendamentos ativos.</p>';
-            } else {
-                listContainer.innerHTML = userApps.map((app) => `
-                    <div class="appointment-card-modern">
-                        <div class="appointment-header">
-                            <span class="appointment-service">${app.service}</span>
-                            <span style="font-size: 0.8rem; color: var(--gold);">Ativo</span>
-                        </div>
-                        <div class="appointment-info">
-                            <img src="${barberImages[app.pro]}" alt="${app.pro}" class="appointment-pro-img">
-                            <div class="appointment-details">
-                                <p>Profissional: <strong>${app.pro}</strong></p>
-                                <p>Data e Hora: <strong>${app.date} às ${app.time}</strong></p>
-                            </div>
-                        </div>
-                        <button class="btn-cancel-modern" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function cancelAppointment(appId) {
-            if (confirm('Tem certeza que deseja cancelar este agendamento? Lembre-se de avisar o barbeiro com pelo menos 1h de antecedência.')) {
-                let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-                const appToCancel = appointments.find(a => a.id === appId);
+        // Carrega lista de agendamentos
+        async function carregarAgendamentos() {
+            try {
+                const res = await fetch('/agendamentos');
+                const agendamentos = await res.json();
+                const container = document.getElementById('containerAgendamentos');
                 
-                appointments = appointments.filter(a => a.id !== appId);
-                localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-                
-                renderAppointmentsList();
-                updateAvailableTimes();
-                alert('Agendamento cancelado com sucesso.');
-
-                if (appToCancel && barberPhones[appToCancel.pro]) {
-                    const phone = barberPhones[appToCancel.pro];
-                    const msg = `*CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}.`;
-                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-                }
-            }
-        }
-
-        function selectServiceAndSchedule(serviceName) {
-            openModal('scheduleModal');
-            document.getElementById('scheduleService').value = serviceName;
-        }
-
-        function selectProAndSchedule(proName) {
-            openModal('scheduleModal');
-            selectProOption(proName);
-        }
-
-        function selectProOption(proName) {
-            document.getElementById('schedulePro').value = proName;
-            document.querySelectorAll('.pro-option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            const targetCard = document.getElementById(`card-${proName}`);
-            if (targetCard) {
-                targetCard.classList.add('selected');
-            }
-            updateAvailableTimes();
-        }
-
-        function validateDateAndTimes() {
-            const dateInput = document.getElementById('scheduleDate');
-            const selectedDateStr = dateInput.value;
-
-            if (selectedDateStr) {
-                const [year, month, day] = selectedDateStr.split('-');
-                const dateObj = new Date(year, month - 1, day);
-                
-                if (dateObj.getDay() === 0) {
-                    alert('A barbearia não funciona aos domingos. Por favor, escolha outro dia.');
-                    dateInput.value = '';
-                    document.getElementById('scheduleTime').innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
+                if (agendamentos.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#777;">Nenhum agendamento encontrado.</p>';
                     return;
                 }
-            }
 
-            updateAvailableTimes();
+                container.innerHTML = '';
+                agendamentos.forEach(a => {
+                    const card = document.createElement('div');
+                    card.className = 'card-agendamento';
+                    
+                    // Formata data bonita se quiser
+                    card.innerHTML = `
+                        <div>
+                            <strong>${a.nome_cliente}</strong> (${a.telefone_cliente})<br>
+                            <small>📅 ${a.horario} | 💈 ${a.barbeiro_nome}</small>
+                        </div>
+                        <button class="btn-whatsapp" onclick="enviarLembrete('${a.nome_cliente}', '${a.telefone_cliente}', '${a.horario}', '${a.barbeiro_nome}')">
+                            💬 Lembrete
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.error('Erro ao carregar agendamentos:', err);
+            }
         }
 
-        function generateTimeSlots(dayOfWeek) {
-            let slots = [];
-            let endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
-            let endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
-
-            let currentHour = 9;
-            let currentMinute = 0;
-
-            while (true) {
-                let hStr = String(currentHour).padStart(2, '0');
-                let mStr = String(currentMinute).padStart(2, '0');
-                slots.push(`${hStr}:${mStr}`);
-
-                currentMinute += 40;
-                if (currentMinute >= 60) {
-                    currentHour += Math.floor(currentMinute / 60);
-                    currentMinute = currentMinute % 60;
-                }
-
-                if (currentHour > endHour || (currentHour === endHour && currentMinute > endMinute)) {
-                    break;
-                }
-            }
-            return slots;
+        // Enviar Lembrete via WhatsApp (1 Clique)
+        function enviarLembrete(nome, telefone, horario, barbeiro) {
+            const numeroLimpo = telefone.replace(/\D/g, '');
+            const texto = `*⏰ LEMBRETE - BROOKLYN BARBEARIA*\n\nOlá, *${nome}*! Passando para lembrar do seu agendamento em *${horario}* com o profissional *${barbeiro}*.\n\nEstamos te esperando! 💈`;
+            const url = `https://api.whatsapp.com/send?phone=55${numeroLimpo}&text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
         }
 
-        function updateAvailableTimes() {
-            const pro = document.getElementById('schedulePro').value;
-            const dateStr = document.getElementById('scheduleDate').value;
-            const timeSelect = document.getElementById('scheduleTime');
-
-            if (!pro || !dateStr) {
-                timeSelect.innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
-                return;
-            }
-
-            const [year, month, day] = dateStr.split('-');
-            const dateObj = new Date(year, month - 1, day);
-            const dayOfWeek = dateObj.getDay();
-
-            const allPossibleTimes = generateTimeSlots(dayOfWeek);
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+        // Trata o envio do formulário
+        document.getElementById('formAgendamento').addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            const bookedTimes = appointments
-                .filter(a => a.pro === pro && a.date === dateStr)
-                .map(a => a.time);
+            const nome_cliente = document.getElementById('nome_cliente').value;
+            const telefone_cliente = document.getElementById('telefone_cliente').value;
+            const barbeiro_id = document.getElementById('barbeiro_id').value;
+            const horario = document.getElementById('horario').value;
 
-            let optionsHtml = '<option value="">Selecione o horário</option>';
-            let availableCount = 0;
+            try {
+                const res = await fetch('/agendamentos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome_cliente, telefone_cliente, barbeiro_id, horario })
+                });
 
-            allPossibleTimes.forEach(time => {
-                if (bookedTimes.includes(time)) {
-                    optionsHtml += `<option value="${time}" disabled style="color: #555; background: #111;">${time} (Indisponível)</option>`;
+                const data = await res.json();
+                if (data.success) {
+                    // Dispara o WhatsApp de confirmação imediata também (como você já fazia)
+                    const selectBarbeiro = document.getElementById('barbeiro_id');
+                    const nomeBarbeiro = selectBarbeiro.options[selectBarbeiro.selectedIndex].text;
+                    const numeroLimpo = telefone_cliente.replace(/\D/g, '');
+                    
+                    const msgConfirmacao = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n🔹 Cliente: ${nome_cliente}\n🔹 Telefone: ${telefone_cliente}\n🔹 Profissional: ${nomeBarbeiro}\n🔹 Horário: ${horario}`;
+                    window.open(`https://api.whatsapp.com/send?phone=55${numeroLimpo}&text=${encodeURIComponent(msgConfirmacao)}`, '_blank');
+
+                    document.getElementById('formAgendamento').reset();
+                    carregarAgendamentos();
                 } else {
-                    optionsHtml += `<option value="${time}">${time}</option>`;
-                    availableCount++;
+                    alert('Erro ao salvar agendamento.');
                 }
-            });
-
-            if (availableCount === 0) {
-                optionsHtml = '<option value="">Nenhum horário disponível para esta data</option>';
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro de conexão.');
             }
+        });
 
-            timeSelect.innerHTML = optionsHtml;
-        }
-
-        function checkReminders() {
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const now = new Date();
-
-            appointments.forEach(app => {
-                const [year, month, day] = app.date.split('-');
-                const [hour, minute] = app.time.split(':');
-                const appDate = new Date(year, month - 1, day, hour, minute);
-
-                const diffMinutes = (appDate - now) / (1000 * 60);
-
-                if (diffMinutes > 55 && diffMinutes <= 60 && !app.reminderSent) {
-                    app.reminderSent = true;
-                    localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-
-                    if (barberPhones[app.pro]) {
-                        const phoneNum = barberPhones[app.pro];
-                        const confirmMsg = `*LEMBRETE DE AGENDAMENTO - 1H ANTES*\n\nOlá, ${app.clientName}! Seu horário para *${app.service}* com *${app.pro}* é hoje às *${app.time}*.\n\nPor favor, responda se deseja *CONFIRMAR* ou *CANCELAR* (para liberar a vaga caso não compareça).`;
-                        window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(confirmMsg)}`, '_blank');
-                    }
-                }
-            });
-        }
-
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('authName').value.trim();
-            const phone = document.getElementById('authPhone').value.trim();
-
-            if (!name || !phone) {
-                alert('Preencha o nome e o telefone.');
-                return;
-            }
-
-            currentUser = { name, phone };
-            localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
-
-            if (!usersDB.some(u => u.phone === phone)) {
-                usersDB.push(currentUser);
-                localStorage.setItem('brooklyn_users_db', JSON.stringify(usersDB));
-            }
-
-            updateAuthUI();
-            closeAllModals();
-            alert(`Bem-vindo, ${name}! Identificação realizada com sucesso.`);
-        }
-
-        function handleScheduleSubmit(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                alert('Por favor, informe seu nome e telefone antes de concluir o agendamento.');
-                openModal('authModal');
-                return;
-            }
-
-            const service = document.getElementById('scheduleService').value;
-            const pro = document.getElementById('schedulePro').value;
-            const date = document.getElementById('scheduleDate').value;
-            const time = document.getElementById('scheduleTime').value;
-
-            if (!pro) {
-                alert('Por favor, selecione um profissional clicando em uma das fotos.');
-                return;
-            }
-
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const isAlreadyBooked = appointments.some(a => a.pro === pro && a.date === date && a.time === time);
-            
-            if (isAlreadyBooked) {
-                alert('Este horário já acabou de ser reservado para este profissional. Por favor, escolha outro.');
-                updateAvailableTimes();
-                return;
-            }
-
-            const newAppointment = {
-                id: Date.now(),
-                service,
-                pro,
-                date,
-                time,
-                phone: currentUser.phone,
-                clientName: currentUser.name,
-                reminderSent: false
-            };
-
-            appointments.push(newAppointment);
-            localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-
-            closeAllModals();
-            alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
-
-            if (barberPhones[pro]) {
-                const phoneNum = barberPhones[pro];
-                const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
-                window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
-            }
-        }
-
-        window.onload = function() {
-            updateAuthUI();
-            setInterval(checkReminders, 60000);
-        };
+        // Inicializa dados na tela
+        carregarBarbeiros();
+        carregarAgendamentos();
     </script>
 </body>
 </html>
