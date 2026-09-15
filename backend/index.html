@@ -3,276 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brooklyn Barbearia</title>
-    <style>
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --accent-color: #d4af37;
-            --text-color: #e0e0e0;
-            --danger-color: #ff4d4d;
-            --success-color: #25D366;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        }
-        h1, h2 {
-            color: var(--accent-color);
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #b0b0b0;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            background: #2d2d2d;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: var(--accent-color);
-            color: #121212;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background: #c5a028;
-        }
-        .painel-barbeiro {
-            margin-top: 40px;
-            border-top: 2px solid #333;
-            padding-top: 20px;
-        }
-        .card-agendamento {
-            background: #252525;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            border-left: 5px solid var(--accent-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-        .botoes-acao {
-            display: flex;
-            gap: 8px;
-        }
-        .btn-whatsapp {
-            background: var(--success-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            width: auto;
-        }
-        .btn-whatsapp:hover {
-            background: #20ba5a;
-        }
-        .btn-cancelar {
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            width: auto;
-        }
-        .btn-cancelar:hover {
-            background: #e03e3e;
-        }
-    </style>
+    <title>Barbearia - Agendamento Online</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-    <div class="container">
-        <h1>Brooklyn Barbearia</h1>
-        
-        <h2>Novo Agendamento</h2>
-        <form id="formAgendamento">
-            <div class="form-group">
-                <label>Nome do Cliente:</label>
-                <input type="text" id="nome_cliente" required placeholder="Ex: Izabaleee">
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fa-solid fa-scissors"></i>
+                <span>Barbearia</span>
             </div>
-            <div class="form-group">
-                <label>Telefone do Cliente (com DDD):</label>
-                <input type="text" id="telefone_cliente" required placeholder="Ex: 87996342515">
-            </div>
-            <div class="form-group">
-                <label>Barbeiro:</label>
-                <select id="barbeiro_id" required>
-                    <!-- Preenchido via JS -->
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Horário:</label>
-                <input type="datetime-local" id="horario" required>
-            </div>
-            <button type="submit">Agendar Horário</button>
-        </form>
-
-        <div class="painel-barbeiro">
-            <h2>Painel do Barbeiro (Gerenciamento)</h2>
-            <div id="containerAgendamentos">Carregando agendamentos...</div>
+            <nav class="desktop-nav">
+                <a href="#inicio">Início</a>
+                <a href="#servicos">Serviços</a>
+                <a href="#agendamento">Agendar</a>
+            </nav>
         </div>
-    </div>
+    </header>
 
-    <script>
-        async function carregarBarbeiros() {
-            try {
-                const res = await fetch('/barbeiros');
-                const barbeiros = await res.json();
-                const select = document.getElementById('barbeiro_id');
-                select.innerHTML = '';
-                barbeiros.forEach(b => {
-                    const option = document.createElement('option');
-                    option.value = b.id;
-                    option.textContent = b.nome;
-                    select.appendChild(option);
-                });
-            } catch (err) {
-                console.error('Erro ao carregar barbeiros:', err);
-            }
-        }
+    <!-- Seção Principal / Hero -->
+    <section id="inicio" class="hero-section">
+        <div class="container">
+            <h1>Estilo e Tradição</h1>
+            <p>Garanta seu horário com os melhores profissionais de forma rápida e prática.</p>
+        </div>
+    </section>
 
-        async function carregarAgendamentos() {
-            try {
-                const res = await fetch('/agendamentos');
-                const agendamentos = await res.json();
-                const container = document.getElementById('containerAgendamentos');
-                
-                if (agendamentos.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:#777;">Nenhum agendamento ativo no momento.</p>';
-                    return;
-                }
+    <!-- Seção de Agendamento -->
+    <main id="agendamento" class="container booking-container">
+        <div class="card-booking">
+            <h2>Faça seu Agendamento</h2>
+            <form id="booking-form">
+                <div class="form-group">
+                    <label for="client-name">Seu Nome</label>
+                    <input type="text" id="client-name" placeholder="Digite seu nome completo" required>
+                </div>
 
-                container.innerHTML = '';
-                agendamentos.for
-                agendamentos.forEach(a => {
-                    const card = document.createElement('div');
-                    card.className = 'card-agendamento';
-                    
-                    card.innerHTML = `
-                        <div>
-                            <strong>👤 ${a.nome_cliente}</strong> (${a.telefone_cliente})<br>
-                            <small>📅 ${a.horario.replace('T', ' ')} | 💈 ${a.barbeiro_nome}</small>
-                        </div>
-                        <div class="botoes-acao">
-                            <button class="btn-whatsapp" onclick="enviarLembrete('${a.nome_cliente}', '${a.telefone_cliente}', '${a.horario}', '${a.barbeiro_nome}')">
-                                💬 Avisar
-                            </button>
-                            <button class="btn-cancelar" onclick="cancelarAgendamento(${a.id})">
-                                ❌ Cancelar
-                            </button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (err) {
-                console.error('Erro ao carregar agendamentos:', err);
-            }
-        }
+                <div class="form-group">
+                    <label for="client-phone">Seu WhatsApp</label>
+                    <input type="tel" id="client-phone" placeholder="(XX) 9XXXX-XXXX" required>
+                </div>
 
-        // Enviar Lembrete com opções de Seguir ou Cancelar
-        function enviarLembrete(nome, telefone, horario, barbeiro) {
-            const numeroLimpo = telefone.replace(/\D/g, '');
-            const horarioFormatado = horario.replace('T', ' às ');
-            
-            const texto = `*⏰ LEMBRETE - BROOKLYN BARBEARIA*\n\nOlá, *${nome}*! Passando para lembrar do seu agendamento em *${horarioFormatado}* com *${barbeiro}*.\n\nPor favor, confirme:\n1️⃣ *Seguir com o corte*\n2️⃣ *Cancelar horário*\n\nAguardamos seu retorno! 💈`;
-            
-            const url = `https://api.whatsapp.com/send?phone=55${numeroLimpo}&text=${encodeURIComponent(texto)}`;
-            window.open(url, '_blank');
-        }
+                <div class="form-group">
+                    <label for="barber-select">Escolha o Profissional</label>
+                    <select id="barber-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="Karlos">Karlos</option>
+                        <option value="David">David</option>
+                        <option value="Dorgivan">Dorgivan</option>
+                    </select>
+                </div>
 
-        // Cancelar e liberar a vaga
-        async function cancelarAgendamento(id) {
-            if (!confirm('Deseja realmente cancelar este agendamento e liberar a vaga?')) return;
+                <div class="form-group">
+                    <label for="service-select">Escolha o Serviço</label>
+                    <select id="service-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="Corte">Corte</option>
+                        <option value="Barba">Barba</option>
+                        <option value="Corte + Barba">Corte + Barba</option>
+                    </select>
+                </div>
 
-            try {
-                const res = await fetch(`/agendamentos/${id}`, { method: 'DELETE' });
-                const data = await res.json();
-                if (data.success) {
-                    carregarAgendamentos();
-                } else {
-                    alert('Erro ao cancelar.');
-                }
-            } catch (err) {
-                console.error('Erro:', err);
-                alert('Erro ao comunicar com o servidor.');
-            }
-        }
+                <div class="form-group">
+                    <label for="booking-date">Data e Horário</label>
+                    <input type="datetime-local" id="booking-date" required>
+                </div>
 
-        document.getElementById('formAgendamento').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const nome_cliente = document.getElementById('nome_cliente').value;
-            const telefone_cliente = document.getElementById('telefone_cliente').value;
-            const barbeiro_id = document.getElementById('barbeiro_id').value;
-            const horario = document.getElementById('horario').value;
+                <button type="submit" class="btn-submit">Confirmar Agendamento via WhatsApp</button>
+            </form>
+        </div>
+    </main>
 
-            try {
-                const res = await fetch('/agendamentos', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome_cliente, telefone_cliente, barbeiro_id, horario })
-                });
-
-                const data = await res.json();
-                if (data.success) {
-                    // Abre o WhatsApp para o cliente com a confirmação imediata
-                    const selectBarbeiro = document.getElementById('barbeiro_id');
-                    const nomeBarbeiro = selectBarbeiro.options[selectBarbeiro.selectedIndex].text;
-                    const numeroLimpo = telefone_cliente.replace(/\D/g, '');
-                    
-                    const msgConfirmacao = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n🔹 Cliente: ${nome_cliente}\n🔹 Profissional: ${nomeBarbeiro}\n🔹 Horário: ${horario.replace('T', ' às ')}`;
-                    window.open(`https://api.whatsapp.com/send?phone=55${numeroLimpo}&text=${encodeURIComponent(msgConfirmacao)}`, '_blank');
-
-                    document.getElementById('formAgendamento').reset();
-                    carregarAgendamentos();
-                } else {
-                    alert(data.error || 'Erro ao realizar agendamento.');
-                }
-            } catch (err) {
-                console.error('Erro:', err);
-                alert('Erro de conexão.');
-            }
-        });
-
-        carregarBarbeiros();
-        carregarAgendamentos();
-    </script>
+    <!-- Rodapé / Navegação Inferior para Mobile -->
+    <nav class="mobile-bottom-nav">
+        <a href="#inicio" class="nav-item"><i class="fa-solid fa-house"><span>Início</span></i></a>
+        <a href="#agendamento" class="nav-item"><i class="fa-solid fa-calendar-days"><span>Agendar</span></i></a>
+    </nav>
 </body>
 </html>
