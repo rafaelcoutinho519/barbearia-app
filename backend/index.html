@@ -3,25 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brooklyn Barbearia - Agendamentos</title>
+    <title>Brooklyn Barbearia</title>
     <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-color: #d4af37;
+            --text-color: #e0e0e0;
+            --danger-color: #ff4d4d;
+            --success-color: #25D366;
+        }
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
         h1, h2 {
-            color: #d4af37;
+            color: var(--accent-color);
             text-align: center;
         }
         .form-group {
@@ -31,56 +39,80 @@
             display: block;
             margin-bottom: 5px;
             color: #b0b0b0;
+            font-weight: bold;
         }
         input, select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background: #2d2d2d;
             border: 1px solid #444;
             color: #fff;
-            border-radius: 4px;
+            border-radius: 6px;
             box-sizing: border-box;
+            font-size: 15px;
         }
         button {
             width: 100%;
-            padding: 12px;
-            background: #d4af37;
+            padding: 14px;
+            background: var(--accent-color);
             color: #121212;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             font-size: 16px;
+            transition: background 0.2s;
         }
         button:hover {
             background: #c5a028;
         }
-        .lista-agendamentos {
-            margin-top: 30px;
+        .painel-barbeiro {
+            margin-top: 40px;
+            border-top: 2px solid #333;
+            padding-top: 20px;
         }
         .card-agendamento {
             background: #252525;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border-left: 4px solid #d4af37;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 5px solid var(--accent-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+        }
+        .botoes-acao {
+            display: flex;
+            gap: 8px;
         }
         .btn-whatsapp {
-            background: #25D366;
+            background: var(--success-color);
             color: white;
             border: none;
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             width: auto;
         }
         .btn-whatsapp:hover {
             background: #20ba5a;
+        }
+        .btn-cancelar {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            width: auto;
+        }
+        .btn-cancelar:hover {
+            background: #e03e3e;
         }
     </style>
 </head>
@@ -106,20 +138,19 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Data e Horário:</label>
+                <label>Horário:</label>
                 <input type="datetime-local" id="horario" required>
             </div>
-            <button type="submit">Agendar e Enviar Confirmação</button>
+            <button type="submit">Agendar Horário</button>
         </form>
 
-        <div class="lista-agendamentos">
-            <h2>Agendamentos Realizados</h2>
-            <div id="containerAgendamentos">Carregando...</div>
+        <div class="painel-barbeiro">
+            <h2>Painel do Barbeiro (Gerenciamento)</h2>
+            <div id="containerAgendamentos">Carregando agendamentos...</div>
         </div>
     </div>
 
     <script>
-        // Carrega barbeiros ao iniciar
         async function carregarBarbeiros() {
             try {
                 const res = await fetch('/barbeiros');
@@ -137,7 +168,6 @@
             }
         }
 
-        // Carrega lista de agendamentos
         async function carregarAgendamentos() {
             try {
                 const res = await fetch('/agendamentos');
@@ -145,24 +175,29 @@
                 const container = document.getElementById('containerAgendamentos');
                 
                 if (agendamentos.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:#777;">Nenhum agendamento encontrado.</p>';
+                    container.innerHTML = '<p style="text-align:center; color:#777;">Nenhum agendamento ativo no momento.</p>';
                     return;
                 }
 
                 container.innerHTML = '';
+                agendamentos.for
                 agendamentos.forEach(a => {
                     const card = document.createElement('div');
                     card.className = 'card-agendamento';
                     
-                    // Formata data bonita se quiser
                     card.innerHTML = `
                         <div>
-                            <strong>${a.nome_cliente}</strong> (${a.telefone_cliente})<br>
-                            <small>📅 ${a.horario} | 💈 ${a.barbeiro_nome}</small>
+                            <strong>👤 ${a.nome_cliente}</strong> (${a.telefone_cliente})<br>
+                            <small>📅 ${a.horario.replace('T', ' ')} | 💈 ${a.barbeiro_nome}</small>
                         </div>
-                        <button class="btn-whatsapp" onclick="enviarLembrete('${a.nome_cliente}', '${a.telefone_cliente}', '${a.horario}', '${a.barbeiro_nome}')">
-                            💬 Lembrete
-                        </button>
+                        <div class="botoes-acao">
+                            <button class="btn-whatsapp" onclick="enviarLembrete('${a.nome_cliente}', '${a.telefone_cliente}', '${a.horario}', '${a.barbeiro_nome}')">
+                                💬 Avisar
+                            </button>
+                            <button class="btn-cancelar" onclick="cancelarAgendamento(${a.id})">
+                                ❌ Cancelar
+                            </button>
+                        </div>
                     `;
                     container.appendChild(card);
                 });
@@ -171,15 +206,35 @@
             }
         }
 
-        // Enviar Lembrete via WhatsApp (1 Clique)
+        // Enviar Lembrete com opções de Seguir ou Cancelar
         function enviarLembrete(nome, telefone, horario, barbeiro) {
             const numeroLimpo = telefone.replace(/\D/g, '');
-            const texto = `*⏰ LEMBRETE - BROOKLYN BARBEARIA*\n\nOlá, *${nome}*! Passando para lembrar do seu agendamento em *${horario}* com o profissional *${barbeiro}*.\n\nEstamos te esperando! 💈`;
+            const horarioFormatado = horario.replace('T', ' às ');
+            
+            const texto = `*⏰ LEMBRETE - BROOKLYN BARBEARIA*\n\nOlá, *${nome}*! Passando para lembrar do seu agendamento em *${horarioFormatado}* com *${barbeiro}*.\n\nPor favor, confirme:\n1️⃣ *Seguir com o corte*\n2️⃣ *Cancelar horário*\n\nAguardamos seu retorno! 💈`;
+            
             const url = `https://api.whatsapp.com/send?phone=55${numeroLimpo}&text=${encodeURIComponent(texto)}`;
             window.open(url, '_blank');
         }
 
-        // Trata o envio do formulário
+        // Cancelar e liberar a vaga
+        async function cancelarAgendamento(id) {
+            if (!confirm('Deseja realmente cancelar este agendamento e liberar a vaga?')) return;
+
+            try {
+                const res = await fetch(`/agendamentos/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    carregarAgendamentos();
+                } else {
+                    alert('Erro ao cancelar.');
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro ao comunicar com o servidor.');
+            }
+        }
+
         document.getElementById('formAgendamento').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -197,18 +252,18 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    // Dispara o WhatsApp de confirmação imediata também (como você já fazia)
+                    // Abre o WhatsApp para o cliente com a confirmação imediata
                     const selectBarbeiro = document.getElementById('barbeiro_id');
                     const nomeBarbeiro = selectBarbeiro.options[selectBarbeiro.selectedIndex].text;
                     const numeroLimpo = telefone_cliente.replace(/\D/g, '');
                     
-                    const msgConfirmacao = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n🔹 Cliente: ${nome_cliente}\n🔹 Telefone: ${telefone_cliente}\n🔹 Profissional: ${nomeBarbeiro}\n🔹 Horário: ${horario}`;
+                    const msgConfirmacao = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n🔹 Cliente: ${nome_cliente}\n🔹 Profissional: ${nomeBarbeiro}\n🔹 Horário: ${horario.replace('T', ' às ')}`;
                     window.open(`https://api.whatsapp.com/send?phone=55${numeroLimpo}&text=${encodeURIComponent(msgConfirmacao)}`, '_blank');
 
                     document.getElementById('formAgendamento').reset();
                     carregarAgendamentos();
                 } else {
-                    alert('Erro ao salvar agendamento.');
+                    alert(data.error || 'Erro ao realizar agendamento.');
                 }
             } catch (err) {
                 console.error('Erro:', err);
@@ -216,7 +271,6 @@
             }
         });
 
-        // Inicializa dados na tela
         carregarBarbeiros();
         carregarAgendamentos();
     </script>
