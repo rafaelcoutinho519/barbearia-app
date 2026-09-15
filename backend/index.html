@@ -264,17 +264,40 @@
             padding: 0 20px;
         }
 
+        /* ESTILO ELEGANTE PARA OS TÍTULOS DE SEÇÃO */
         .section-title {
             text-align: center;
             color: #fff;
-            font-size: 2.2rem;
+            font-size: 2.1rem;
             margin-bottom: 50px;
-            letter-spacing: 2.5px;
+            letter-spacing: 3px;
             text-transform: uppercase;
+            font-family: 'Georgia', serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            max-width: 80px;
+            background: linear-gradient(90deg, transparent, var(--gold));
+        }
+
+        .section-title::after {
+            background: linear-gradient(90deg, var(--gold), transparent);
         }
 
         .section-title span {
-            color: var(--gold);
+            background: linear-gradient(135deg, #fff 30%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 15px rgba(212, 175, 55, 0.25);
         }
 
         .services-grid {
@@ -374,7 +397,11 @@
                 text-align: center;
             }
             .section-title {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+                gap: 10px;
+            }
+            .section-title::before, .section-title::after {
+                max-width: 35px;
             }
         }
 
@@ -575,7 +602,7 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center 15%; /* Ajuste preciso do rosto do David */
+            object-position: center 15%;
             border: 2px solid var(--gold);
             margin: 0 auto 6px auto;
             display: block;
@@ -1169,7 +1196,6 @@
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.style.display = 'none';
             });
-            // Stop zoomed video playback when closing
             const container = document.getElementById('zoomMediaContainer');
             if (container) container.innerHTML = '';
         }
@@ -1396,7 +1422,7 @@
 
             const service = document.getElementById('scheduleService').value;
             const pro = document.getElementById('schedulePro').value;
-            const date = document.getElementById('scheduleDate').value;
+            const date = document.getElementById('scheduleData').value;
             const time = document.getElementById('scheduleTime').value;
 
             if (!pro) {
