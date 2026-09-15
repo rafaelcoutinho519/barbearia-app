@@ -390,6 +390,7 @@
             border-radius: 50%;
             border: 3px solid var(--gold);
             object-fit: cover;
+            object-position: center top; /* Centralização ajustada para rostos */
             margin-bottom: 15px;
             box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
         }
@@ -511,6 +512,7 @@
             width: 100%;
             height: 120px;
             object-fit: cover;
+            object-position: center center; /* Centralização padrão das fotos de corte */
             display: block;
             transition: transform 0.3s ease;
         }
@@ -523,6 +525,7 @@
             width: 100%;
             height: 120px;
             object-fit: cover;
+            object-position: center center;
             display: block;
         }
 
@@ -571,6 +574,7 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
+            object-position: center top;
             border: 2px solid var(--gold);
             margin: 0 auto 6px auto;
             display: block;
@@ -725,6 +729,7 @@
             border-radius: 50%;
             border: 2px solid var(--gold);
             object-fit: cover;
+            object-position: center top;
         }
 
         .appointment-details p {
@@ -956,7 +961,7 @@
             <div class="pro-showcase-card">
                 <div class="pro-top-content">
                     <div class="pro-profile-box">
-                        <img src="David/perfil.jpg" alt="David" class="pro-avatar">
+                        <img src="David/perfil.jpg" alt="David" class="pro-avatar" style="object-position: center 20%;">
                         <div class="pro-name">David</div>
                         <div class="social-buttons">
                             <a href="https://www.instagram.com/barbeirodavid87?stkn=eWNyNDd4b21pbDdi" target="_blank" class="btn-social insta">Instagram</a>
@@ -973,15 +978,15 @@
                     <h4>Modelos de Trabalhos - David</h4>
                     <div class="cuts-grid">
                         <div class="cut-item" onclick="openZoom('David/degrade-medio.jpg', 'Degradê Médio')">
-                            <img src="David/degrade-medio.jpg" alt="Degradê Médio" class="cut-img">
+                            <img src="David/degrade-medio.jpg" alt="Degradê Médio" class="cut-img" style="object-position: center center;">
                             <div class="cut-title">Degradê Médio</div>
                         </div>
                         <div class="cut-item" onclick="openZoom('David/degrade-skin-fade.jpg', 'Degradê Skin Fade')">
-                            <img src="David/degrade-skin-fade.jpg" alt="Degradê Skin Fade" class="cut-img">
+                            <img src="David/degrade-skin-fade.jpg" alt="Degradê Skin Fade" class="cut-img" style="object-position: center center;">
                             <div class="cut-title">Degradê Skin Fade</div>
                         </div>
                         <div class="cut-item">
-                            <video src="David/low-fade.mp4" class="cut-video" autoplay muted loop playsinline></video>
+                            <video src="David/low-fade.mp4" class="cut-video" style="object-position: center center;" autoplay muted loop playsinline></video>
                             <div class="cut-title">Low Fade</div>
                         </div>
                     </div>
