@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel dos Barbeiros</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e1e1e; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; }
+        input, select, button { width: 100%; padding: 12px; margin-top: 15px; border-radius: 4px; border: 1px solid #444; background: #2b2b2b; color: #fff; box-sizing: border-box; }
+        button { background: #d4af37; color: #000; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background: #c5a028; }
+        .hidden { display: none; }
+        .agendamento-item { background: #252525; padding: 10px; margin-top: 10px; border-radius: 4px; text-align: left; }
+    </style>
+</head>
+<body>
 
+    <div class="card" id="login-card">
+        <h2>Painel dos Barbeiros</h2>
+        <select id="barbeiro">
+            <option value="Karlos">Karlos</option>
+            <option value="Dorgivan">Dorgivan</option>
+            <option value="David">David</option>
+        </select>
+        <input type="password" id="pin" placeholder="Digite seu PIN" maxlength="4">
+        <button onclick="logar()">Entrar</button>
+    </div>
+
+    <div class="card hidden" id="painel-card">
+        <h2 id="titulo-painel">Agenda</h2>
+        <div id="agenda-lista" style="max-height: 300px; overflow-y: auto;"></div>
+        <button onclick="logout()" style="background: #444; color: #fff; margin-top: 20px;">Sair</button>
+    </div>
+
+    <script>
+        const pins = { "Karlos": "1234", "Dorgivan": "5678", "David": "9876" };
+
+        function logar() {
+            const barbeiro = document.getElementById('barbeiro').value;
+            const pin = document.getElementById('pin').value;
+
+            if (pins[barbeiro] === pin) {
+                document.getElementById('login-card').classList.add('hidden');
+                document.getElementById('painel-card').classList.remove('hidden');
+                document.getElementById('titulo-painel').innerText = `Agenda de ${barbeiro}`;
+                carregarAgenda(barbeiro);
+            } else {
+                alert('PIN incorreto!');
+            }
+        }
+
+        function carregarAgenda(barbeiro) {
+            const lista = document.getElementById('agenda-lista');
+            lista.innerHTML = 'Carregando...';
+
+            // Requisição para buscar os agendamentos do barbeiro logado
+            fetch(`/api/agendamentos?barbeiro=${encodeURIComponent(barbeiro)}`)
+                .then(res => res.json())
+                .then(dados => {
+                    lista.innerHTML = '';
+                    if (dados.length === 0) {
+                        lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhum agendamento encontrado.</p>';
+                        return;
+                    }
+                    dados.forEach(item => {
+                        lista.innerHTML += `
+                            <div class="agendamento-item">
+                                <strong>Cliente:</strong> ${item.cliente || item.nome}<br>
+                                <strong>Serviço:</strong> ${item.servico}<br>
+                                <strong>Data/Hora:</strong> ${item.data || item.horario}
+                            </div>
+                        `;
+                    });
+                })
+                .catch(() => {
+                    lista.innerHTML = '<p style="color: #ff6b6b; text-align: center;">Erro ao carregar agendamentos.</p>';
+                });
+        }
+
+        function logout() {
+            document.getElementById('pin').value = '';
+            document.getElementById('painel-card').classList.add('hidden');
+            document.getElementById('login-card').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
