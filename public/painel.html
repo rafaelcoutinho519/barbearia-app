@@ -66,20 +66,23 @@
                         const telLimpo = (item.telefone_cliente || '').replace(/\D/g, '');
                         const numeroFinal = telLimpo.startsWith('55') ? telLimpo : '55' + telLimpo;
 
-                        const mensagem = 
-`NOVO AGENDAMENTO - BROOKLYN BARBEARIA
+                        const nomeCliente = item.nome_cliente || item.nome || 'Cliente';
+                        const telCliente = item.telefone_cliente || '';
+                        const servicoCliente = item.servico || 'Corte';
+                        const horarioCliente = item.horario || '';
 
-- Cliente: ${item.nome_cliente || item.nome}
-- Telefone: ${item.telefone_cliente || ''}
-- Serviço: ${item.servico || 'Não informado'}
-- Data/Hora: ${item.horario}`;
+                        const mensagem = "*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n" +
+                                         "*Cliente:* " + nomeCliente + "\n" +
+                                         "*Telefone:* " + telCliente + "\n" +
+                                         "*Serviço:* " + servicoCliente + "\n" +
+                                         "*Data/Hora:* " + horarioCliente;
 
                         const linkWhatsApp = `https://wa.me/${numeroFinal}?text=${encodeURIComponent(mensagem)}`;
 
                         lista.innerHTML += `
                             <div class="agendamento-item">
-                                <strong>Cliente:</strong> ${item.nome_cliente || item.nome}<br>
-                                <strong>Tel:</strong> ${item.telefone_cliente || ''} | <strong>Data/Hora:</strong> ${item.horario}<br>
+                                <strong>Cliente:</strong> ${nomeCliente}<br>
+                                <strong>Tel:</strong> ${telCliente} | <strong>Data/Hora:</strong> ${horarioCliente}<br>
                                 <div style="margin-top: 10px; display: flex; gap: 10px;">
                                     <a href="${linkWhatsApp}" target="_blank" style="background: #25d366; color: #000; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; flex: 1;">WhatsApp</a>
                                     <button onclick="cancelarAgendamento(${item.id})" style="background: #a94442; color: #fff; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: auto; margin-top: 0; flex: 1;">Cancelar</button>
