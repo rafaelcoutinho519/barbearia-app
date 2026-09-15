@@ -20,6 +20,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Rota para o Painel dos Barbeiros (puxando da pasta public na raiz)
+app.get('/painel', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/painel.html'));
+});
+
 const db = new Database('database.sqlite');
 
 db.exec(`
@@ -53,14 +58,24 @@ app.get('/barbeiros', (req, res) => {
     res.json(barbeiros);
 });
 
-// Lista apenas agendamentos ativos
+// Lista apenas agendamentos ativos (suporta filtro por nome do barbeiro para o painel)
 app.get('/agendamentos', (req, res) => {
-    const agendamentos = db.prepare(`
-        SELECT agendamentos.*, barbeiros.nome as barbeiro_nome 
+    const { barbeiro } = req.query;
+    
+    let query = `
+        SELECT agendamentos.*, barbeiros.nome as barbeiro_nome, barbeiros.nome as nome, barbeiros.nome as barbeiro 
         FROM agendamentos 
         JOIN barbeiros ON agendamentos.barbeiro_id = barbeiros.id
         WHERE agendamentos.status = 'ativo'
-    `).all();
+    `;
+    
+    if (barbeiro) {
+        query += ` AND barbeiros.nome = ?`;
+        const agendamentos = db.prepare(query).all(barbeiro);
+        return res.json(agendamentos);
+    }
+
+    const agendamentos = db.prepare(query).all();
     res.json(agendamentos);
 });
 
