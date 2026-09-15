@@ -12,19 +12,14 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-
-// Servir arquivos estáticos da pasta atual
 app.use(express.static(__dirname));
 
-// Rota raiz para retornar o index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Conexão com o Banco SQLite
 const db = new Database('database.sqlite');
 
-// Criação das tabelas necessárias
 db.exec(`
     CREATE TABLE IF NOT EXISTS barbeiros (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,12 +33,11 @@ db.exec(`
         telefone_cliente TEXT,
         horario TEXT,
         barbeiro_id INTEGER,
-        lembrete_enviado INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'ativo',
         FOREIGN KEY(barbeiro_id) REFERENCES barbeiros(id)
     );
 `);
 
-// Cadastra os 3 barbeiros iniciais se a tabela estiver vazia
 const totalBarbeiros = db.prepare('SELECT COUNT(*) as count FROM barbeiros').get().count;
 if (totalBarbeiros === 0) {
     const insertBarbeiro = db.prepare('INSERT INTO barbeiros (nome, telefone) VALUES (?, ?)');
@@ -52,34 +46,51 @@ if (totalBarbeiros === 0) {
     insertBarbeiro.run('Dorgivan', '');
 }
 
-// Rota para listar barbeiros
 app.get('/barbeiros', (req, res) => {
     const barbeiros = db.prepare('SELECT * FROM barbeiros').all();
     res.json(barbeiros);
 });
 
-// Rota para listar agendamentos
+// Lista apenas agendamentos ativos
 app.get('/agendamentos', (req, res) => {
     const agendamentos = db.prepare(`
         SELECT agendamentos.*, barbeiros.nome as barbeiro_nome 
         FROM agendamentos 
         JOIN barbeiros ON agendamentos.barbeiro_id = barbeiros.id
+        WHERE agendamentos.status = 'ativo'
     `).all();
     res.json(agendamentos);
 });
 
-// Rota para criar agendamento (com disparo imediato de teste do lembrete)
+// Criar agendamento (verifica se o horário já está ocupado por agendamento ativo)
 app.post('/agendamentos', (req, res) => {
     const { nome_cliente, telefone_cliente, horario, barbeiro_id } = req.body;
     
     try {
-        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, horario, barbeiro_id, lembrete_enviado) VALUES (?, ?, ?, ?, 1)');
-        const info = stmt.run(nome_cliente, telefone_cliente, horario, barbeiro_id);
-        
-        // LOG DE TESTE: Simula o disparo imediato para você conferir nos logs do Railway se a mensagem foi enviada para o número
-        console.log(`[TESTE DE LEMBRETE DISPARADO] Enviando aviso prévio para o cliente ${nome_cliente} no número ${telefone_cliente} referente ao horário ${horario}`);
+        const existente = db.prepare(`
+            SELECT * FROM agendamentos 
+            WHERE barbeiro_id = ? AND horario = ? AND status = 'ativo'
+        `).get(barbeiro_id, horario);
+
+        if (existente) {
+            return res.status(400).json({ error: 'Este horário já está ocupado.' });
+        }
+
+        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, horario, barbeiro_id, status) VALUES (?, ?, ?, ?, ?)');
+        const info = stmt.run(nome_cliente, telefone_cliente, horario, barbeiro_id, 'ativo');
         
         res.json({ id: info.lastInsertRowid, success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rota para cancelar o agendamento e liberar a vaga
+app.delete('/agendamentos/:id', (req, res) => {
+    const { id } = req.params;
+    try {
+        db.prepare("UPDATE agendamentos SET status = 'cancelado' WHERE id = ?").run(id);
+        res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
