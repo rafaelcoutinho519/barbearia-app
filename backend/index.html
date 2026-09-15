@@ -264,7 +264,6 @@
             padding: 0 20px;
         }
 
-        /* TÍTULOS DE SEÇÃO ELEGANTES */
         .section-title {
             text-align: center;
             color: #fff;
@@ -300,7 +299,6 @@
             text-shadow: 0 2px 15px rgba(212, 175, 55, 0.25);
         }
 
-        /* NOVOS ESTILOS REFINADOS PARA OS SERVIÇOS */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -456,13 +454,6 @@
                 grid-template-columns: 1fr;
                 text-align: center;
             }
-            .section-title {
-                font-size: 1.5rem;
-                gap: 10px;
-            }
-            .section-title::before, .section-title::after {
-                max-width: 35px;
-            }
         }
 
         .pro-profile-box {
@@ -595,7 +586,7 @@
             border-color: var(--gold);
         }
 
-        .cut-img {
+        .cut-img, .cut-video {
             width: 100%;
             height: 120px;
             object-fit: cover;
@@ -608,15 +599,6 @@
             transform: scale(1.05);
         }
 
-        .cut-video {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            object-position: center center;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
         .cut-title {
             padding: 10px 8px;
             font-size: 0.8rem;
@@ -627,7 +609,6 @@
             font-weight: 700;
             letter-spacing: 0.8px;
             border-top: 1px solid rgba(212, 175, 55, 0.2);
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
         .pro-selector-grid {
@@ -706,40 +687,6 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             font-size: 1.3rem;
-            text-align: center;
-        }
-
-        #imageZoomModal {
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 6000;
-        }
-
-        .zoom-container {
-            position: relative;
-            max-width: 90vw;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .zoomed-image, .zoomed-video {
-            max-width: 85vw;
-            max-height: 75vh;
-            border-radius: 8px;
-            border: 2px solid var(--gold);
-            object-fit: contain;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
-            background: #000;
-        }
-
-        .zoom-caption {
-            color: var(--gold-light);
-            margin-top: 15px;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
             text-align: center;
         }
 
@@ -863,6 +810,7 @@
                 <li><a href="#servicos">Serviços</a></li>
                 <li><a href="#profissionais">Profissionais</a></li>
                 <li><a href="#" onclick="openAppointments()">Meus Agendamentos</a></li>
+                <li><a href="#" onclick="openModal('barberAreaModal')" style="color: var(--gold);">Área do Barbeiro</a></li>
                 <li id="userAuthNav">
                     <a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>
                 </li>
@@ -879,13 +827,13 @@
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
             Serviços
         </a>
-        <a href="#profissionais" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            Profissionais
-        </a>
         <button onclick="openAppointments()" class="mobile-nav-item">
             <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
             Agenda
+        </button>
+        <button onclick="openModal('barberAreaModal')" class="mobile-nav-item" style="color: var(--gold);">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.02-.42 1.95-1.07 2.75z"/></svg>
+            Barbeiro
         </button>
         <button onclick="handleAuthNavClick()" class="mobile-nav-item" id="mobileAuthBtn">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
@@ -901,194 +849,7 @@
         <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
     </section>
 
-    <div class="info-section">
-        <div class="info-card">
-            <h3>Horário de Atendimento</h3>
-            <p><strong>Segunda a Quinta:</strong> 09h às 19:30<br><strong>Sexta e Sábado:</strong> 09h às 20:00</p>
-        </div>
-        <div class="info-card">
-            <h3>Localização</h3>
-            <p>Praça João Borrego<br>Capoeiras - PE, 55365-000</p>
-        </div>
-        <div class="info-card">
-            <h3>Redes Sociais</h3>
-            <p>Acompanhe nosso Instagram oficial:<br><a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank">@brooklynbarbearia_87</a></p>
-        </div>
-    </div>
-
-    <div class="container" id="servicos">
-        <h2 class="section-title">Nossos <span>Serviços</span></h2>
-        <div class="services-grid">
-            <!-- BARBA -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h18v8zM6 10h2v4H6z"/></svg>
-                    </div>
-                    <h4>Barba</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 10,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- BARBA COM PIGMENTAÇÃO -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19l1.39 1.39 1.63-1.62C8.93 19.26 10.42 19.5 12 19.5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
-                    </div>
-                    <h4>Barba com Pigmentação</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 20,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- BARBA + PEZINHO -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8z"/></svg>
-                    </div>
-                    <h4>Barba + Pezinho</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 15,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- CABELO -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                    </div>
-                    <h4>Cabelo</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 20,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- CABELO + BARBA + SOBRANCELHA -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    </div>
-                    <h4>Cabelo + Barba + Sobrancelha</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 33,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- CORTE COM PIGMENTAÇÃO -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19l1.39 1.39 1.63-1.62C8.93 19.26 10.42 19.5 12 19.5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
-                    </div>
-                    <h4>Corte com Pigmentação</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 40,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 80 min</span>
-                </div>
-            </div>
-
-            <!-- LUZES NORMAL -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-                    </div>
-                    <h4>Luzes Normal</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 40,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- LUZES PLATINADA -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-                    </div>
-                    <h4>Luzes Platinada</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 60,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- PEZINHO -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Pezinho')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8z"/></svg>
-                    </div>
-                    <h4>Pezinho</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 5,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 20 min</span>
-                </div>
-            </div>
-
-            <!-- PLATINADO -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Platinado')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-                    </div>
-                    <h4>Platinado</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 100,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- PROGRESSIVA -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Progressiva')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                    </div>
-                    <h4>Progressiva</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 50,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
-                </div>
-            </div>
-
-            <!-- SOBRANCELHA -->
-            <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                    </div>
-                    <h4>Sobrancelha</h4>
-                </div>
-                <div class="service-footer">
-                    <span class="price-tag">R$ 5,00</span>
-                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 20 min</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- ÁREA DOS PROFISSIONAIS -->
     <div class="profissionais-section" id="profissionais">
         <div class="container" style="margin: 0 auto; max-width: 1100px;">
             <h2 class="section-title">Nossos <span>Profissionais</span></h2>
@@ -1100,7 +861,7 @@
                         <img src="Karlos/perfil.png" alt="Karlos" class="pro-avatar">
                         <div class="pro-name">Karlos</div>
                         <div class="social-buttons">
-                            <a href="https://www.instagram.com/karllosbarbeiro?stkn=MWEzbnU4bng3MnJ1NA%3D%3D" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://www.instagram.com/karllosbarbeiro" target="_blank" class="btn-social insta">Instagram</a>
                             <a href="https://wa.me/5587996289373" target="_blank" class="btn-social">WhatsApp</a>
                         </div>
                     </div>
@@ -1108,23 +869,6 @@
                         <h3>Sobre o Profissional</h3>
                         <p>Especialista em cortes modernos, degradê navalhado e visagismo. Foco total em entregar um atendimento de alto padrão e estilo único para cada cliente.</p>
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
-                    </div>
-                </div>
-                <div class="pro-cuts-gallery">
-                    <h4>Modelos de Trabalhos - Karlos</h4>
-                    <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('Karlos/tesoura.jpeg', 'Corte na Tesoura', 'image')">
-                            <img src="Karlos/tesoura.jpeg" alt="Tesoura" class="cut-img">
-                            <div class="cut-title">Corte na Tesoura</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('Karlos/low-fade.jpeg', 'Low Fade', 'image')">
-                            <img src="Karlos/low-fade.jpeg" alt="Low Fade" class="cut-img">
-                            <div class="cut-title">Low Fade</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('Karlos/mid-fade.jpeg', 'Mid Fade', 'image')">
-                            <img src="Karlos/mid-fade.jpeg" alt="Mid Fade" class="cut-img">
-                            <div class="cut-title">Mid Fade</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1136,31 +880,14 @@
                         <img src="Dorgivan/perfil.jpg" alt="Dorgivan" class="pro-avatar">
                         <div class="pro-name">Dorgivan</div>
                         <div class="social-buttons">
-                            <a href="https://www.instagram.com/barbeiro_dorgi?stkn=MWpvaXdwbnRhZ2xnNQ%3D%3D" target="_blank" class="btn-social insta">Instagram</a>
-                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                            <a href="https://www.instagram.com/barbeiro_dorgi" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://wa.me/558796173768" target="_blank" class="btn-social">WhatsApp</a>
                         </div>
                     </div>
                     <div class="pro-details">
                         <h3>Sobre o Profissional</h3>
                         <p>Especialista em cortes modernos, acabamentos precisos e visagismo. Foco total em entregar um estilo único e de alta qualidade para cada cliente.</p>
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
-                    </div>
-                </div>
-                <div class="pro-cuts-gallery">
-                    <h4>Modelos de Trabalhos - Dorgivan</h4>
-                    <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('Dorgivan/corte-americano.jpg', 'Corte Americano', 'image')">
-                            <img src="Dorgivan/corte-americano.jpg" alt="Corte Americano" class="cut-img">
-                            <div class="cut-title">Corte Americano</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('Dorgivan/moicano.jpg', 'Moicano', 'image')">
-                            <img src="Dorgivan/moicano.jpg" alt="Moicano" class="cut-img">
-                            <div class="cut-title">Moicano</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('Dorgivan/barba-pigmentada.jpg', 'Barba Pigmentada', 'image')">
-                            <img src="Dorgivan/barba-pigmentada.jpg" alt="Barba Pigmentada" class="cut-img">
-                            <div class="cut-title">Barba Pigmentada</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1172,8 +899,8 @@
                         <img src="David/perfil.jpg" alt="David" class="pro-avatar" style="object-position: center 20%;">
                         <div class="pro-name">David</div>
                         <div class="social-buttons">
-                            <a href="https://www.instagram.com/barbeirodavid87?stkn=eWNyNDd4b21pbDdi" target="_blank" class="btn-social insta">Instagram</a>
-                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                            <a href="https://www.instagram.com/barbeirodavid87" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://wa.me/558796238237" target="_blank" class="btn-social">WhatsApp</a>
                         </div>
                     </div>
                     <div class="pro-details">
@@ -1182,33 +909,31 @@
                         <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
                     </div>
                 </div>
-                <div class="pro-cuts-gallery">
-                    <h4>Modelos de Trabalhos - David</h4>
-                    <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('David/degrade-medio.jpg', 'Degradê Médio', 'image')">
-                            <img src="David/degrade-medio.jpg" alt="Degradê Médio" class="cut-img">
-                            <div class="cut-title">Degradê Médio</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('David/degrade-skin-fade.jpg', 'Degradê Skin Fade', 'image')">
-                            <img src="David/degrade-skin-fade.jpg" alt="Degradê Skin Fade" class="cut-img">
-                            <div class="cut-title">Degradê Skin Fade</div>
-                        </div>
-                        <div class="cut-item" onclick="openZoom('David/low-fade.mp4', 'Low Fade', 'video')">
-                            <video src="David/low-fade.mp4" class="cut-video" autoplay muted loop playsinline></video>
-                            <div class="cut-title">Low Fade</div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE ZOOM / AMPLIAR MÍDIA -->
-    <div id="imageZoomModal" class="modal" onclick="closeAllModals()">
-        <div class="zoom-container" onclick="event.stopPropagation()">
+    <!-- MODAL: ÁREA DO BARBEIRO -->
+    <div id="barberAreaModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <div id="zoomMediaContainer" style="display: flex; justify-content: center; align-items: center;"></div>
-            <div id="zoomedCaption" class="zoom-caption"></div>
+            <h3>Área do Barbeiro</h3>
+            <div class="form-group">
+                <label>Selecione seu perfil</label>
+                <select id="barberSelect" onchange="renderBarberSchedule()">
+                    <option value="">Escolher Barbeiro</option>
+                    <option value="Karlos">Karlos</option>
+                    <option value="Dorgivan">Dorgivan</option>
+                    <option value="David">David</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="barberDateFilter" onchange="renderBarberSchedule()">
+            </div>
+            <div id="barberAppointmentsContainer" style="margin-top: 15px; max-height: 300px; overflow-y: auto;">
+                <p style="color: var(--text-muted); text-align: center;">Selecione o barbeiro e a data para ver os agendamentos.</p>
+            </div>
         </div>
     </div>
 
@@ -1224,22 +949,15 @@
                         <option value="">Selecione o serviço</option>
                         <option value="Barba">Barba - R$ 10,00</option>
                         <option value="Barba com Pigmentação">Barba com Pigmentação - R$ 20,00</option>
-                        <option value="Barba + Pezinho">Barba + Pezinho - R$ 15,00</option>
                         <option value="Cabelo">Cabelo - R$ 20,00</option>
                         <option value="Cabelo + Barba + Sobrancelha">Cabelo + Barba + Sobrancelha - R$ 33,00</option>
                         <option value="Corte com Pigmentação">Corte com Pigmentação - R$ 40,00</option>
-                        <option value="Luzes Normal">Luzes Normal - R$ 40,00</option>
-                        <option value="Luzes Platinada">Luzes Platinada - R$ 60,00</option>
-                        <option value="Pezinho">Pezinho - R$ 5,00</option>
-                        <option value="Platinado">Platinado - R$ 100,00</option>
-                        <option value="Progressiva">Progressiva - R$ 50,00</option>
-                        <option value="Sobrancelha">Sobrancelha - R$ 5,00</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Profissional</label>
-                    <input type="hidden" id="schedulePro" required onchange="updateAvailableTimes()">
+                    <input type="hidden" id="schedulePro" required>
                     <div class="pro-selector-grid">
                         <div class="pro-option-card" id="card-Karlos" onclick="selectProOption('Karlos')">
                             <img src="Karlos/perfil.png" class="pro-option-img" alt="Karlos">
@@ -1258,7 +976,7 @@
 
                 <div class="form-group">
                     <label>Data</label>
-                    <input type="date" id="scheduleDate" required onchange="validateDateAndTimes()">
+                    <input type="date" id="scheduleDate" required onchange="updateAvailableTimes()">
                 </div>
                 <div class="form-group">
                     <label>Horário</label>
@@ -1275,9 +993,8 @@
     <div id="authModal" class="modal" onclick="closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <h3 id="authModalTitle">Identificação</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">Insira seu nome e número de WhatsApp para acessar ou cadastrar.</p>
-            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+            <h3>Identificação</h3>
+            <form onsubmit="handleAuthSubmit(event)">
                 <div class="form-group">
                     <label>Nome Completo</label>
                     <input type="text" id="authName" placeholder="Ex: João Silva" required>
@@ -1286,7 +1003,7 @@
                     <label>Telefone / WhatsApp</label>
                     <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" required>
                 </div>
-                <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Continuar</button>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Continuar</button>
             </form>
         </div>
     </div>
@@ -1296,7 +1013,6 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3>Meus Agendamentos</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">* Em caso de cancelamento, avise com pelo menos 1h de antecedência.</p>
             <div id="appointmentsList" style="color: var(--text-muted); text-align: center; padding: 10px 0;">
                 Você ainda não possui agendamentos ativos.
             </div>
@@ -1304,10 +1020,11 @@
     </div>
 
     <script>
+        // Números de WhatsApp atualizados com os corretos fornecidos
         const barberPhones = {
             "Karlos": "5587996289373",
-            "Dorgivan": "5581999999999",
-            "David": "5581999999999"
+            "Dorgivan": "558796173768",
+            "David": "558796238237"
         };
 
         const barberImages = {
@@ -1316,20 +1033,13 @@
             "David": "David/perfil.jpg"
         };
 
-        let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
 
         function updateAuthUI() {
             const navLink = document.getElementById('userAuthNav');
             const mobileBtn = document.getElementById('mobileAuthBtn');
-            
             if (currentUser) {
-                navLink.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="color: var(--gold); font-weight: 600;">Olá, ${currentUser.name.split(' ')[0]}</span>
-                        <button onclick="logoutUser()" style="color: var(--text-muted); background: none; border: 1px solid var(--card-border); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Sair</button>
-                    </div>
-                `;
+                navLink.innerHTML = `<span style="color: var(--gold); font-weight: 600;">Olá, ${currentUser.name.split(' ')[0]}</span> <button onclick="logoutUser()" style="color: var(--text-muted); background: none; border: none; cursor: pointer; margin-left: 10px;">Sair</button>`;
                 mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Sair`;
             } else {
                 navLink.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
@@ -1339,9 +1049,7 @@
 
         function handleAuthNavClick() {
             if (currentUser) {
-                if (confirm('Deseja sair da sua conta?')) {
-                    logoutUser();
-                }
+                if (confirm('Deseja sair da sua conta?')) logoutUser();
             } else {
                 openModal('authModal');
             }
@@ -1351,37 +1059,26 @@
             currentUser = null;
             localStorage.removeItem('brooklyn_current_user');
             updateAuthUI();
-            alert('Você saiu da sua conta com sucesso.');
+            alert('Você saiu da sua conta.');
         }
 
         function openModal(modalId) {
             closeAllModals();
             document.getElementById(modalId).style.display = 'flex';
-        }
-
-        function openZoom(mediaSrc, captionText, mediaType) {
-            closeAllModals();
-            const container = document.getElementById('zoomMediaContainer');
-            if (mediaType === 'video') {
-                container.innerHTML = `<video src="${mediaSrc}" class="zoomed-video" controls autoplay loop playsinline></video>`;
-            } else {
-                container.innerHTML = `<img src="${mediaSrc}" alt="Zoom" class="zoomed-image">`;
+            if (modalId === 'barberAreaModal') {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('barberDateFilter').value = today;
+                renderBarberSchedule();
             }
-            document.getElementById('zoomedCaption').innerText = captionText;
-            document.getElementById('imageZoomModal').style.display = 'flex';
         }
 
         function closeAllModals() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
-            const container = document.getElementById('zoomMediaContainer');
-            if (container) container.innerHTML = '';
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
         }
 
         function openAppointments() {
             if (!currentUser) {
-                alert('Você precisa se identificar com nome e telefone para ver os agendamentos!');
+                alert('Identifique-se primeiro.');
                 openModal('authModal');
                 return;
             }
@@ -1395,45 +1092,75 @@
             const userApps = appointments.filter(a => a.phone === currentUser.phone);
 
             if (userApps.length === 0) {
-                listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Você ainda não possui agendamentos ativos.</p>';
+                listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Nenhum agendamento ativo.</p>';
             } else {
-                listContainer.innerHTML = userApps.map((app) => `
+                listContainer.innerHTML = userApps.map(app => `
                     <div class="appointment-card-modern">
                         <div class="appointment-header">
                             <span class="appointment-service">${app.service}</span>
-                            <span style="font-size: 0.8rem; color: var(--gold);">Ativo</span>
                         </div>
                         <div class="appointment-info">
-                            <img src="${barberImages[app.pro]}" alt="${app.pro}" class="appointment-pro-img">
+                            <img src="${barberImages[app.pro]}" class="appointment-pro-img">
                             <div class="appointment-details">
-                                <p>Profissional: <strong>${app.pro}</strong></p>
-                                <p>Data e Hora: <strong>${app.date} às ${app.time}</strong></p>
+                                <p>Barbeiro: <strong>${app.pro}</strong></p>
+                                <p>Data/Hora: <strong>${app.date} às ${app.time}</strong></p>
                             </div>
                         </div>
-                        <button class="btn-cancel-modern" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
+                        <button class="btn-cancel-modern" onclick="cancelAppointment(${app.id})">Cancelar e Liberar Vaga</button>
                     </div>
                 `).join('');
             }
         }
 
         function cancelAppointment(appId) {
-            if (confirm('Tem certeza que deseja cancelar este agendamento? Lembre-se de avisar o barbeiro com pelo menos 1h de antecedência.')) {
+            if (confirm('Deseja realmente cancelar? A vaga será liberada imediatamente.')) {
                 let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-                const appToCancel = appointments.find(a => a.id === appId);
-                
                 appointments = appointments.filter(a => a.id !== appId);
                 localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-                
                 renderAppointmentsList();
-                updateAvailableTimes();
-                alert('Agendamento cancelado com sucesso.');
-
-                if (appToCancel && barberPhones[appToCancel.pro]) {
-                    const phone = barberPhones[appToCancel.pro];
-                    const msg = `*CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}.`;
-                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-                }
+                alert('Agendamento cancelado com sucesso. Vaga liberada no site.');
             }
+        }
+
+        // Renderiza a Área do Barbeiro para disparar o lembrete/confirmação com 1 clique
+        function renderBarberSchedule() {
+            const barber = document.getElementById('barberSelect').value;
+            const date = document.getElementById('barberDateFilter').value;
+            const container = document.getElementById('barberAppointmentsContainer');
+
+            if (!barber || !date) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Selecione o barbeiro e a data.</p>';
+                return;
+            }
+
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            const filtered = appointments.filter(a => a.pro === barber && a.date === date);
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 10px;">Nenhum cliente agendado para esta data.</p>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(app => `
+                <div class="appointment-card-modern">
+                    <div class="appointment-header">
+                        <span class="appointment-service">${app.time} - ${app.service}</span>
+                    </div>
+                    <div class="appointment-details" style="margin-top: 5px;">
+                        <p>Cliente: <strong>${app.clientName}</strong></p>
+                        <p>Tel: <strong>${app.phone}</strong></p>
+                    </div>
+                    <button class="btn-primary" style="padding: 6px 12px; font-size: 0.75rem; margin-top: 10px; width: 100%;" onclick="sendWhatsAppReminder('${app.pro}', '${app.clientName}', '${app.service}', '${app.date}', '${app.time}', '${app.phone}')">
+                        📲 Enviar WhatsApp (Confirmar/Cancelar)
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function sendWhatsAppReminder(pro, clientName, service, date, time, clientPhone) {
+            const phoneNum = barberPhones[pro];
+            const msg = `Olá, *${clientName}*! Aqui é do *Brooklyn Barbearia*. Passando para confirmar seu horário de *${service}* com *${pro}* hoje às *${time}* (${date}). Por favor, responda se deseja **CONFIRMAR** ou **CANCELAR** o corte.`;
+            window.open(`https://wa.me/55${clientPhone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function selectServiceAndSchedule(serviceName) {
@@ -1448,57 +1175,18 @@
 
         function selectProOption(proName) {
             document.getElementById('schedulePro').value = proName;
-            document.querySelectorAll('.pro-option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            const targetCard = document.getElementById(`card-${proName}`);
-            if (targetCard) {
-                targetCard.classList.add('selected');
-            }
+            document.querySelectorAll('.pro-option-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`card-${proName}`).classList.add('selected');
             updateAvailableTimes();
         }
 
-        function validateDateAndTimes() {
-            const dateInput = document.getElementById('scheduleDate');
-            const selectedDateStr = dateInput.value;
-
-            if (selectedDateStr) {
-                const [year, month, day] = selectedDateStr.split('-');
-                const dateObj = new Date(year, month - 1, day);
-                
-                if (dateObj.getDay() === 0) {
-                    alert('A barbearia não funciona aos domingos. Por favor, escolha outro dia.');
-                    dateInput.value = '';
-                    document.getElementById('scheduleTime').innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
-                    return;
-                }
-            }
-
-            updateAvailableTimes();
-        }
-
-        function generateTimeSlots(dayOfWeek) {
+        function generateTimeSlots() {
             let slots = [];
-            let endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
-            let endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
-
-            let currentHour = 9;
-            let currentMinute = 0;
-
-            while (true) {
-                let hStr = String(currentHour).padStart(2, '0');
-                let mStr = String(currentMinute).padStart(2, '0');
-                slots.push(`${hStr}:${mStr}`);
-
-                currentMinute += 40;
-                if (currentMinute >= 60) {
-                    currentHour += Math.floor(currentMinute / 60);
-                    currentMinute = currentMinute % 60;
-                }
-
-                if (currentHour > endHour || (currentHour === endHour && currentMinute > endMinute)) {
-                    break;
-                }
+            let h = 9, m = 0;
+            while (h < 19 || (h === 19 && m <= 30)) {
+                slots.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
+                m += 40;
+                if (m >= 60) { h += Math.floor(m/60); m %= 60; }
             }
             return slots;
         }
@@ -1509,142 +1197,69 @@
             const timeSelect = document.getElementById('scheduleTime');
 
             if (!pro || !dateStr) {
-                timeSelect.innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
+                timeSelect.innerHTML = '<option value="">Selecione profissional e data</option>';
                 return;
             }
 
-            const [year, month, day] = dateStr.split('-');
-            const dateObj = new Date(year, month - 1, day);
-            const dayOfWeek = dateObj.getDay();
-
-            const allPossibleTimes = generateTimeSlots(dayOfWeek);
+            const allSlots = generateTimeSlots();
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            
-            const bookedTimes = appointments
-                .filter(a => a.pro === pro && a.date === dateStr)
-                .map(a => a.time);
+            const booked = appointments.filter(a => a.pro === pro && a.date === dateStr).map(a => a.time);
 
-            let optionsHtml = '<option value="">Selecione o horário</option>';
-            let availableCount = 0;
-
-            allPossibleTimes.forEach(time => {
-                if (bookedTimes.includes(time)) {
-                    optionsHtml += `<option value="${time}" disabled style="color: #555; background: #111;">${time} (Indisponível)</option>`;
+            let html = '<option value="">Selecione o horário</option>';
+            allSlots.forEach(time => {
+                if (booked.includes(time)) {
+                    html += `<option value="${time}" disabled style="color:#555;">${time} (Indisponível)</option>`;
                 } else {
-                    optionsHtml += `<option value="${time}">${time}</option>`;
-                    availableCount++;
+                    html += `<option value="${time}">${time}</option>`;
                 }
             });
-
-            if (availableCount === 0) {
-                optionsHtml = '<option value="">Nenhum horário disponível para esta data</option>';
-            }
-
-            timeSelect.innerHTML = optionsHtml;
-        }
-
-        function checkReminders() {
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const now = new Date();
-
-            appointments.forEach(app => {
-                const [year, month, day] = app.date.split('-');
-                const [hour, minute] = app.time.split(':');
-                const appDate = new Date(year, month - 1, day, hour, minute);
-
-                const diffMinutes = (appDate - now) / (1000 * 60);
-
-                if (diffMinutes > 55 && diffMinutes <= 60 && !app.reminderSent) {
-                    app.reminderSent = true;
-                    localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-
-                    if (barberPhones[app.pro]) {
-                        const phoneNum = barberPhones[app.pro];
-                        const confirmMsg = `*LEMBRETE DE AGENDAMENTO - 1H ANTES*\n\nOlá, ${app.clientName}! Seu horário para *${app.service}* com *${app.pro}* é hoje às *${app.time}*.\n\nPor favor, responda se deseja *CONFIRMAR* ou *CANCELAR* (para liberar a vaga caso não compareça).`;
-                        
-                        window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(confirmMsg)}`, '_blank');
-                    }
-                }
-            });
+            timeSelect.innerHTML = html;
         }
 
         function handleAuthSubmit(e) {
             e.preventDefault();
-            const name = document.getElementById('authName').value.trim();
-            const phone = document.getElementById('authPhone').value.trim();
-
-            if (!name || !phone) {
-                alert('Preencha o nome e o telefone.');
-                return;
-            }
-
-            currentUser = { name, phone };
+            currentUser = {
+                name: document.getElementById('authName').value.trim(),
+                phone: document.getElementById('authPhone').value.trim()
+            };
             localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
-
-            if (!usersDB.some(u => u.phone === phone)) {
-                usersDB.push(currentUser);
-                localStorage.setItem('brooklyn_users_db', JSON.stringify(usersDB));
-            }
-
             updateAuthUI();
             closeAllModals();
-            alert(`Bem-vindo, ${name}! Identificação realizada com sucesso.`);
+            alert('Identificação realizada!');
         }
 
         function handleScheduleSubmit(e) {
             e.preventDefault();
             if (!currentUser) {
-                alert('Por favor, informe seu nome e telefone antes de concluir o agendamento.');
                 openModal('authModal');
                 return;
             }
 
-            const service = document.getElementById('scheduleService').value;
-            const pro = document.getElementById('schedulePro').value;
-            const date = document.getElementById('scheduleData').value;
-            const time = document.getElementById('scheduleTime').value;
-
-            if (!pro) {
-                alert('Por favor, selecione um profissional clicando em uma das fotos.');
-                return;
-            }
-
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const isAlreadyBooked = appointments.some(a => a.pro === pro && a.date === date && a.time === time);
-            
-            if (isAlreadyBooked) {
-                alert('Este horário já acabou de ser reservado para este profissional. Por favor, escolha outro.');
-                updateAvailableTimes();
-                return;
-            }
-
-            const newAppointment = {
+            const newApp = {
                 id: Date.now(),
-                service,
-                pro,
-                date,
-                time,
+                service: document.getElementById('scheduleService').value,
+                pro: document.getElementById('schedulePro').value,
+                date: document.getElementById('scheduleDate').value,
+                time: document.getElementById('scheduleTime').value,
                 phone: currentUser.phone,
-                clientName: currentUser.name,
-                reminderSent: false
+                clientName: currentUser.name
             };
 
-            appointments.push(newAppointment);
+            let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            appointments.push(newApp);
             localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
 
             closeAllModals();
-            alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
+            alert('Agendamento realizado com sucesso! Vaga garantida na agenda.');
 
-            if (barberPhones[pro]) {
-                const phoneNum = barberPhones[pro];
-                const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
-                window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
+            if (barberPhones[newApp.pro]) {
+                const msg = `*NOVO AGENDAMENTO*\nCliente: ${currentUser.name}\nServiço: ${newApp.service}\nData: ${newApp.date} às ${newApp.time}`;
+                window.open(`https://wa.me/${barberPhones[newApp.pro]}?text=${encodeURIComponent(msg)}`, '_blank');
             }
         }
 
         window.onload = function() {
             updateAuthUI();
-            setInterval(checkReminders, 60000);
         };
     </script>
 </body>
