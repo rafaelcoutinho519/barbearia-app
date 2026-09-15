@@ -71,11 +71,11 @@
                         const servicoCliente = item.servico || 'Corte';
                         const horarioCliente = item.horario || '';
 
-                        const mensagem = "*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n" +
-                                         "*Cliente:* " + nomeCliente + "\n" +
-                                         "*Telefone:* " + telCliente + "\n" +
-                                         "*Serviço:* " + servicoCliente + "\n" +
-                                         "*Data/Hora:* " + horarioCliente;
+                        const mensagem = "NOVO AGENDAMENTO - BROOKLYN BARBEARIA\n\n" +
+                                         "Cliente: " + nomeCliente + "\n" +
+                                         "Telefone: " + telCliente + "\n" +
+                                         "Serviço: " + servicoCliente + "\n" +
+                                         "Data/Hora: " + horarioCliente;
 
                         const linkWhatsApp = `https://wa.me/${numeroFinal}?text=${encodeURIComponent(mensagem)}`;
 
