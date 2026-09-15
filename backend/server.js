@@ -13,8 +13,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Libera a pasta frontend para o servidor encontrar as imagens dos barbeiros
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Libera a pasta atual (backend) para o servidor encontrar as imagens e arquivos estáticos
 app.use(express.static(__dirname));
 
 app.get('/', (req, res) => {
