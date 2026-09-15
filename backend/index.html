@@ -390,7 +390,7 @@
             border-radius: 50%;
             border: 3px solid var(--gold);
             object-fit: cover;
-            object-position: center top; /* Centralização ajustada para rostos */
+            object-position: center top;
             margin-bottom: 15px;
             box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
         }
@@ -512,12 +512,12 @@
             width: 100%;
             height: 120px;
             object-fit: cover;
-            object-position: center center; /* Centralização padrão das fotos de corte */
+            object-position: center center;
             display: block;
             transition: transform 0.3s ease;
         }
 
-        .cut-item:hover .cut-img {
+        .cut-item:hover .cut-img, .cut-item:hover .cut-video {
             transform: scale(1.05);
         }
 
@@ -527,6 +527,7 @@
             object-fit: cover;
             object-position: center center;
             display: block;
+            transition: transform 0.3s ease;
         }
 
         .cut-title {
@@ -574,7 +575,7 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center top;
+            object-position: center 15%; /* Ajuste preciso do rosto do David */
             border: 2px solid var(--gold);
             margin: 0 auto 6px auto;
             display: block;
@@ -635,13 +636,14 @@
             align-items: center;
         }
 
-        .zoomed-image {
+        .zoomed-image, .zoomed-video {
             max-width: 85vw;
             max-height: 75vh;
             border-radius: 8px;
             border: 2px solid var(--gold);
             object-fit: contain;
             box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            background: #000;
         }
 
         .zoom-caption {
@@ -905,15 +907,15 @@
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - Karlos</h4>
                     <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('Karlos/tesoura.jpeg', 'Corte na Tesoura')">
+                        <div class="cut-item" onclick="openZoom('Karlos/tesoura.jpeg', 'Corte na Tesoura', 'image')">
                             <img src="Karlos/tesoura.jpeg" alt="Tesoura" class="cut-img">
                             <div class="cut-title">Corte na Tesoura</div>
                         </div>
-                        <div class="cut-item" onclick="openZoom('Karlos/low-fade.jpeg', 'Low Fade')">
+                        <div class="cut-item" onclick="openZoom('Karlos/low-fade.jpeg', 'Low Fade', 'image')">
                             <img src="Karlos/low-fade.jpeg" alt="Low Fade" class="cut-img">
                             <div class="cut-title">Low Fade</div>
                         </div>
-                        <div class="cut-item" onclick="openZoom('Karlos/mid-fade.jpeg', 'Mid Fade')">
+                        <div class="cut-item" onclick="openZoom('Karlos/mid-fade.jpeg', 'Mid Fade', 'image')">
                             <img src="Karlos/mid-fade.jpeg" alt="Mid Fade" class="cut-img">
                             <div class="cut-title">Mid Fade</div>
                         </div>
@@ -941,15 +943,15 @@
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - Dorgivan</h4>
                     <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('Dorgivan/corte-americano.jpg', 'Corte Americano')">
+                        <div class="cut-item" onclick="openZoom('Dorgivan/corte-americano.jpg', 'Corte Americano', 'image')">
                             <img src="Dorgivan/corte-americano.jpg" alt="Corte Americano" class="cut-img">
                             <div class="cut-title">Corte Americano</div>
                         </div>
-                        <div class="cut-item" onclick="openZoom('Dorgivan/moicano.jpg', 'Moicano')">
+                        <div class="cut-item" onclick="openZoom('Dorgivan/moicano.jpg', 'Moicano', 'image')">
                             <img src="Dorgivan/moicano.jpg" alt="Moicano" class="cut-img">
                             <div class="cut-title">Moicano</div>
                         </div>
-                        <div class="cut-item" onclick="openZoom('Dorgivan/barba-pigmentada.jpg', 'Barba Pigmentada')">
+                        <div class="cut-item" onclick="openZoom('Dorgivan/barba-pigmentada.jpg', 'Barba Pigmentada', 'image')">
                             <img src="Dorgivan/barba-pigmentada.jpg" alt="Barba Pigmentada" class="cut-img">
                             <div class="cut-title">Barba Pigmentada</div>
                         </div>
@@ -977,16 +979,16 @@
                 <div class="pro-cuts-gallery">
                     <h4>Modelos de Trabalhos - David</h4>
                     <div class="cuts-grid">
-                        <div class="cut-item" onclick="openZoom('David/degrade-medio.jpg', 'Degradê Médio')">
-                            <img src="David/degrade-medio.jpg" alt="Degradê Médio" class="cut-img" style="object-position: center center;">
+                        <div class="cut-item" onclick="openZoom('David/degrade-medio.jpg', 'Degradê Médio', 'image')">
+                            <img src="David/degrade-medio.jpg" alt="Degradê Médio" class="cut-img">
                             <div class="cut-title">Degradê Médio</div>
                         </div>
-                        <div class="cut-item" onclick="openZoom('David/degrade-skin-fade.jpg', 'Degradê Skin Fade')">
-                            <img src="David/degrade-skin-fade.jpg" alt="Degradê Skin Fade" class="cut-img" style="object-position: center center;">
+                        <div class="cut-item" onclick="openZoom('David/degrade-skin-fade.jpg', 'Degradê Skin Fade', 'image')">
+                            <img src="David/degrade-skin-fade.jpg" alt="Degradê Skin Fade" class="cut-img">
                             <div class="cut-title">Degradê Skin Fade</div>
                         </div>
-                        <div class="cut-item">
-                            <video src="David/low-fade.mp4" class="cut-video" style="object-position: center center;" autoplay muted loop playsinline></video>
+                        <div class="cut-item" onclick="openZoom('David/low-fade.mp4', 'Low Fade', 'video')">
+                            <video src="David/low-fade.mp4" class="cut-video" autoplay muted loop playsinline></video>
                             <div class="cut-title">Low Fade</div>
                         </div>
                     </div>
@@ -995,11 +997,11 @@
         </div>
     </div>
 
-    <!-- MODAL DE ZOOM DA FOTO -->
+    <!-- MODAL DE ZOOM / AMPLIAR MÍDIA -->
     <div id="imageZoomModal" class="modal" onclick="closeAllModals()">
         <div class="zoom-container" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
-            <img id="zoomedImg" src="" alt="Zoom" class="zoomed-image">
+            <div id="zoomMediaContainer" style="display: flex; justify-content: center; align-items: center;"></div>
             <div id="zoomedCaption" class="zoom-caption"></div>
         </div>
     </div>
@@ -1151,9 +1153,14 @@
             document.getElementById(modalId).style.display = 'flex';
         }
 
-        function openZoom(imgSrc, captionText) {
+        function openZoom(mediaSrc, captionText, mediaType) {
             closeAllModals();
-            document.getElementById('zoomedImg').src = imgSrc;
+            const container = document.getElementById('zoomMediaContainer');
+            if (mediaType === 'video') {
+                container.innerHTML = `<video src="${mediaSrc}" class="zoomed-video" controls autoplay loop playsinline></video>`;
+            } else {
+                container.innerHTML = `<img src="${mediaSrc}" alt="Zoom" class="zoomed-image">`;
+            }
             document.getElementById('zoomedCaption').innerText = captionText;
             document.getElementById('imageZoomModal').style.display = 'flex';
         }
@@ -1162,6 +1169,9 @@
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.style.display = 'none';
             });
+            // Stop zoomed video playback when closing
+            const container = document.getElementById('zoomMediaContainer');
+            if (container) container.innerHTML = '';
         }
 
         function openAppointments() {
