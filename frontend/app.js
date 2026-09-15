@@ -46,11 +46,17 @@ document.addEventListener("DOMContentLoaded", () => {
             id: 3,
             name: "David",
             role: "Stylist & Beard",
-            avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400", // Placeholder até o David mandar as fotos
-            gallery: [],
+            avatar: "david/perfil.jpg",
+            gallery: [
+                "david/degrade-medio.jpg",
+                "david/degrade-skin-fade.jpg",
+                "david/low-fade.mp4"
+            ],
             services: [
                 { name: "Corte Clássico", price: "R$ 40,00" },
-                { name: "Barba Completa", price: "R$ 35,00" }
+                { name: "Barba Completa", price: "R$ 35,00" },
+                { name: "Low Fade", price: "R$ 45,00" },
+                { name: "Degradê Médio", price: "R$ 45,00" }
             ]
         }
     ];
@@ -76,7 +82,13 @@ document.addEventListener("DOMContentLoaded", () => {
             ${prof.gallery.length > 0 ? `
                 <h3 style="font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 15px;">Galeria de Trabalhos</h3>
                 <div style="display: flex; gap: 10px; overflow-x: auto; padding-top: 10px;">
-                    ${prof.gallery.map(img => `<img src="${img}" alt="Trabalho de ${prof.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #444;">`).join('')}
+                    ${prof.gallery.map(item => {
+                        if (item.endsWith('.mp4')) {
+                            return `<video src="${item}" controls muted style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #444;"></video>`;
+                        } else {
+                            return `<img src="${item}" alt="Trabalho de ${prof.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #444;">`;
+                        }
+                    }).join('')}
                 </div>
             ` : `<p style="color: #666; font-size: 0.85rem; font-style: italic; margin-top: 10px;">Galeria em breve...</p>`}
         </div>
