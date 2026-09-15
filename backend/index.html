@@ -1366,11 +1366,11 @@
             "David": "David/perfil.jpg"
         };
 
-        // PINs de acesso individuais para cada barbeiro (altere os números abaixo se desejar)
+        // PINs corrigidos (David atualizado para 9012)
         const barberPins = {
             "Karlos": "1234",
             "Dorgivan": "5678",
-            "David": "9876"
+            "David": "9012"
         };
 
         let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
@@ -1505,7 +1505,6 @@
                 document.getElementById('barberPinInput').value = '';
                 document.getElementById('barberPanelTitle').innerText = `Painel de Agendamentos - ${barber}`;
                 
-                // Define a data de hoje por padrão no filtro
                 const todayStr = new Date().toISOString().split('T')[0];
                 document.getElementById('barberFilterDate').value = todayStr;
 
@@ -1534,7 +1533,6 @@
                 barberApps = barberApps.filter(a => a.date === filterDate);
             }
 
-            // Ordena por horário
             barberApps.sort((a, b) => a.time.localeCompare(b.time));
 
             if (barberApps.length === 0) {
