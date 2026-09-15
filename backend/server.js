@@ -13,14 +13,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Libera a pasta atual (backend) para o servidor encontrar as imagens e arquivos estáticos
+// Servir arquivos estáticos da pasta public e backend
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.static(__dirname));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// Rota para o Painel dos Barbeiros (puxando da pasta public na raiz)
+// Rota oficial para o Painel dos Barbeiros
 app.get('/painel', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/painel.html'));
 });
@@ -39,6 +40,7 @@ db.exec(`
         nome_cliente TEXT,
         telefone_cliente TEXT,
         horario TEXT,
+        servico TEXT,
         barbeiro_id INTEGER,
         status TEXT DEFAULT 'ativo',
         FOREIGN KEY(barbeiro_id) REFERENCES barbeiros(id)
@@ -58,12 +60,11 @@ app.get('/barbeiros', (req, res) => {
     res.json(barbeiros);
 });
 
-// Lista apenas agendamentos ativos (suporta filtro por nome do barbeiro para o painel)
 app.get('/agendamentos', (req, res) => {
     const { barbeiro } = req.query;
     
     let query = `
-        SELECT agendamentos.*, barbeiros.nome as barbeiro_nome, barbeiros.nome as nome, barbeiros.nome as barbeiro 
+        SELECT agendamentos.*, barbeiros.nome as barbeiro_nome 
         FROM agendamentos 
         JOIN barbeiros ON agendamentos.barbeiro_id = barbeiros.id
         WHERE agendamentos.status = 'ativo'
@@ -79,9 +80,8 @@ app.get('/agendamentos', (req, res) => {
     res.json(agendamentos);
 });
 
-// Criar agendamento (verifica se o horário já está ocupado por agendamento ativo)
 app.post('/agendamentos', (req, res) => {
-    const { nome_cliente, telefone_cliente, horario, barbeiro_id } = req.body;
+    const { nome_cliente, telefone_cliente, horario, servico, barbeiro_id } = req.body;
     
     try {
         const existente = db.prepare(`
@@ -93,8 +93,8 @@ app.post('/agendamentos', (req, res) => {
             return res.status(400).json({ error: 'Este horário já está ocupado.' });
         }
 
-        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, horario, barbeiro_id, status) VALUES (?, ?, ?, ?, ?)');
-        const info = stmt.run(nome_cliente, telefone_cliente, horario, barbeiro_id, 'ativo');
+        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, horario, servico, barbeiro_id, status) VALUES (?, ?, ?, ?, ?, ?)');
+        const info = stmt.run(nome_cliente, telefone_cliente, horario, servico || 'Corte', barbeiro_id, 'ativo');
         
         res.json({ id: info.lastInsertRowid, success: true });
     } catch (error) {
@@ -102,7 +102,6 @@ app.post('/agendamentos', (req, res) => {
     }
 });
 
-// Rota para cancelar o agendamento e liberar a vaga
 app.delete('/agendamentos/:id', (req, res) => {
     const { id } = req.params;
     try {
