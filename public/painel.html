@@ -71,10 +71,16 @@
                         const servicoCliente = item.servico || 'Corte';
                         const horarioCliente = item.horario || '';
 
-                        const textoMsg = "NOVO AGENDAMENTO - BROOKLYN BARBEARIA\n\nCliente: " + nomeCliente + "\nTelefone: " + telCliente + "\nServiço: " + servicoCliente + "\nData/Hora: " + horarioCliente;
+                        const textoMsg = "*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n" +
+                                         "Cliente: " + nomeCliente + "\n" +
+                                         "Telefone: " + telCliente + "\n" +
+                                         "Serviço: " + servicoCliente + "\n" +
+                                         "Data: " + item.data + "\n" +
+                                         "Horário: " + horarioCliente;
+
                         const linkWhatsApp = "https://wa.me/" + numeroFinal + "?text=" + encodeURIComponent(textoMsg);
 
-                        lista.innerHTML += '<div class="agendamento-item"><strong>Cliente:</strong> ' + nomeCliente + '<br><strong>Tel:</strong> ' + telCliente + ' | <strong>Data/Hora:</strong> ' + horarioCliente + '<br><div style="margin-top: 10px; display: flex; gap: 10px;"><a href="' + linkWhatsApp + '" target="_blank" style="background: #25d366; color: #000; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; flex: 1;">WhatsApp</a><button onclick="cancelarAgendamento(' + item.id + ')" style="background: #a94442; color: #fff; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: auto; margin-top: 0; flex: 1;">Cancelar</button></div></div>';
+                        lista.innerHTML += '<div class="agendamento-item"><strong>' + horarioCliente + ' - ' + servicoCliente + '</strong><br>Cliente: ' + nomeCliente + '<br>Tel: ' + telCliente + ' | Data: ' + item.data + '<div style="margin-top: 10px; display: flex; gap: 10px;"><a href="' + linkWhatsApp + '" target="_blank" style="background: #25d366; color: #000; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; flex: 1;">WhatsApp</a><button onclick="cancelarAgendamento(' + item.id + ')" style="background: #a94442; color: #fff; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: auto; margin-top: 0; flex: 1;">Cancelar</button></div></div>';
                     });
                 })
                 .catch(function() {
@@ -83,7 +89,7 @@
         }
 
         function cancelarAgendamento(id) {
-            if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+            if (!confirm('Deseja realmente cancelar este agendamento do cliente?')) return;
 
             fetch('/agendamentos/' + id, { method: 'DELETE' })
                 .then(function(res) { return res.json(); })
