@@ -264,7 +264,6 @@
             padding: 0 20px;
         }
 
-        /* TÍTULOS DE SEÇÃO ELEGANTES */
         .section-title {
             text-align: center;
             color: #fff;
@@ -300,7 +299,6 @@
             text-shadow: 0 2px 15px rgba(212, 175, 55, 0.25);
         }
 
-        /* NOVOS ESTILOS REFINADOS PARA OS SERVIÇOS */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -849,6 +847,27 @@
             background: var(--danger);
             color: #fff;
         }
+
+        /* Estilos do Painel do Barbeiro */
+        .barber-admin-panel {
+            background: #111;
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .admin-app-item {
+            background: #1a1a1a;
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -913,13 +932,14 @@
         <div class="info-card">
             <h3>Redes Sociais</h3>
             <p>Acompanhe nosso Instagram oficial:<br><a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank">@brooklynbarbearia_87</a></p>
+            <!-- Link oculto e discreto para acesso dos barbeiros -->
+            <p style="margin-top: 10px;"><a href="#" onclick="openModal('barberLoginModal'); return false;" style="font-size: 0.75rem; color: #555;">Área dos Barbeiros</a></p>
         </div>
     </div>
 
     <div class="container" id="servicos">
         <h2 class="section-title">Nossos <span>Serviços</span></h2>
         <div class="services-grid">
-            <!-- BARBA -->
             <div class="service-card" onclick="selectServiceAndSchedule('Barba')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -933,7 +953,6 @@
                 </div>
             </div>
 
-            <!-- BARBA COM PIGMENTAÇÃO -->
             <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -947,7 +966,6 @@
                 </div>
             </div>
 
-            <!-- BARBA + PEZINHO -->
             <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -961,7 +979,6 @@
                 </div>
             </div>
 
-            <!-- CABELO -->
             <div class="service-card" onclick="selectServiceAndSchedule('Cabelo')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -975,7 +992,6 @@
                 </div>
             </div>
 
-            <!-- CABELO + BARBA + SOBRANCELHA -->
             <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -989,7 +1005,6 @@
                 </div>
             </div>
 
-            <!-- CORTE COM PIGMENTAÇÃO -->
             <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -1003,7 +1018,6 @@
                 </div>
             </div>
 
-            <!-- LUZES NORMAL -->
             <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -1017,7 +1031,6 @@
                 </div>
             </div>
 
-            <!-- LUZES PLATINADA -->
             <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -1031,7 +1044,6 @@
                 </div>
             </div>
 
-            <!-- PEZINHO -->
             <div class="service-card" onclick="selectServiceAndSchedule('Pezinho')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -1045,7 +1057,6 @@
                 </div>
             </div>
 
-            <!-- PLATINADO -->
             <div class="service-card" onclick="selectServiceAndSchedule('Platinado')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -1059,7 +1070,6 @@
                 </div>
             </div>
 
-            <!-- PROGRESSIVA -->
             <div class="service-card" onclick="selectServiceAndSchedule('Progressiva')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -1073,7 +1083,6 @@
                 </div>
             </div>
 
-            <!-- SOBRANCELHA -->
             <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha')">
                 <div class="service-header-top">
                     <div class="service-icon-box">
@@ -1271,7 +1280,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE LOGIN / CADASTRO -->
+    <!-- MODAL DE LOGIN / CADASTRO DO CLIENTE -->
     <div id="authModal" class="modal" onclick="closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
@@ -1303,6 +1312,47 @@
         </div>
     </div>
 
+    <!-- MODAL DE LOGIN DO BARBEIRO (PIN SECRETO) -->
+    <div id="barberLoginModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3>Área Exclusiva - Barbeiros</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">Selecione seu perfil e digite seu PIN de acesso.</p>
+            <form onsubmit="handleBarberLogin(event)">
+                <div class="form-group">
+                    <label>Selecione o Barbeiro</label>
+                    <select id="barberSelectUser" required>
+                        <option value="">Selecione...</option>
+                        <option value="Karlos">Karlos</option>
+                        <option value="Dorgivan">Dorgivan</option>
+                        <option value="David">David</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PIN de Acesso</label>
+                    <input type="password" id="barberPinInput" placeholder="Digite seu PIN" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Entrar no Painel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DO PAINEL DO BARBEIRO (AGENDA) -->
+    <div id="barberPanelModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3 id="barberPanelTitle">Painel de Agendamentos</h3>
+            <div class="form-group">
+                <label>Filtrar por Data</label>
+                <input type="date" id="barberFilterDate" onchange="renderBarberDashboard()">
+            </div>
+            <div id="barberAppointmentsContainer" style="max-height: 50vh; overflow-y: auto;">
+                <!-- Lista injetada via JS -->
+            </div>
+            <button onclick="logoutBarber()" class="btn-cancel-modern" style="width: 100%; margin-top: 15px; padding: 10px;">Sair do Painel</button>
+        </div>
+    </div>
+
     <script>
         const barberPhones = {
             "Karlos": "5587996289373",
@@ -1316,8 +1366,16 @@
             "David": "David/perfil.jpg"
         };
 
+        // PINs de acesso individuais para cada barbeiro (altere os números abaixo se desejar)
+        const barberPins = {
+            "Karlos": "1234",
+            "Dorgivan": "5678",
+            "David": "9876"
+        };
+
         let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
+        let currentLoggedInBarber = null;
 
         function updateAuthUI() {
             const navLink = document.getElementById('userAuthNav');
@@ -1433,6 +1491,77 @@
                     const msg = `*CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}.`;
                     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
                 }
+            }
+        }
+
+        // Lógica de Login do Barbeiro
+        function handleBarberLogin(e) {
+            e.preventDefault();
+            const barber = document.getElementById('barberSelectUser').value;
+            const pin = document.getElementById('barberPinInput').value;
+
+            if (barberPins[barber] && barberPins[barber] === pin) {
+                currentLoggedInBarber = barber;
+                document.getElementById('barberPinInput').value = '';
+                document.getElementById('barberPanelTitle').innerText = `Painel de Agendamentos - ${barber}`;
+                
+                // Define a data de hoje por padrão no filtro
+                const todayStr = new Date().toISOString().split('T')[0];
+                document.getElementById('barberFilterDate').value = todayStr;
+
+                openModal('barberPanelModal');
+                renderBarberDashboard();
+            } else {
+                alert('PIN incorreto ou barbeiro não selecionado.');
+            }
+        }
+
+        function logoutBarber() {
+            currentLoggedInBarber = null;
+            closeAllModals();
+            alert('Você saiu do painel do barbeiro.');
+        }
+
+        function renderBarberDashboard() {
+            if (!currentLoggedInBarber) return;
+            const filterDate = document.getElementById('barberFilterDate').value;
+            const container = document.getElementById('barberAppointmentsContainer');
+            
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            let barberApps = appointments.filter(a => a.pro === currentLoggedInBarber);
+
+            if (filterDate) {
+                barberApps = barberApps.filter(a => a.date === filterDate);
+            }
+
+            // Ordena por horário
+            barberApps.sort((a, b) => a.time.localeCompare(b.time));
+
+            if (barberApps.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum agendamento encontrado para esta data.</p>';
+            } else {
+                container.innerHTML = barberApps.map(app => `
+                    <div class="admin-app-item">
+                        <div>
+                            <span style="color: var(--gold); font-weight: bold; font-size: 1.05rem;">${app.time} - ${app.service}</span>
+                            <p style="color: #fff; font-size: 0.9rem; margin-top: 4px;">Cliente: <strong>${app.clientName}</strong></p>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">Tel: ${app.phone} | Data: ${app.date}</p>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="https://wa.me/55${app.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Olá ' + app.clientName + ', sobre seu horário na Brooklyn Barbearia...')}" target="_blank" class="btn-social" style="padding: 6px 12px; font-size: 0.75rem;">WhatsApp</a>
+                            <button onclick="barberCancelApp(${app.id})" class="btn-cancel-modern" style="margin-top: 0;">Cancelar</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function barberCancelApp(appId) {
+            if (confirm('Deseja realmente cancelar este agendamento do cliente?')) {
+                let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+                appointments = appointments.filter(a => a.id !== appId);
+                localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+                renderBarberDashboard();
             }
         }
 
@@ -1601,7 +1730,7 @@
 
             const service = document.getElementById('scheduleService').value;
             const pro = document.getElementById('schedulePro').value;
-            const date = document.getElementById('scheduleData').value;
+            const date = document.getElementById('scheduleDate').value;
             const time = document.getElementById('scheduleTime').value;
 
             if (!pro) {
