@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Barbeiro - Brooklyn Barbearia</title>
+    <title>Brooklyn Barbearia</title>
     <style>
         :root {
             --bg-color: #0c0c0c;
@@ -11,456 +11,1641 @@
             --card-border: #262626;
             --gold: #d4af37;
             --gold-light: #f3e5ab;
+            --gold-hover: #e6c547;
             --text-main: #f0f0f0;
             --text-muted: #999;
             --danger: #ff4d4d;
-            --success: #25d366;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding: 20px;
-            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        @media(min-width: 769px) {
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 8%;
+            background-color: rgba(12, 12, 12, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        @media(max-width: 768px) {
+            header {
+                display: none;
+            }
+        }
+
+        .logo-link {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-img {
+            height: 45px;
+            object-fit: contain;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav ul li a, nav ul li button {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            background: none;
+            border: none;
+        }
+
+        nav ul li a:hover, nav ul li button:hover {
+            color: var(--gold);
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(18, 18, 18, 0.98);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(212, 175, 55, 0.25);
+            z-index: 4000;
+            justify-content: space-around;
+            padding: 10px 5px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
+        }
+
+        @media(max-width: 768px) {
+            .mobile-bottom-nav {
+                display: flex;
+            }
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .mobile-nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .mobile-nav-item:hover, .mobile-nav-item.active {
+            color: var(--gold);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 90px 20px;
+            background: linear-gradient(rgba(12,12,12,0.85), rgba(12,12,12,0.92)), url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+        }
+
+        .hero-logo-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px auto;
+            border-radius: 50%;
+            background: #000;
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .hero-logo-container:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .hero-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 35px auto;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #aa8c2c);
+            color: #0c0c0c;
+            padding: 14px 35px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #e6c547, #d4af37);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .info-section {
+            max-width: 1100px;
+            margin: -40px auto 60px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 35px 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        .info-card h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            letter-spacing: 1.5px;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .info-card a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .info-card a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        /* TÍTULOS DE SEÇÃO ELEGANTES */
+        .section-title {
+            text-align: center;
+            color: #fff;
+            font-size: 2.1rem;
+            margin-bottom: 50px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-family: 'Georgia', serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            max-width: 80px;
+            background: linear-gradient(90deg, transparent, var(--gold));
+        }
+
+        .section-title::after {
+            background: linear-gradient(90deg, var(--gold), transparent);
+        }
+
+        .section-title span {
+            background: linear-gradient(135deg, #fff 30%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 15px rgba(212, 175, 55, 0.25);
+        }
+
+        /* NOVOS ESTILOS REFINADOS PARA OS SERVIÇOS */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .service-card {
+            background: linear-gradient(145deg, #161616, #111111);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--gold);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.12);
+            background: linear-gradient(145deg, #1c1c1c, #141414);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-header-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .service-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .service-icon-box svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--gold);
+        }
+
+        .service-card h4 {
+            color: #fff;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 14px;
+            margin-top: 5px;
+        }
+
+        .price-tag {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: var(--gold-light);
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+        }
+
+        .duration-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .duration-badge svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-muted);
+        }
+
+        .profissionais-section {
+            position: relative;
+            background: linear-gradient(rgba(12, 12, 12, 0.85), rgba(12, 12, 12, 0.92)), url('Fundoprofissional.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 80px 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .pro-showcase-card {
+            background: #161616;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 35px 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            transition: border-color 0.3s;
+            position: relative;
+            z-index: 2;
+        }
+
+        @media(min-width: 769px) {
+            .pro-showcase-card {
+                background: linear-gradient(145deg, rgba(22, 22, 22, 0.95), rgba(16, 16, 16, 0.95));
+                backdrop-filter: blur(8px);
+                padding: 45px;
+            }
+        }
+
+        .pro-top-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 35px;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        @media(max-width: 768px) {
+            .pro-top-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .section-title {
+                font-size: 1.5rem;
+                gap: 10px;
+            }
+            .section-title::before, .section-title::after {
+                max-width: 35px;
+            }
+        }
+
+        .pro-profile-box {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
+        .pro-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            object-fit: cover;
+            object-position: center top;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-top: 20px;
-        }
-
-        h1 {
-            color: var(--gold);
-            font-family: 'Georgia', serif;
-            letter-spacing: 2px;
-            font-size: 1.8rem;
+        .pro-name {
+            color: var(--gold-light);
+            font-size: 1.45rem;
             text-transform: uppercase;
-        }
-
-        /* TELA DE LOGIN DO BARBEIRO */
-        #loginScreen {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 30px;
+            letter-spacing: 3px;
+            font-weight: 700;
+            font-family: 'Georgia', serif;
+            margin-bottom: 18px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 6px;
+            width: 100%;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            max-width: 400px;
-            margin: 40px auto;
         }
 
-        .barber-select-grid {
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-social {
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: #fff;
+            background-color: #25d366;
+            transition: opacity 0.3s, transform 0.2s;
+        }
+
+        .btn-social.insta { background-color: #e1306c; }
+        .btn-social:hover { opacity: 0.85; transform: scale(1.05); }
+
+        .pro-details h3 {
+            color: #fff;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--gold);
+            padding-left: 12px;
+        }
+
+        @media(max-width: 768px) {
+            .pro-details h3 {
+                border-left: none;
+                padding-left: 0;
+            }
+        }
+
+        .pro-details p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .btn-agendar-pro {
+            background-color: transparent;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 12px 30px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 260px;
+        }
+
+        .btn-agendar-pro:hover {
+            background-color: var(--gold);
+            color: #0c0c0c;
+        }
+
+        .pro-cuts-gallery {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 25px;
+            margin-top: 20px;
+        }
+
+        .pro-cuts-gallery h4 {
+            color: #fff;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .cuts-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 12px;
-            margin: 20px 0;
         }
 
-        .barber-option {
+        .cut-item {
             background: #0c0c0c;
             border: 1px solid var(--card-border);
             border-radius: 8px;
-            padding: 12px 8px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .barber-option:hover {
+        .cut-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold);
+        }
+
+        .cut-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .cut-item:hover .cut-img, .cut-item:hover .cut-video {
+            transform: scale(1.05);
+        }
+
+        .cut-video {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .cut-title {
+            padding: 10px 8px;
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            background: linear-gradient(180deg, #111 0%, #181818 100%);
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .pro-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .pro-option-card {
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pro-option-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .pro-option-card.selected {
             border-color: var(--gold);
             background: rgba(212, 175, 55, 0.08);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
 
-        .barber-option img {
+        .pro-option-img {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
+            object-position: center 15%;
             border: 2px solid var(--gold);
-            margin: 0 auto 8px auto;
+            margin: 0 auto 6px auto;
             display: block;
         }
 
-        .barber-option span {
-            font-size: 0.85rem;
-            font-weight: 600;
+        .pro-option-name {
             color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
             text-transform: uppercase;
         }
 
-        /* PAINEL INTERNO */
-        #dashboardScreen {
+        .modal {
             display: none;
-            width: 100%;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(6px);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        .dashboard-header {
+        .modal-content {
+            background: #161616;
+            border: 1px solid var(--gold);
+            padding: 35px 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-content h3 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        #imageZoomModal {
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 6000;
+        }
+
+        .zoom-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .zoomed-image, .zoomed-video {
+            max-width: 85vw;
+            max-height: 75vh;
+            border-radius: 8px;
+            border: 2px solid var(--gold);
+            object-fit: contain;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            background: #000;
+        }
+
+        .zoom-caption {
+            color: var(--gold-light);
+            margin-top: 15px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--gold);
+        }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; background: none; border: none; transition: color 0.2s; z-index: 10;
+        }
+        .close-btn:hover { color: #fff; }
+
+        .appointment-card-modern {
+            background: linear-gradient(145deg, #121212, #181818);
+            border: 1px solid var(--card-border);
+            border-left: 4px solid var(--gold);
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .appointment-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 8px;
         }
 
-        .barber-info-logged {
+        .appointment-service {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .appointment-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            margin-top: 10px;
         }
 
-        .barber-info-logged img {
-            width: 55px;
-            height: 55px;
+        .appointment-pro-img {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: 2px solid var(--gold);
             object-fit: cover;
+            object-position: center top;
         }
 
-        .barber-info-logged h2 {
-            color: var(--gold-light);
-            font-size: 1.2rem;
-            text-transform: uppercase;
-        }
-
-        .btn-logout {
-            background: transparent;
-            color: var(--danger);
-            border: 1px solid rgba(255, 77, 77, 0.3);
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .btn-logout:hover {
-            background: var(--danger);
-            color: #fff;
-        }
-
-        .filter-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid var(--card-border);
-            flex-wrap: wrap;
-        }
-
-        .filter-section label {
+        .appointment-details p {
             font-size: 0.85rem;
             color: var(--text-muted);
-            text-transform: uppercase;
         }
 
-        .filter-section input {
-            background: #0c0c0c;
-            border: 1px solid var(--card-border);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            outline: none;
-        }
-
-        .appointments-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .appointment-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-left: 4px solid var(--gold);
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-
-        @media(max-width: 600px) {
-            .appointment-card {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-        }
-
-        .app-details h3 {
-            color: var(--gold);
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .app-details p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 3px;
-        }
-
-        .app-details strong {
+        .appointment-details strong {
             color: #fff;
         }
 
-        .app-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 220px;
-        }
-
-        .btn-whatsapp {
-            background-color: var(--success);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: opacity 0.2s;
-            text-align: center;
-        }
-
-        .btn-whatsapp:hover { opacity: 0.9; }
-
-        .row-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-cancel {
+        .btn-cancel-modern {
             background: rgba(255, 77, 77, 0.1);
             color: var(--danger);
             border: 1px solid rgba(255, 77, 77, 0.3);
-            padding: 8px 12px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
+            margin-top: 12px;
+            transition: all 0.2s;
             text-transform: uppercase;
-            flex: 1;
+            font-weight: bold;
+            display: inline-block;
         }
 
-        .btn-cancel:hover {
+        .btn-cancel-modern:hover {
             background: var(--danger);
             color: #fff;
         }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-            background: var(--card-bg);
-            border-radius: 10px;
-            border: 1px solid var(--card-border);
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.2s;
-        }
-
-        .back-link:hover { color: var(--gold); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Painel do Barbeiro</h1>
-        </header>
+    <header>
+        <a href="#inicio" class="logo-link">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="logo-img">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#profissionais">Profissionais</a></li>
+                <li><a href="#" onclick="openAppointments()">Meus Agendamentos</a></li>
+                <li id="userAuthNav">
+                    <a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
-        <!-- TELA DE ESCOLHA DO PROFISSIONAL -->
-        <div id="loginScreen">
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Selecione seu perfil para acessar a agenda:</p>
-            <div class="barber-select-grid">
-                <div class="barber-option" onclick="loginBarber('Karlos')">
-                    <img src="Karlos/perfil.png" alt="Karlos">
-                    <span>Karlos</span>
+    <div class="mobile-bottom-nav">
+        <a href="#inicio" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Início
+        </a>
+        <a href="#servicos" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Serviços
+        </a>
+        <a href="#profissionais" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            Profissionais
+        </a>
+        <button onclick="openAppointments()" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+            Agenda
+        </button>
+        <button onclick="handleAuthNavClick()" class="mobile-nav-item" id="mobileAuthBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            Entrar
+        </button>
+    </div>
+
+    <section class="hero" id="inicio">
+        <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
+            <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
+        </div>
+        <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
+        <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
+    </section>
+
+    <div class="info-section">
+        <div class="info-card">
+            <h3>Horário de Atendimento</h3>
+            <p><strong>Segunda a Quinta:</strong> 09h às 19:30<br><strong>Sexta e Sábado:</strong> 09h às 20:00</p>
+        </div>
+        <div class="info-card">
+            <h3>Localização</h3>
+            <p>Praça João Borrego<br>Capoeiras - PE, 55365-000</p>
+        </div>
+        <div class="info-card">
+            <h3>Redes Sociais</h3>
+            <p>Acompanhe nosso Instagram oficial:<br><a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank">@brooklynbarbearia_87</a></p>
+        </div>
+    </div>
+
+    <div class="container" id="servicos">
+        <h2 class="section-title">Nossos <span>Serviços</span></h2>
+        <div class="services-grid">
+            <!-- BARBA -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h18v8zM6 10h2v4H6z"/></svg>
+                    </div>
+                    <h4>Barba</h4>
                 </div>
-                <div class="barber-option" onclick="loginBarber('Dorgivan')">
-                    <img src="Dorgivan/perfil.jpg" alt="Dorgivan">
-                    <span>Dorgivan</span>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 10,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
                 </div>
-                <div class="barber-option" onclick="loginBarber('David')">
-                    <img src="David/perfil.jpg" alt="David">
-                    <span>David</span>
+            </div>
+
+            <!-- BARBA COM PIGMENTAÇÃO -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19l1.39 1.39 1.63-1.62C8.93 19.26 10.42 19.5 12 19.5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+                    </div>
+                    <h4>Barba com Pigmentação</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 20,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- BARBA + PEZINHO -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8z"/></svg>
+                    </div>
+                    <h4>Barba + Pezinho</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 15,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- CABELO -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </div>
+                    <h4>Cabelo</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 20,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- CABELO + BARBA + SOBRANCELHA -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <h4>Cabelo + Barba + Sobrancelha</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 33,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- CORTE COM PIGMENTAÇÃO -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19l1.39 1.39 1.63-1.62C8.93 19.26 10.42 19.5 12 19.5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+                    </div>
+                    <h4>Corte com Pigmentação</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 40,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 80 min</span>
+                </div>
+            </div>
+
+            <!-- LUZES NORMAL -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+                    </div>
+                    <h4>Luzes Normal</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 40,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- LUZES PLATINADA -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+                    </div>
+                    <h4>Luzes Platinada</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 60,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- PEZINHO -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Pezinho')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8z"/></svg>
+                    </div>
+                    <h4>Pezinho</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 5,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 20 min</span>
+                </div>
+            </div>
+
+            <!-- PLATINADO -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Platinado')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+                    </div>
+                    <h4>Platinado</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 100,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- PROGRESSIVA -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Progressiva')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </div>
+                    <h4>Progressiva</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 50,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <!-- SOBRANCELHA -->
+            <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha')">
+                <div class="service-header-top">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </div>
+                    <h4>Sobrancelha</h4>
+                </div>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 5,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 20 min</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- PAINEL COM OS AGENDAMENTOS -->
-        <div id="dashboardScreen">
-            <div class="dashboard-header">
-                <div class="barber-info-logged">
-                    <img id="loggedBarberAvatar" src="" alt="Avatar">
-                    <div>
-                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Bem-vindo,</span>
-                        <h2 id="loggedBarberName">Barbeiro</h2>
+    <div class="profissionais-section" id="profissionais">
+        <div class="container" style="margin: 0 auto; max-width: 1100px;">
+            <h2 class="section-title">Nossos <span>Profissionais</span></h2>
+
+            <!-- KARLOS -->
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="Karlos/perfil.png" alt="Karlos" class="pro-avatar">
+                        <div class="pro-name">Karlos</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/karllosbarbeiro?stkn=MWEzbnU4bng3MnJ1NA%3D%3D" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://wa.me/5587996289373" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes modernos, degradê navalhado e visagismo. Foco total em entregar um atendimento de alto padrão e estilo único para cada cliente.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Karlos')">Agendar com Karlos</button>
                     </div>
                 </div>
-                <button class="btn-logout" onclick="logoutBarber()">Sair</button>
+                <div class="pro-cuts-gallery">
+                    <h4>Modelos de Trabalhos - Karlos</h4>
+                    <div class="cuts-grid">
+                        <div class="cut-item" onclick="openZoom('Karlos/tesoura.jpeg', 'Corte na Tesoura', 'image')">
+                            <img src="Karlos/tesoura.jpeg" alt="Tesoura" class="cut-img">
+                            <div class="cut-title">Corte na Tesoura</div>
+                        </div>
+                        <div class="cut-item" onclick="openZoom('Karlos/low-fade.jpeg', 'Low Fade', 'image')">
+                            <img src="Karlos/low-fade.jpeg" alt="Low Fade" class="cut-img">
+                            <div class="cut-title">Low Fade</div>
+                        </div>
+                        <div class="cut-item" onclick="openZoom('Karlos/mid-fade.jpeg', 'Mid Fade', 'image')">
+                            <img src="Karlos/mid-fade.jpeg" alt="Mid Fade" class="cut-img">
+                            <div class="cut-title">Mid Fade</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="filter-section">
-                <label>Filtrar por Data:</label>
-                <input type="date" id="filterDate" onchange="renderBarberAppointments()">
-                <button onclick="clearDateFilter()" style="background:none; border:none; color: var(--gold); cursor:pointer; font-size: 0.8rem; text-decoration: underline;">Ver Todos</button>
+            <!-- DORGIVAN -->
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="Dorgivan/perfil.jpg" alt="Dorgivan" class="pro-avatar">
+                        <div class="pro-name">Dorgivan</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/barbeiro_dorgi?stkn=MWpvaXdwbnRhZ2xnNQ%3D%3D" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes modernos, acabamentos precisos e visagismo. Foco total em entregar um estilo único e de alta qualidade para cada cliente.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('Dorgivan')">Agendar com Dorgivan</button>
+                    </div>
+                </div>
+                <div class="pro-cuts-gallery">
+                    <h4>Modelos de Trabalhos - Dorgivan</h4>
+                    <div class="cuts-grid">
+                        <div class="cut-item" onclick="openZoom('Dorgivan/corte-americano.jpg', 'Corte Americano', 'image')">
+                            <img src="Dorgivan/corte-americano.jpg" alt="Corte Americano" class="cut-img">
+                            <div class="cut-title">Corte Americano</div>
+                        </div>
+                        <div class="cut-item" onclick="openZoom('Dorgivan/moicano.jpg', 'Moicano', 'image')">
+                            <img src="Dorgivan/moicano.jpg" alt="Moicano" class="cut-img">
+                            <div class="cut-title">Moicano</div>
+                        </div>
+                        <div class="cut-item" onclick="openZoom('Dorgivan/barba-pigmentada.jpg', 'Barba Pigmentada', 'image')">
+                            <img src="Dorgivan/barba-pigmentada.jpg" alt="Barba Pigmentada" class="cut-img">
+                            <div class="cut-title">Barba Pigmentada</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="barberAppointmentsList" class="appointments-list">
-                <!-- Preenchido via JavaScript -->
+            <!-- DAVID -->
+            <div class="pro-showcase-card">
+                <div class="pro-top-content">
+                    <div class="pro-profile-box">
+                        <img src="David/perfil.jpg" alt="David" class="pro-avatar" style="object-position: center 20%;">
+                        <div class="pro-name">David</div>
+                        <div class="social-buttons">
+                            <a href="https://www.instagram.com/barbeirodavid87?stkn=eWNyNDd4b21pbDdi" target="_blank" class="btn-social insta">Instagram</a>
+                            <a href="https://whatsapp.com" target="_blank" class="btn-social">WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="pro-details">
+                        <h3>Sobre o Profissional</h3>
+                        <p>Especialista em cortes clássicos, fade impecável e visagismo moderno. Anos de experiência dedicados a entregar excelência na cadeira.</p>
+                        <button class="btn-agendar-pro" onclick="selectProAndSchedule('David')">Agendar com David</button>
+                    </div>
+                </div>
+                <div class="pro-cuts-gallery">
+                    <h4>Modelos de Trabalhos - David</h4>
+                    <div class="cuts-grid">
+                        <div class="cut-item" onclick="openZoom('David/degrade-medio.jpg', 'Degradê Médio', 'image')">
+                            <img src="David/degrade-medio.jpg" alt="Degradê Médio" class="cut-img">
+                            <div class="cut-title">Degradê Médio</div>
+                        </div>
+                        <div class="cut-item" onclick="openZoom('David/degrade-skin-fade.jpg', 'Degradê Skin Fade', 'image')">
+                            <img src="David/degrade-skin-fade.jpg" alt="Degradê Skin Fade" class="cut-img">
+                            <div class="cut-title">Degradê Skin Fade</div>
+                        </div>
+                        <div class="cut-item" onclick="openZoom('David/low-fade.mp4', 'Low Fade', 'video')">
+                            <video src="David/low-fade.mp4" class="cut-video" autoplay muted loop playsinline></video>
+                            <div class="cut-title">Low Fade</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div style="text-align: center;">
-            <a href="index.html" class="back-link">&larr; Voltar para o site principal da barbearia</a>
+    <!-- MODAL DE ZOOM / AMPLIAR MÍDIA -->
+    <div id="imageZoomModal" class="modal" onclick="closeAllModals()">
+        <div class="zoom-container" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <div id="zoomMediaContainer" style="display: flex; justify-content: center; align-items: center;"></div>
+            <div id="zoomedCaption" class="zoom-caption"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE AGENDAMENTO -->
+    <div id="scheduleModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3>Agendar Horário</h3>
+            <form onsubmit="handleScheduleSubmit(event)">
+                <div class="form-group">
+                    <label>Serviço</label>
+                    <select id="scheduleService" required>
+                        <option value="">Selecione o serviço</option>
+                        <option value="Barba">Barba - R$ 10,00</option>
+                        <option value="Barba com Pigmentação">Barba com Pigmentação - R$ 20,00</option>
+                        <option value="Barba + Pezinho">Barba + Pezinho - R$ 15,00</option>
+                        <option value="Cabelo">Cabelo - R$ 20,00</option>
+                        <option value="Cabelo + Barba + Sobrancelha">Cabelo + Barba + Sobrancelha - R$ 33,00</option>
+                        <option value="Corte com Pigmentação">Corte com Pigmentação - R$ 40,00</option>
+                        <option value="Luzes Normal">Luzes Normal - R$ 40,00</option>
+                        <option value="Luzes Platinada">Luzes Platinada - R$ 60,00</option>
+                        <option value="Pezinho">Pezinho - R$ 5,00</option>
+                        <option value="Platinado">Platinado - R$ 100,00</option>
+                        <option value="Progressiva">Progressiva - R$ 50,00</option>
+                        <option value="Sobrancelha">Sobrancelha - R$ 5,00</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Profissional</label>
+                    <input type="hidden" id="schedulePro" required onchange="updateAvailableTimes()">
+                    <div class="pro-selector-grid">
+                        <div class="pro-option-card" id="card-Karlos" onclick="selectProOption('Karlos')">
+                            <img src="Karlos/perfil.png" class="pro-option-img" alt="Karlos">
+                            <span class="pro-option-name">Karlos</span>
+                        </div>
+                        <div class="pro-option-card" id="card-Dorgivan" onclick="selectProOption('Dorgivan')">
+                            <img src="Dorgivan/perfil.jpg" class="pro-option-img" alt="Dorgivan">
+                            <span class="pro-option-name">Dorgivan</span>
+                        </div>
+                        <div class="pro-option-card" id="card-David" onclick="selectProOption('David')">
+                            <img src="David/perfil.jpg" class="pro-option-img" alt="David">
+                            <span class="pro-option-name">David</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="scheduleDate" required onchange="validateDateAndTimes()">
+                </div>
+                <div class="form-group">
+                    <label>Horário</label>
+                    <select id="scheduleTime" required>
+                        <option value="">Selecione o profissional e a data primeiro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Confirmar Agendamento</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE LOGIN / CADASTRO -->
+    <div id="authModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3 id="authModalTitle">Identificação</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">Insira seu nome e número de WhatsApp para acessar ou cadastrar.</p>
+            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="authName" placeholder="Ex: João Silva" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp</label>
+                    <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" required>
+                </div>
+                <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Continuar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE MEUS AGENDAMENTOS -->
+    <div id="appointmentsModal" class="modal" onclick="closeAllModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <h3>Meus Agendamentos</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">* Em caso de cancelamento, avise com pelo menos 1h de antecedência.</p>
+            <div id="appointmentsList" style="color: var(--text-muted); text-align: center; padding: 10px 0;">
+                Você ainda não possui agendamentos ativos.
+            </div>
         </div>
     </div>
 
     <script>
+        const barberPhones = {
+            "Karlos": "5587996289373",
+            "Dorgivan": "5581999999999",
+            "David": "5581999999999"
+        };
+
         const barberImages = {
             "Karlos": "Karlos/perfil.png",
             "Dorgivan": "Dorgivan/perfil.jpg",
             "David": "David/perfil.jpg"
         };
 
-        let currentLoggedBarber = localStorage.getItem('brooklyn_logged_barber') || null;
+        let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
+        let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
 
-        function initPanel() {
-            if (currentLoggedBarber) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboardScreen').style.display = 'block';
-                document.getElementById('loggedBarberName').innerText = currentLoggedBarber;
-                document.getElementById('loggedBarberAvatar').src = barberImages[currentLoggedBarber];
-                
-                const todayStr = new Date().toISOString().split('T')[0];
-                document.getElementById('filterDate').value = todayStr;
-
-                renderBarberAppointments();
-            } else {
-                document.getElementById('loginScreen').style.display = 'block';
-                document.getElementById('dashboardScreen').style.display = 'none';
-            }
-        }
-
-        function loginBarber(barberName) {
-            currentLoggedBarber = barberName;
-            localStorage.setItem('brooklyn_logged_barber', barberName);
-            initPanel();
-        }
-
-        function logoutBarber() {
-            currentLoggedBarber = null;
-            localStorage.removeItem('brooklyn_logged_barber');
-            initPanel();
-        }
-
-        function clearDateFilter() {
-            document.getElementById('filterDate').value = '';
-            renderBarberAppointments();
-        }
-
-        function renderBarberAppointments() {
-            const listContainer = document.getElementById('barberAppointmentsList');
-            const selectedDate = document.getElementById('filterDate').value;
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-
-            let barberApps = appointments.filter(a => a.pro === currentLoggedBarber);
-
-            if (selectedDate) {
-                barberApps = barberApps.filter(a => a.date === selectedDate);
-            }
-
-            barberApps.sort((a, b) => {
-                return new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`);
-            });
-
-            if (barberApps.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="empty-state">
-                        <p>Nenhum agendamento encontrado para ${selectedDate ? 'esta data' : 'o momento'}.</p>
+        function updateAuthUI() {
+            const navLink = document.getElementById('userAuthNav');
+            const mobileBtn = document.getElementById('mobileAuthBtn');
+            
+            if (currentUser) {
+                navLink.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="color: var(--gold); font-weight: 600;">Olá, ${currentUser.name.split(' ')[0]}</span>
+                        <button onclick="logoutUser()" style="color: var(--text-muted); background: none; border: 1px solid var(--card-border); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Sair</button>
                     </div>
                 `;
+                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Sair`;
+            } else {
+                navLink.innerHTML = `<a href="#" onclick="openModal('authModal')">Entrar / Cadastrar</a>`;
+                mobileBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Entrar`;
+            }
+        }
+
+        function handleAuthNavClick() {
+            if (currentUser) {
+                if (confirm('Deseja sair da sua conta?')) {
+                    logoutUser();
+                }
+            } else {
+                openModal('authModal');
+            }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('brooklyn_current_user');
+            updateAuthUI();
+            alert('Você saiu da sua conta com sucesso.');
+        }
+
+        function openModal(modalId) {
+            closeAllModals();
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function openZoom(mediaSrc, captionText, mediaType) {
+            closeAllModals();
+            const container = document.getElementById('zoomMediaContainer');
+            if (mediaType === 'video') {
+                container.innerHTML = `<video src="${mediaSrc}" class="zoomed-video" controls autoplay loop playsinline></video>`;
+            } else {
+                container.innerHTML = `<img src="${mediaSrc}" alt="Zoom" class="zoomed-image">`;
+            }
+            document.getElementById('zoomedCaption').innerText = captionText;
+            document.getElementById('imageZoomModal').style.display = 'flex';
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+            const container = document.getElementById('zoomMediaContainer');
+            if (container) container.innerHTML = '';
+        }
+
+        function openAppointments() {
+            if (!currentUser) {
+                alert('Você precisa se identificar com nome e telefone para ver os agendamentos!');
+                openModal('authModal');
+                return;
+            }
+            openModal('appointmentsModal');
+            renderAppointmentsList();
+        }
+
+        function renderAppointmentsList() {
+            const listContainer = document.getElementById('appointmentsList');
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            const userApps = appointments.filter(a => a.phone === currentUser.phone);
+
+            if (userApps.length === 0) {
+                listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Você ainda não possui agendamentos ativos.</p>';
+            } else {
+                listContainer.innerHTML = userApps.map((app) => `
+                    <div class="appointment-card-modern">
+                        <div class="appointment-header">
+                            <span class="appointment-service">${app.service}</span>
+                            <span style="font-size: 0.8rem; color: var(--gold);">Ativo</span>
+                        </div>
+                        <div class="appointment-info">
+                            <img src="${barberImages[app.pro]}" alt="${app.pro}" class="appointment-pro-img">
+                            <div class="appointment-details">
+                                <p>Profissional: <strong>${app.pro}</strong></p>
+                                <p>Data e Hora: <strong>${app.date} às ${app.time}</strong></p>
+                            </div>
+                        </div>
+                        <button class="btn-cancel-modern" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function cancelAppointment(appId) {
+            if (confirm('Tem certeza que deseja cancelar este agendamento? Lembre-se de avisar o barbeiro com pelo menos 1h de antecedência.')) {
+                let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+                const appToCancel = appointments.find(a => a.id === appId);
+                
+                appointments = appointments.filter(a => a.id !== appId);
+                localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+                
+                renderAppointmentsList();
+                updateAvailableTimes();
+                alert('Agendamento cancelado com sucesso.');
+
+                if (appToCancel && barberPhones[appToCancel.pro]) {
+                    const phone = barberPhones[appToCancel.pro];
+                    const msg = `*CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}.`;
+                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+                }
+            }
+        }
+
+        function selectServiceAndSchedule(serviceName) {
+            openModal('scheduleModal');
+            document.getElementById('scheduleService').value = serviceName;
+        }
+
+        function selectProAndSchedule(proName) {
+            openModal('scheduleModal');
+            selectProOption(proName);
+        }
+
+        function selectProOption(proName) {
+            document.getElementById('schedulePro').value = proName;
+            document.querySelectorAll('.pro-option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            const targetCard = document.getElementById(`card-${proName}`);
+            if (targetCard) {
+                targetCard.classList.add('selected');
+            }
+            updateAvailableTimes();
+        }
+
+        function validateDateAndTimes() {
+            const dateInput = document.getElementById('scheduleDate');
+            const selectedDateStr = dateInput.value;
+
+            if (selectedDateStr) {
+                const [year, month, day] = selectedDateStr.split('-');
+                const dateObj = new Date(year, month - 1, day);
+                
+                if (dateObj.getDay() === 0) {
+                    alert('A barbearia não funciona aos domingos. Por favor, escolha outro dia.');
+                    dateInput.value = '';
+                    document.getElementById('scheduleTime').innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
+                    return;
+                }
+            }
+
+            updateAvailableTimes();
+        }
+
+        function generateTimeSlots(dayOfWeek) {
+            let slots = [];
+            let endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
+            let endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
+
+            let currentHour = 9;
+            let currentMinute = 0;
+
+            while (true) {
+                let hStr = String(currentHour).padStart(2, '0');
+                let mStr = String(currentMinute).padStart(2, '0');
+                slots.push(`${hStr}:${mStr}`);
+
+                currentMinute += 40;
+                if (currentMinute >= 60) {
+                    currentHour += Math.floor(currentMinute / 60);
+                    currentMinute = currentMinute % 60;
+                }
+
+                if (currentHour > endHour || (currentHour === endHour && currentMinute > endMinute)) {
+                    break;
+                }
+            }
+            return slots;
+        }
+
+        function updateAvailableTimes() {
+            const pro = document.getElementById('schedulePro').value;
+            const dateStr = document.getElementById('scheduleDate').value;
+            const timeSelect = document.getElementById('scheduleTime');
+
+            if (!pro || !dateStr) {
+                timeSelect.innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
                 return;
             }
 
-            listContainer.innerHTML = barberApps.map(app => {
-                const [year, month, day] = app.date.split('-');
-                const formattedDate = `${day}/${month}/${year}`;
+            const [year, month, day] = dateStr.split('-');
+            const dateObj = new Date(year, month - 1, day);
+            const dayOfWeek = dateObj.getDay();
 
-                const cleanPhone = app.phone.replace(/\D/g, '');
-                
-                const lembreteMessage = encodeURIComponent(`Olá ${app.clientName}, tudo bem? Aqui é o ${app.pro} da Brooklyn Barbearia. Passando para confirmar nosso agendamento de ${app.service} hoje às ${app.time}. Podemos confirmar? Caso precise cancelar ou reagendar, por favor me avise por aqui para liberarmos o horário.`);
+            const allPossibleTimes = generateTimeSlots(dayOfWeek);
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            
+            const bookedTimes = appointments
+                .filter(a => a.pro === pro && a.date === dateStr)
+                .map(a => a.time);
 
-                return `
-                    <div class="appointment-card">
-                        <div class="app-details">
-                            <h3>${app.service}</h3>
-                            <p>Cliente: <strong>${app.clientName}</strong></p>
-                            <p>Telefone: <strong>${app.phone}</strong></p>
-                            <p>Data e Hora: <strong>${formattedDate} às ${app.time}</strong></p>
-                        </div>
-                        <div class="app-actions">
-                            <a href="https://wa.me/55${cleanPhone}?text=${lembreteMessage}" target="_blank" class="btn-whatsapp">
-                                🔔 Enviar Lembrete
-                            </a>
-                            <div class="row-actions">
-                                <a href="https://wa.me/55${cleanPhone}" target="_blank" class="btn-whatsapp" style="background:#333; font-size:0.75rem;">
-                                    Chat
-                                </a>
-                                <button class="btn-cancel" onclick="cancelBarberAppointment(${app.id})">Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            let optionsHtml = '<option value="">Selecione o horário</option>';
+            let availableCount = 0;
+
+            allPossibleTimes.forEach(time => {
+                if (bookedTimes.includes(time)) {
+                    optionsHtml += `<option value="${time}" disabled style="color: #555; background: #111;">${time} (Indisponível)</option>`;
+                } else {
+                    optionsHtml += `<option value="${time}">${time}</option>`;
+                    availableCount++;
+                }
+            });
+
+            if (availableCount === 0) {
+                optionsHtml = '<option value="">Nenhum horário disponível para esta data</option>';
+            }
+
+            timeSelect.innerHTML = optionsHtml;
         }
 
-        function cancelBarberAppointment(appId) {
-            if (confirm('Tem certeza que deseja cancelar? O horário será liberado imediatamente no site para novos clientes.')) {
-                let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-                appointments = appointments.filter(a => a.id !== appId);
-                localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-                renderBarberAppointments();
+        function checkReminders() {
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            const now = new Date();
+
+            appointments.forEach(app => {
+                const [year, month, day] = app.date.split('-');
+                const [hour, minute] = app.time.split(':');
+                const appDate = new Date(year, month - 1, day, hour, minute);
+
+                const diffMinutes = (appDate - now) / (1000 * 60);
+
+                if (diffMinutes > 55 && diffMinutes <= 60 && !app.reminderSent) {
+                    app.reminderSent = true;
+                    localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+
+                    if (barberPhones[app.pro]) {
+                        const phoneNum = barberPhones[app.pro];
+                        const confirmMsg = `*LEMBRETE DE AGENDAMENTO - 1H ANTES*\n\nOlá, ${app.clientName}! Seu horário para *${app.service}* com *${app.pro}* é hoje às *${app.time}*.\n\nPor favor, responda se deseja *CONFIRMAR* ou *CANCELAR* (para liberar a vaga caso não compareça).`;
+                        
+                        window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(confirmMsg)}`, '_blank');
+                    }
+                }
+            });
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('authName').value.trim();
+            const phone = document.getElementById('authPhone').value.trim();
+
+            if (!name || !phone) {
+                alert('Preencha o nome e o telefone.');
+                return;
+            }
+
+            currentUser = { name, phone };
+            localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
+
+            if (!usersDB.some(u => u.phone === phone)) {
+                usersDB.push(currentUser);
+                localStorage.setItem('brooklyn_users_db', JSON.stringify(usersDB));
+            }
+
+            updateAuthUI();
+            closeAllModals();
+            alert(`Bem-vindo, ${name}! Identificação realizada com sucesso.`);
+        }
+
+        function handleScheduleSubmit(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                alert('Por favor, informe seu nome e telefone antes de concluir o agendamento.');
+                openModal('authModal');
+                return;
+            }
+
+            const service = document.getElementById('scheduleService').value;
+            const pro = document.getElementById('schedulePro').value;
+            const date = document.getElementById('scheduleData').value;
+            const time = document.getElementById('scheduleTime').value;
+
+            if (!pro) {
+                alert('Por favor, selecione um profissional clicando em uma das fotos.');
+                return;
+            }
+
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+            const isAlreadyBooked = appointments.some(a => a.pro === pro && a.date === date && a.time === time);
+            
+            if (isAlreadyBooked) {
+                alert('Este horário já acabou de ser reservado para este profissional. Por favor, escolha outro.');
+                updateAvailableTimes();
+                return;
+            }
+
+            const newAppointment = {
+                id: Date.now(),
+                service,
+                pro,
+                date,
+                time,
+                phone: currentUser.phone,
+                clientName: currentUser.name,
+                reminderSent: false
+            };
+
+            appointments.push(newAppointment);
+            localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+
+            closeAllModals();
+            alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
+
+            if (barberPhones[pro]) {
+                const phoneNum = barberPhones[pro];
+                const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
+                window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
             }
         }
 
-        window.onload = initPanel;
+        window.onload = function() {
+            updateAuthUI();
+            setInterval(checkReminders, 60000);
+        };
     </script>
 </body>
 </html>
