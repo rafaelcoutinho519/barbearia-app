@@ -43,7 +43,7 @@
             if (pins[barbeiro] === pin) {
                 document.getElementById('login-card').classList.add('hidden');
                 document.getElementById('painel-card').classList.remove('hidden');
-                document.getElementById('titulo-painel').innerText = `Agenda de ${barbeiro}`;
+                document.getElementById('titulo-painel').innerText = "Agenda de " + barbeiro;
                 carregarAgenda(barbeiro);
             } else {
                 alert('PIN incorreto!');
@@ -54,15 +54,15 @@
             const lista = document.getElementById('agenda-lista');
             lista.innerHTML = 'Carregando...';
 
-            fetch(`/agendamentos?barbeiro=${encodeURIComponent(barbeiro)}`)
-                .then(res => res.json())
-                .then(dados => {
+            fetch('/agendamentos?barbeiro=' + encodeURIComponent(barbeiro))
+                .then(function(res) { return res.json(); })
+                .then(function(dados) {
                     lista.innerHTML = '';
                     if (dados.length === 0) {
                         lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhum agendamento encontrado.</p>';
                         return;
                     }
-                    dados.forEach(item => {
+                    dados.forEach(function(item) {
                         const telLimpo = (item.telefone_cliente || '').replace(/\D/g, '');
                         const numeroFinal = telLimpo.startsWith('55') ? telLimpo : '55' + telLimpo;
 
@@ -71,27 +71,13 @@
                         const servicoCliente = item.servico || 'Corte';
                         const horarioCliente = item.horario || '';
 
-                        const mensagem = "NOVO AGENDAMENTO - BROOKLYN BARBEARIA\n\n" +
-                                         "Cliente: " + nomeCliente + "\n" +
-                                         "Telefone: " + telCliente + "\n" +
-                                         "Serviço: " + servicoCliente + "\n" +
-                                         "Data/Hora: " + horarioCliente;
+                        const textoMsg = "NOVO AGENDAMENTO - BROOKLYN BARBEARIA\n\nCliente: " + nomeCliente + "\nTelefone: " + telCliente + "\nServiço: " + servicoCliente + "\nData/Hora: " + horarioCliente;
+                        const linkWhatsApp = "https://wa.me/" + numeroFinal + "?text=" + encodeURIComponent(textoMsg);
 
-                        const linkWhatsApp = `https://wa.me/${numeroFinal}?text=${encodeURIComponent(mensagem)}`;
-
-                        lista.innerHTML += `
-                            <div class="agendamento-item">
-                                <strong>Cliente:</strong> ${nomeCliente}<br>
-                                <strong>Tel:</strong> ${telCliente} | <strong>Data/Hora:</strong> ${horarioCliente}<br>
-                                <div style="margin-top: 10px; display: flex; gap: 10px;">
-                                    <a href="${linkWhatsApp}" target="_blank" style="background: #25d366; color: #000; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; flex: 1;">WhatsApp</a>
-                                    <button onclick="cancelarAgendamento(${item.id})" style="background: #a94442; color: #fff; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: auto; margin-top: 0; flex: 1;">Cancelar</button>
-                                </div>
-                            </div>
-                        `;
+                        lista.innerHTML += '<div class="agendamento-item"><strong>Cliente:</strong> ' + nomeCliente + '<br><strong>Tel:</strong> ' + telCliente + ' | <strong>Data/Hora:</strong> ' + horarioCliente + '<br><div style="margin-top: 10px; display: flex; gap: 10px;"><a href="' + linkWhatsApp + '" target="_blank" style="background: #25d366; color: #000; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; flex: 1;">WhatsApp</a><button onclick="cancelarAgendamento(' + item.id + ')" style="background: #a94442; color: #fff; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: auto; margin-top: 0; flex: 1;">Cancelar</button></div></div>';
                     });
                 })
-                .catch(() => {
+                .catch(function() {
                     lista.innerHTML = '<p style="color: #ff6b6b; text-align: center;">Erro ao carregar agendamentos.</p>';
                 });
         }
@@ -99,9 +85,9 @@
         function cancelarAgendamento(id) {
             if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
 
-            fetch(`/agendamentos/${id}`, { method: 'DELETE' })
-                .then(res => res.json())
-                .then(resposta => {
+            fetch('/agendamentos/' + id, { method: 'DELETE' })
+                .then(function(res) { return res.json(); })
+                .then(function(resposta) {
                     if (resposta.success) {
                         const barbeiroAtual = document.getElementById('titulo-painel').innerText.replace('Agenda de ', '');
                         carregarAgenda(barbeiroAtual);
@@ -109,7 +95,7 @@
                         alert('Erro ao cancelar agendamento.');
                     }
                 })
-                .catch(() => alert('Erro de conexão ao cancelar.'));
+                .catch(function() { alert('Erro de conexão ao cancelar.'); });
         }
 
         function logout() {
