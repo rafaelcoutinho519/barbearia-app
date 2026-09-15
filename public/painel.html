@@ -3,15 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel dos Barbeiros</title>
+    <title>Painel dos Barbeiros - Brooklyn Barbearia</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #121212; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #1e1e1e; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; }
-        input, select, button { width: 100%; padding: 12px; margin-top: 15px; border-radius: 4px; border: 1px solid #444; background: #2b2b2b; color: #fff; box-sizing: border-box; }
-        button { background: #d4af37; color: #000; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { background: #c5a028; }
+        :root {
+            --bg-main: #121212;
+            --card-bg: #1a1a1a;
+            --gold: #d4af37;
+            --gold-hover: #e6c552;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #2a2a2a;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-main); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 35px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6); 
+            width: 100%; 
+            max-width: 450px; 
+            text-align: center; 
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--gold);
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+        }
+
+        input, select, button { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 15px; 
+            border-radius: 6px; 
+            border: 1px solid var(--border-color); 
+            background: #242424; 
+            color: var(--text-main); 
+            box-sizing: border-box; 
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--gold);
+        }
+
+        button { 
+            background: var(--gold); 
+            color: #121212; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: none; 
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+        }
+
+        button:hover { 
+            background: var(--gold-hover); 
+            transform: translateY(-1px);
+        }
+
         .hidden { display: none; }
-        .agendamento-item { background: #252525; padding: 12px; margin-top: 10px; border-radius: 4px; text-align: left; }
+
+        /* Estilo refinado para os itens de agendamento */
+        .agendamento-item { 
+            background: #222222; 
+            padding: 16px; 
+            margin-top: 15px; 
+            border-radius: 8px; 
+            text-align: left; 
+            border-left: 4px solid var(--gold);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .agendamento-header {
+            font-size: 16px;
+            color: var(--gold);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .agendamento-info {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .agendamento-info strong {
+            color: var(--text-main);
+        }
+
+        .acoes-container {
+            margin-top: 12px; 
+            display: flex; 
+            gap: 10px; 
+        }
+
+        .btn-whatsapp {
+            background: #25d366; 
+            color: #fff; 
+            padding: 8px 12px; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 13px; 
+            text-align: center; 
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+        }
+        .btn-whatsapp:hover { background: #20ba5a; transform: none; }
+
+        .btn-cancelar {
+            background: #b93a3a; 
+            color: #fff; 
+            padding: 8px 12px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            width: auto; 
+            margin-top: 0; 
+            flex: 1;
+            box-shadow: none;
+        }
+        .btn-cancelar:hover { background: #a03030; transform: none; }
+
+        #agenda-lista {
+            max-height: 350px; 
+            overflow-y: auto; 
+            padding-right: 5px;
+        }
+
+        /* Scrollbar personalizada */
+        #agenda-lista::-webkit-scrollbar {
+            width: 6px;
+        }
+        #agenda-lista::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -29,21 +174,33 @@
 
     <div class="card hidden" id="painel-card">
         <h2 id="titulo-painel">Agenda</h2>
-        <div id="agenda-lista" style="max-height: 300px; overflow-y: auto;"></div>
-        <button onclick="logout()" style="background: #444; color: #fff; margin-top: 20px;">Sair</button>
+        <div style="margin-bottom: 15px; text-align: left;">
+            <label style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Filtrar por Data:</label>
+            <input type="date" id="filtro-data" onchange="mudarFiltroData()">
+        </div>
+        <div id="agenda-lista"></div>
+        <button onclick="logout()" style="background: #333; color: #fff; margin-top: 20px;">Sair do Painel</button>
     </div>
 
     <script>
         const pins = { "Karlos": "1234", "Dorgivan": "5678", "David": "9876" };
+        let dadosAtuais = [];
+        let barbeiroLogado = '';
 
         function logar() {
             const barbeiro = document.getElementById('barbeiro').value;
             const pin = document.getElementById('pin').value;
 
             if (pins[barbeiro] === pin) {
+                barbeiroLogado = barbeiro;
                 document.getElementById('login-card').classList.add('hidden');
                 document.getElementById('painel-card').classList.remove('hidden');
-                document.getElementById('titulo-painel').innerText = "Agenda de " + barbeiro;
+                document.getElementById('titulo-painel').innerText = "PAINEL - " + barbeiro.toUpperCase();
+                
+                // Define a data de hoje como padrão no input de data (YYYY-MM-DD)
+                const hoje = new Date().toISOString().split('T')[0];
+                document.getElementById('filtro-data').value = hoje;
+
                 carregarAgenda(barbeiro);
             } else {
                 alert('PIN incorreto!');
@@ -52,40 +209,73 @@
 
         function carregarAgenda(barbeiro) {
             const lista = document.getElementById('agenda-lista');
-            lista.innerHTML = 'Carregando...';
+            lista.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Carregando agendamentos...</p>';
 
             fetch('/agendamentos?barbeiro=' + encodeURIComponent(barbeiro))
                 .then(function(res) { return res.json(); })
                 .then(function(dados) {
-                    lista.innerHTML = '';
-                    if (dados.length === 0) {
-                        lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhum agendamento encontrado.</p>';
-                        return;
-                    }
-                    dados.forEach(function(item) {
-                        const telLimpo = (item.telefone_cliente || '').replace(/\D/g, '');
-                        const numeroFinal = telLimpo.startsWith('55') ? telLimpo : '55' + telLimpo;
-
-                        const nomeCliente = item.nome_cliente || item.nome || 'Cliente';
-                        const telCliente = item.telefone_cliente || '';
-                        const servicoCliente = item.servico || 'Corte';
-                        const horarioCliente = item.horario || '';
-
-                        const textoMsg = "*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n" +
-                                         "Cliente: " + nomeCliente + "\n" +
-                                         "Telefone: " + telCliente + "\n" +
-                                         "Serviço: " + servicoCliente + "\n" +
-                                         "Data: " + item.data + "\n" +
-                                         "Horário: " + horarioCliente;
-
-                        const linkWhatsApp = "https://wa.me/" + numeroFinal + "?text=" + encodeURIComponent(textoMsg);
-
-                        lista.innerHTML += '<div class="agendamento-item"><strong>' + horarioCliente + ' - ' + servicoCliente + '</strong><br>Cliente: ' + nomeCliente + '<br>Tel: ' + telCliente + ' | Data: ' + item.data + '<div style="margin-top: 10px; display: flex; gap: 10px;"><a href="' + linkWhatsApp + '" target="_blank" style="background: #25d366; color: #000; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; flex: 1;">WhatsApp</a><button onclick="cancelarAgendamento(' + item.id + ')" style="background: #a94442; color: #fff; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: auto; margin-top: 0; flex: 1;">Cancelar</button></div></div>';
-                    });
+                    dadosAtuais = dados;
+                    renderizarLista();
                 })
                 .catch(function() {
                     lista.innerHTML = '<p style="color: #ff6b6b; text-align: center;">Erro ao carregar agendamentos.</p>';
                 });
+        }
+
+        function mudarFiltroData() {
+            renderizarLista();
+        }
+
+        function renderizarLista() {
+            const lista = document.getElementById('agenda-lista');
+            const dataFiltro = document.getElementById('filtro-data').value;
+            
+            // Filtra os dados pela data selecionada se houver valor
+            const dadosFiltrados = dataFiltro ? dadosAtuais.filter(function(item) {
+                return item.data === dataFiltro;
+            }) : dadosAtuais;
+
+            lista.innerHTML = '';
+            
+            if (dadosFiltrados.length === 0) {
+                lista.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px 0;">Nenhum agendamento encontrado para esta data.</p>';
+                return;
+            }
+
+            dadosFiltrados.forEach(function(item) {
+                const telLimpo = (item.telefone_cliente || '').replace(/\D/g, '');
+                const numeroFinal = telLimpo.startsWith('55') ? telLimpo : '55' + telLimpo;
+
+                const nomeCliente = item.nome_cliente || item.nome || 'Cliente';
+                const telCliente = item.telefone_cliente || '';
+                const servicoCliente = item.servico || 'Corte';
+                const horarioCliente = item.horario || '';
+
+                // Mensagem profissional com emojis e aviso de antecedência elegante
+                const textoMsg = "✂️ *BROOKLYN BARBEARIA* 💈\n\n" +
+                                 "Olá, *_" + nomeCliente + "_*! Passando para confirmar o seu horário conosco.\n\n" +
+                                 "📋 *Serviço:* " + servicoCliente + "\n" +
+                                 "📅 *Data:* " + item.data + "\n" +
+                                 "⏰ *Horário:* " + horarioCliente + "\n\n" +
+                                 "⚠️ _Pedimos a gentileza de comparecer com alguns minutos de antecedência para mantermos nossa pontualidade._\n\n" +
+                                 "Caso precise reagendar, avise-nos com antecedência. Te esperamos!";
+
+                const linkWhatsApp = "https://wa.me/" + numeroFinal + "?text=" + encodeURIComponent(textoMsg);
+
+                lista.innerHTML += `
+                    <div class="agendamento-item">
+                        <div class="agendamento-header">⏰ ${horarioCliente} - ${servicoCliente}</div>
+                        <div class="agendamento-info">
+                            👤 <strong>Cliente:</strong> ${nomeCliente}<br>
+                            📞 <strong>Tel:</strong> ${telCliente} | 📅 <strong>Data:</strong> ${item.data}
+                        </div>
+                        <div class="acoes-container">
+                            <a href="${linkWhatsApp}" target="_blank" class="btn-whatsapp">💬 WhatsApp</a>
+                            <button onclick="cancelarAgendamento(${item.id})" class="btn-cancelar">Cancelar</button>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function cancelarAgendamento(id) {
@@ -95,8 +285,7 @@
                 .then(function(res) { return res.json(); })
                 .then(function(resposta) {
                     if (resposta.success) {
-                        const barbeiroAtual = document.getElementById('titulo-painel').innerText.replace('Agenda de ', '');
-                        carregarAgenda(barbeiroAtual);
+                        carregarAgenda(barbeiroLogado);
                     } else {
                         alert('Erro ao cancelar agendamento.');
                     }
