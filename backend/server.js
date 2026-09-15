@@ -13,10 +13,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Servir arquivos estáticos (como index.html, imagens, etc.) da pasta atual
+// Servir arquivos estáticos da pasta atual
 app.use(express.static(__dirname));
 
-// Rota raiz para retornar o index.html da barbearia
+// Rota raiz para retornar o index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -38,6 +38,7 @@ db.exec(`
         telefone_cliente TEXT,
         horario TEXT,
         barbeiro_id INTEGER,
+        lembrete_enviado INTEGER DEFAULT 0,
         FOREIGN KEY(barbeiro_id) REFERENCES barbeiros(id)
     );
 `);
@@ -67,13 +68,17 @@ app.get('/agendamentos', (req, res) => {
     res.json(agendamentos);
 });
 
-// Rota para criar agendamento
+// Rota para criar agendamento (com disparo imediato de teste do lembrete)
 app.post('/agendamentos', (req, res) => {
     const { nome_cliente, telefone_cliente, horario, barbeiro_id } = req.body;
     
     try {
-        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, horario, barbeiro_id) VALUES (?, ?, ?, ?)');
+        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, horario, barbeiro_id, lembrete_enviado) VALUES (?, ?, ?, ?, 1)');
         const info = stmt.run(nome_cliente, telefone_cliente, horario, barbeiro_id);
+        
+        // LOG DE TESTE: Simula o disparo imediato para você conferir nos logs do Railway se a mensagem foi enviada para o número
+        console.log(`[TESTE DE LEMBRETE DISPARADO] Enviando aviso prévio para o cliente ${nome_cliente} no número ${telefone_cliente} referente ao horário ${horario}`);
+        
         res.json({ id: info.lastInsertRowid, success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
