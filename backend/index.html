@@ -932,7 +932,6 @@
         <div class="info-card">
             <h3>Redes Sociais</h3>
             <p>Acompanhe nosso Instagram oficial:<br><a href="https://www.instagram.com/brooklynbarbearia_87/" target="_blank">@brooklynbarbearia_87</a></p>
-            <!-- Link oculto e discreto para acesso dos barbeiros -->
             <p style="margin-top: 10px;"><a href="#" onclick="openModal('barberLoginModal'); return false;" style="font-size: 0.75rem; color: #555;">Área dos Barbeiros</a></p>
         </div>
     </div>
@@ -1366,7 +1365,6 @@
             "David": "David/perfil.jpg"
         };
 
-        // PINs corrigidos (David atualizado para 9012)
         const barberPins = {
             "Karlos": "1234",
             "Dorgivan": "5678",
@@ -1494,7 +1492,6 @@
             }
         }
 
-        // Lógica de Login do Barbeiro
         function handleBarberLogin(e) {
             e.preventDefault();
             const barber = document.getElementById('barberSelectUser').value;
@@ -1687,7 +1684,8 @@
 
                     if (barberPhones[app.pro]) {
                         const phoneNum = barberPhones[app.pro];
-                        const confirmMsg = `*LEMBRETE DE AGENDAMENTO - 1H ANTES*\n\nOlá, ${app.clientName}! Seu horário para *${app.service}* com *${app.pro}* é hoje às *${app.time}*.\n\nPor favor, responda se deseja *CONFIRMAR* ou *CANCELAR* (para liberar a vaga caso não compareça).`;
+                        // Mensagem refinada de lembrete/confirmação com antecedência focada no cliente
+                        const confirmMsg = `*OLÁ, ${app.clientName.toUpperCase()}!*\n\nPassando para lembrar do seu agendamento de *${app.service}* na *Brooklyn Barbearia* daqui a pouco, às *${app.time}* do dia *${app.date}*.\n\nPor favor, confirme sua presença para garantirmos seu horário ou avise com antecedência caso precise reagendar.\n\n👍 [CONFIRMAR CORTE]\n❌ [CANCELAR]`;
                         
                         window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(confirmMsg)}`, '_blank');
                     }
@@ -1764,6 +1762,7 @@
 
             if (barberPhones[pro]) {
                 const phoneNum = barberPhones[pro];
+                // Notificação enviada ao WhatsApp do barbeiro com os emojis corretos solicitados
                 const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
                 window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
             }
