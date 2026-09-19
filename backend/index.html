@@ -1535,7 +1535,6 @@
                 container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum agendamento encontrado para esta data.</p>';
             } else {
                 container.innerHTML = barberApps.map(app => {
-                    // Mensagem interativa e polida com emojis solicitada para enviar direto do painel
                     const msgWhatsApp = `✂️ *BROOKLYN BARBEARIA* 💈\n\nOlá *${app.clientName}*, tudo bem? Passando para falar sobre o seu horário de *${app.service}* marcado para *${app.date}* às *${app.time}* com o profissional *${app.pro}*.\n\nDeseja seguir para o corte 💈✅, ou cancelar ❌?\n\nResponda por aqui para confirmarmos!`;
 
                     return `
