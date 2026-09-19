@@ -848,7 +848,6 @@
             color: #fff;
         }
 
-        /* Estilos do Painel do Barbeiro */
         .barber-admin-panel {
             background: #111;
             border: 1px solid var(--gold);
@@ -1486,7 +1485,7 @@
 
                 if (appToCancel && barberPhones[appToCancel.pro]) {
                     const phone = barberPhones[appToCancel.pro];
-                    const msg = `*CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}.`;
+                    const msg = `❌ *CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}. A vaga foi liberada no site. 🔄`;
                     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
                 }
             }
@@ -1535,7 +1534,11 @@
             if (barberApps.length === 0) {
                 container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum agendamento encontrado para esta data.</p>';
             } else {
-                container.innerHTML = barberApps.map(app => `
+                container.innerHTML = barberApps.map(app => {
+                    // Mensagem interativa e polida com emojis solicitada para enviar direto do painel
+                    const msgWhatsApp = `✂️ *BROOKLYN BARBEARIA* 💈\n\nOlá *${app.clientName}*, tudo bem? Passando para falar sobre o seu horário de *${app.service}* marcado para *${app.date}* às *${app.time}* com o profissional *${app.pro}*.\n\nDeseja seguir para o corte 💈✅, ou cancelar ❌?\n\nResponda por aqui para confirmarmos!`;
+
+                    return `
                     <div class="admin-app-item">
                         <div>
                             <span style="color: var(--gold); font-weight: bold; font-size: 1.05rem;">${app.time} - ${app.service}</span>
@@ -1543,20 +1546,23 @@
                             <p style="color: var(--text-muted); font-size: 0.8rem;">Tel: ${app.phone} | Data: ${app.date}</p>
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <a href="https://wa.me/55${app.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Olá ' + app.clientName + ', sobre seu horário na Brooklyn Barbearia...')}" target="_blank" class="btn-social" style="padding: 6px 12px; font-size: 0.75rem;">WhatsApp</a>
-                            <button onclick="barberCancelApp(${app.id})" class="btn-cancel-modern" style="margin-top: 0;">Cancelar</button>
+                            <a href="https://wa.me/55${app.phone.replace(/\D/g, '')}?text=${encodeURIComponent(msgWhatsApp)}" target="_blank" class="btn-social" style="padding: 6px 12px; font-size: 0.75rem;">WhatsApp</a>
+                            <button onclick="barberCancelApp(${app.id})" class="btn-cancel-modern" style="margin-top: 0;">Cancelar (Liberar Vaga)</button>
                         </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
             }
         }
 
         function barberCancelApp(appId) {
-            if (confirm('Deseja realmente cancelar este agendamento do cliente?')) {
+            if (confirm('Deseja realmente cancelar o agendamento deste cliente? A vaga será liberada imediatamente no site.')) {
                 let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
                 appointments = appointments.filter(a => a.id !== appId);
                 localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
                 renderBarberDashboard();
+                updateAvailableTimes();
+                alert('Agendamento cancelado e vaga liberada com sucesso!');
             }
         }
 
@@ -1684,8 +1690,7 @@
 
                     if (barberPhones[app.pro]) {
                         const phoneNum = barberPhones[app.pro];
-                        // Mensagem refinada de lembrete/confirmação com antecedência focada no cliente
-                        const confirmMsg = `*OLÁ, ${app.clientName.toUpperCase()}!*\n\nPassando para lembrar do seu agendamento de *${app.service}* na *Brooklyn Barbearia* daqui a pouco, às *${app.time}* do dia *${app.date}*.\n\nPor favor, confirme sua presença para garantirmos seu horário ou avise com antecedência caso precise reagendar.\n\n👍 [CONFIRMAR CORTE]\n❌ [CANCELAR]`;
+                        const confirmMsg = `✂️ *LEMBRETE DE HORÁRIO - BROOKLYN BARBEARIA* 💈\n\nOlá *${app.clientName.toUpperCase()}*!\n\nPassando para lembrar do seu agendamento de *${app.service}* daqui a pouco, às *${app.time}* do dia *${app.date}* com *${app.pro}*.\n\nDeseja seguir para o corte ✅, ou cancelar ❌ (liberando a vaga)?`;
                         
                         window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(confirmMsg)}`, '_blank');
                     }
@@ -1762,8 +1767,7 @@
 
             if (barberPhones[pro]) {
                 const phoneNum = barberPhones[pro];
-                // Notificação enviada ao WhatsApp do barbeiro com os emojis corretos solicitados
-                const textMessage = `*NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
+                const textMessage = `🔔 *NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
                 window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
             }
         }
