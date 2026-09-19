@@ -24,11 +24,13 @@
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
+            padding: 15px;
+            box-sizing: border-box;
         }
 
         .card { 
             background: var(--card-bg); 
-            padding: 35px; 
+            padding: 30px 25px; 
             border-radius: 12px; 
             box-shadow: 0 8px 24px rgba(0,0,0,0.6); 
             width: 100%; 
@@ -40,7 +42,8 @@
         h2 {
             color: var(--gold);
             letter-spacing: 0.5px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            font-size: 22px;
         }
 
         input, select, button { 
@@ -76,6 +79,19 @@
         }
 
         .hidden { display: none; }
+
+        /* Contador de agendamentos no topo do painel */
+        .contador-badge {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--gold);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
 
         .agendamento-item { 
             background: #222222; 
@@ -113,7 +129,7 @@
         .btn-whatsapp {
             background: #25d366; 
             color: #fff; 
-            padding: 8px 12px; 
+            padding: 10px 12px; 
             text-decoration: none; 
             border-radius: 6px; 
             font-weight: bold; 
@@ -130,7 +146,7 @@
         .btn-cancelar {
             background: #b93a3a; 
             color: #fff; 
-            padding: 8px 12px; 
+            padding: 10px 12px; 
             border: none; 
             border-radius: 6px; 
             cursor: pointer; 
@@ -143,9 +159,9 @@
         .btn-cancelar:hover { background: #a03030; transform: none; }
 
         #agenda-lista {
-            max-height: 350px; 
+            max-height: 380px; 
             overflow-y: auto; 
-            padding-right: 5px;
+            padding-right: 2px;
         }
 
         #agenda-lista::-webkit-scrollbar {
@@ -171,7 +187,11 @@
     </div>
 
     <div class="card hidden" id="painel-card">
-        <h2 id="titulo-painel">Agenda</h2>
+        <h2 id="titulo-painel" style="margin-bottom: 5px;">Agenda</h2>
+        
+        <!-- Contador de agendamentos dinâmico -->
+        <div id="contador-agenda" class="contador-badge">Carregando contagem...</div>
+
         <div style="margin-bottom: 15px; text-align: left;">
             <label style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Filtrar por Data:</label>
             <input type="date" id="filtro-data" onchange="mudarFiltroData()">
@@ -206,7 +226,9 @@
 
         function carregarAgenda(barbeiro) {
             const lista = document.getElementById('agenda-lista');
+            const contadorEl = document.getElementById('contador-agenda');
             lista.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Carregando agendamentos...</p>';
+            contadorEl.innerText = 'Calculando...';
 
             fetch('/agendamentos?barbeiro=' + encodeURIComponent(barbeiro))
                 .then(function(res) { return res.json(); })
@@ -216,6 +238,7 @@
                 })
                 .catch(function() {
                     lista.innerHTML = '<p style="color: #ff6b6b; text-align: center;">Erro ao carregar agendamentos.</p>';
+                    contadorEl.innerText = 'Erro ao carregar';
                 });
         }
 
@@ -225,13 +248,22 @@
 
         function renderizarLista() {
             const lista = document.getElementById('agenda-lista');
+            const contadorEl = document.getElementById('contador-agenda');
             const dataFiltro = document.getElementById('filtro-data').value;
             
-            // Filtro robusto considerando o formato YYYY-MM-DD e ignorando variações de fuso horário/horas
             const dadosFiltrados = dataFiltro ? dadosAtuais.filter(function(item) {
                 const dataItemPura = item.data ? item.data.split('T')[0] : '';
                 return dataItemPura === dataFiltro;
             }) : dadosAtuais;
+
+            // Atualiza o contador no topo
+            if (dadosFiltrados.length === 0) {
+                contadorEl.innerText = '📅 Nenhum agendamento para esta data';
+            } else if (dadosFiltrados.length === 1) {
+                contadorEl.innerText = '📅 1 agendamento para esta data';
+            } else {
+                contadorEl.innerText = `📅 ${dadosFiltrados.length} agendamentos para esta data`;
+            }
 
             lista.innerHTML = '';
             
