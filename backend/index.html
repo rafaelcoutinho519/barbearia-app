@@ -309,7 +309,7 @@
             background: linear-gradient(145deg, #161616, #111111);
             border: 1px solid var(--card-border);
             border-radius: 12px;
-            padding: 22px;
+            padding: 24px 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -318,6 +318,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            min-height: 130px;
         }
 
         .service-card::before {
@@ -343,38 +344,14 @@
             opacity: 1;
         }
 
-        .service-header-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .service-icon-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: rgba(212, 175, 55, 0.08);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .service-icon-box svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--gold);
-        }
-
         .service-card h4 {
             color: #fff;
-            font-size: 1rem;
+            font-size: 1.05rem;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             font-weight: 600;
-            line-height: 1.3;
+            line-height: 1.4;
+            margin-bottom: 15px;
         }
 
         .service-footer {
@@ -383,7 +360,7 @@
             align-items: center;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             padding-top: 14px;
-            margin-top: 5px;
+            margin-top: auto;
         }
 
         .price-tag {
@@ -935,16 +912,12 @@
         </div>
     </div>
 
+    <!-- SEÇÃO DE SERVIÇOS SEM ÍCONES (VISUAL CLEAN E REFINADO) -->
     <div class="container" id="servicos">
         <h2 class="section-title">Nossos <span>Serviços</span></h2>
         <div class="services-grid">
             <div class="service-card" onclick="selectServiceAndSchedule('Barba')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h18v8zM6 10h2v4H6z"/></svg>
-                    </div>
-                    <h4>Barba</h4>
-                </div>
+                <h4>Barba</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 10,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -952,12 +925,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Barba com Pigmentação')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19l1.39 1.39 1.63-1.62C8.93 19.26 10.42 19.5 12 19.5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
-                    </div>
-                    <h4>Barba com Pigmentação</h4>
-                </div>
+                <h4>Barba com Pigmentação</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 20,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -965,12 +933,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Barba + Pezinho')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8z"/></svg>
-                    </div>
-                    <h4>Barba + Pezinho</h4>
-                </div>
+                <h4>Barba + Pezinho</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 15,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -978,12 +941,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Cabelo')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                    </div>
-                    <h4>Cabelo</h4>
-                </div>
+                <h4>Cabelo</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 20,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -991,12 +949,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Cabelo + Barba + Sobrancelha')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    </div>
-                    <h4>Cabelo + Barba + Sobrancelha</h4>
-                </div>
+                <h4>Cabelo + Barba + Sobrancelha</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 33,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -1004,12 +957,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Corte com Pigmentação')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19l1.39 1.39 1.63-1.62C8.93 19.26 10.42 19.5 12 19.5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
-                    </div>
-                    <h4>Corte com Pigmentação</h4>
-                </div>
+                <h4>Corte com Pigmentação</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 40,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 80 min</span>
@@ -1017,12 +965,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Luzes Normal')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-                    </div>
-                    <h4>Luzes Normal</h4>
-                </div>
+                <h4>Luzes Normal</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 40,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -1030,12 +973,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Luzes Platinada')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-                    </div>
-                    <h4>Luzes Platinada</h4>
-                </div>
+                <h4>Luzes Platinada</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 60,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -1043,12 +981,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Pezinho')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8z"/></svg>
-                    </div>
-                    <h4>Pezinho</h4>
-                </div>
+                <h4>Pezinho</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 5,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 20 min</span>
@@ -1056,12 +989,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Platinado')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-                    </div>
-                    <h4>Platinado</h4>
-                </div>
+                <h4>Platinado</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 100,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -1069,12 +997,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Progressiva')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                    </div>
-                    <h4>Progressiva</h4>
-                </div>
+                <h4>Progressiva</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 50,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
@@ -1082,12 +1005,7 @@
             </div>
 
             <div class="service-card" onclick="selectServiceAndSchedule('Sobrancelha')">
-                <div class="service-header-top">
-                    <div class="service-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                    </div>
-                    <h4>Sobrancelha</h4>
-                </div>
+                <h4>Sobrancelha</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 5,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 20 min</span>
