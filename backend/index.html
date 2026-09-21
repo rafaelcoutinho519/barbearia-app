@@ -22,6 +22,9 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        html {
             scroll-behavior: smooth;
         }
 
@@ -30,6 +33,7 @@
             color: var(--text-main);
             overflow-x: hidden;
             padding-bottom: 90px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         @media(min-width: 769px) {
@@ -313,7 +317,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -330,12 +334,12 @@
             width: 3px;
             background: var(--gold);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
         }
 
         .service-card:hover {
             border-color: rgba(212, 175, 55, 0.5);
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(212, 175, 55, 0.12);
             background: linear-gradient(145deg, #1c1c1c, #141414);
         }
@@ -405,7 +409,6 @@
             padding: 35px 25px;
             margin-bottom: 40px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            transition: border-color 0.3s;
             position: relative;
             z-index: 2;
         }
@@ -485,7 +488,7 @@
             text-decoration: none;
             color: #fff;
             background-color: #25d366;
-            transition: opacity 0.3s, transform 0.2s;
+            transition: opacity 0.2s, transform 0.2s;
         }
 
         .btn-social.insta { background-color: #e1306c; }
@@ -525,7 +528,7 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
+            transition: all 0.2s;
             width: 100%;
             max-width: 260px;
         }
@@ -576,7 +579,7 @@
             object-fit: cover;
             object-position: center center;
             display: block;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
         }
 
         .cut-item:hover .cut-img, .cut-item:hover .cut-video {
@@ -589,7 +592,8 @@
             object-fit: cover;
             object-position: center center;
             display: block;
-            transition: transform 0.3s ease;
+            pointer-events: none; /* Garante que cliques no vídeo passem direto para o container ou modal se necessário */
+            transition: transform 0.2s ease;
         }
 
         .cut-title {
@@ -740,7 +744,7 @@
             color: #fff;
             font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.2s;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -1119,7 +1123,7 @@
                             <div class="cut-title">Taper Fade Baixo</div>
                         </div>
                         <div class="cut-item" onclick="openZoom('David/low-fade.mp4', 'Low Fade', 'video')">
-                            <video src="David/low-fade.mp4" class="cut-video" autoplay muted loop playsinline></video>
+                            <video src="David/low-fade.mp4" class="cut-video" autoplay muted loop playsinline preload="auto"></video>
                             <div class="cut-title">Low Fade</div>
                         </div>
                     </div>
