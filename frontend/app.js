@@ -25,12 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
             name: "Dorgival",
             role: "Fade Specialist",
             avatar: "Dorgival/Dorgival 07 Perfil.jpeg",
-            // Horários específicos configurados para o Dorgivan
-            horarios: {
-                manha: ["09:00", "09:40", "10:20", "11:00", "11:40"],
-                tardeSemana: ["13:20", "14:00", "14:40", "15:20", "16:00", "16:40", "17:20", "18:00", "18:40", "19:00"],
-                tardeSabado: ["13:20", "14:00", "14:40", "15:20", "16:00", "16:40", "17:20", "18:00", "18:40", "19:20", "19:40"]
-            },
             gallery: [
                 "Dorgival/Dorgival 01 Corte Americano.jpeg",
                 "Dorgival/Dorgival 02 Americano Frestyle.jpeg",
