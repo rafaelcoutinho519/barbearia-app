@@ -1532,8 +1532,30 @@
             updateAvailableTimes();
         }
 
-        function generateTimeSlots(dayOfWeek) {
+        function generateTimeSlots(dayOfWeek, proName) {
             let slots = [];
+            
+            // Regra de horários específica para o Dorgivan
+            if (proName === "Dorgivan") {
+                // Turno da manhã: 09:00 até 11:20
+                let h = 9, m = 0;
+                while (h < 11 || (h === 11 && m <= 20)) {
+                    slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+                    m += 20; // Ajustado intervalo ou mantido padrão de 20 em 20 / ou incremento normal
+                    if (m >= 60) { h += Math.floor(m / 60); m %= 60; }
+                }
+                
+                // Turno da tarde: 13:20 até 19:00
+                h = 13; m = 20;
+                while (h < 19 || (h === 19 && m === 0)) {
+                    slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+                    m += 20;
+                    if (m >= 60) { h += Math.floor(m / 60); m %= 60; }
+                }
+                return slots;
+            }
+
+            // Horário padrão para os demais profissionais
             let endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
             let endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
 
@@ -1577,7 +1599,7 @@
                 return;
             }
 
-            const allPossibleTimes = generateTimeSlots(dayOfWeek);
+            const allPossibleTimes = generateTimeSlots(dayOfWeek, pro);
             const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             
             const bookedTimes = appointments
