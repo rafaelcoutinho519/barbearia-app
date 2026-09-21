@@ -1534,6 +1534,8 @@
 
         function generateTimeSlots(dayOfWeek) {
             let slots = [];
+            // Segunda a Quinta (1 a 4): 09:00 até 19:30
+            // Sexta e Sábado (5 e 6): 09:00 até 20:00
             let endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
             let endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
 
