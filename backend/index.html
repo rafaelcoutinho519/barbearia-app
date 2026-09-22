@@ -1535,9 +1535,8 @@
         function generateTimeSlots(dayOfWeek, proName) {
             let slots = [];
             let endHour = 19;
-            let endMinute = 40; // Ajustado para contemplar até 19:40 conforme solicitado
+            let endMinute = 40;
 
-            // Dorgivan só vai até 19:00, exceto no sábado (dia da semana 6) que vai até 19:40
             if (proName === "Dorgivan") {
                 if (dayOfWeek === 6) {
                     endHour = 19;
@@ -1547,11 +1546,13 @@
                     endMinute = 0;
                 }
             } else if (proName === "David") {
-                // David vai até 19:40 todos os dias de atendimento
+                endHour = 19;
+                endMinute = 40;
+            } else if (proName === "Karlos") {
+                // Karlos estendido até 19:40 conforme solicitado
                 endHour = 19;
                 endMinute = 40;
             } else {
-                // Demais profissionais (ex: Karlos)
                 endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
                 endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
             }
@@ -1597,8 +1598,18 @@
             }
 
             const allPossibleTimes = generateTimeSlots(dayOfWeek, pro);
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             
+            // FILTROS ESPECÍFICOS DE HORÁRIOS REMOVIDOS CONFORME SOLICITAÇÃO:
+            // - Dorgivan: retirados 12:20 e 13:00
+            // - David: retirados 12:20, 13:00 e 13:40
+            let excludedTimes = [];
+            if (pro === "Dorgivan") {
+                excludedTimes = ["12:20", "13:00"];
+            } else if (pro === "David") {
+                excludedTimes = ["12:20", "13:00", "13:40"];
+            }
+
+            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
             const bookedTimes = appointments
                 .filter(a => a.pro === pro && a.date === dateStr)
                 .map(a => a.time);
@@ -1607,6 +1618,10 @@
             let availableCount = 0;
 
             allPossibleTimes.forEach(time => {
+                if (excludedTimes.includes(time)) {
+                    return; // Ignora e não exibe os horários removidos
+                }
+
                 if (bookedTimes.includes(time)) {
                     optionsHtml += `<option value="${time}" disabled style="color: #555; background: #111;">${time} (Indisponível)</option>`;
                 } else {
