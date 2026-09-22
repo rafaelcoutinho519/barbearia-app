@@ -1534,19 +1534,27 @@
 
         function generateTimeSlots(dayOfWeek, proName) {
             let slots = [];
-            
-            // Regra atualizada: Dorgivan e David compartilham exatamente os mesmos horários disponíveis
-            if (proName === "Dorgivan" || proName === "David") {
-                slots = [
-                    "09:00", "09:40", "10:20", "11:00", "11:40",
-                    "12:20", "13:00", "13:40", "14:20", "15:00", "15:40"
-                ];
-                return slots;
-            }
+            let endHour = 19;
+            let endMinute = 40; // Ajustado para contemplar até 19:40 conforme solicitado
 
-            // Horário padrão para os demais profissionais (ex: Karlos)
-            let endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
-            let endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
+            // Dorgivan só vai até 19:00, exceto no sábado (dia da semana 6) que vai até 19:40
+            if (proName === "Dorgivan") {
+                if (dayOfWeek === 6) {
+                    endHour = 19;
+                    endMinute = 40;
+                } else {
+                    endHour = 19;
+                    endMinute = 0;
+                }
+            } else if (proName === "David") {
+                // David vai até 19:40 todos os dias de atendimento
+                endHour = 19;
+                endMinute = 40;
+            } else {
+                // Demais profissionais (ex: Karlos)
+                endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
+                endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
+            }
 
             let currentHour = 9;
             let currentMinute = 0;
