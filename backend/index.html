@@ -1549,7 +1549,6 @@
                 endHour = 19;
                 endMinute = 40;
             } else if (proName === "Karlos") {
-                // Karlos estendido até 19:40 conforme solicitado
                 endHour = 19;
                 endMinute = 40;
             } else {
@@ -1599,11 +1598,11 @@
 
             const allPossibleTimes = generateTimeSlots(dayOfWeek, pro);
             
-            // FILTROS ESPECÍFICOS DE HORÁRIOS REMOVIDOS CONFORME SOLICITAÇÃO:
-            // - Dorgivan: retirados 12:20 e 13:00
-            // - David: retirados 12:20, 13:00 e 13:40
             let excludedTimes = [];
-            if (pro === "Dorgivan") {
+            if (pro === "Karlos") {
+                // Karlos: removidos 13:00 e 13:40, e o período da tarde começa a partir de 14:00 pulando de 40 em 40 min
+                excludedTimes = ["13:00", "13:40"];
+            } else if (pro === "Dorgivan") {
                 excludedTimes = ["12:20", "13:00"];
             } else if (pro === "David") {
                 excludedTimes = ["12:20", "13:00", "13:40"];
@@ -1619,7 +1618,7 @@
 
             allPossibleTimes.forEach(time => {
                 if (excludedTimes.includes(time)) {
-                    return; // Ignora e não exibe os horários removidos
+                    return; 
                 }
 
                 if (bookedTimes.includes(time)) {
