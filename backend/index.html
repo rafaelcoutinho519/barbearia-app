@@ -1334,6 +1334,12 @@
         function openModal(modalId) {
             closeAllModals();
             document.getElementById(modalId).style.display = 'flex';
+            
+            // Trava datas anteriores no campo de agendamento ao abrir
+            if (modalId === 'scheduleModal') {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('scheduleDate').setAttribute('min', today);
+            }
         }
 
         function openZoom(mediaSrc, captionText, mediaType) {
@@ -1522,6 +1528,16 @@
             const [year, month, day] = selectedDateStr.split('-');
             const dateObj = new Date(year, month - 1, day);
             
+            // Trava extra contra datas anteriores (compara com a data atual zerada)
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (dateObj < today) {
+                alert('Não é permitido fazer agendamentos em datas anteriores!');
+                dateInput.value = '';
+                timeSelect.innerHTML = '<option value="">Selecione o profissional e a data primeiro</option>';
+                return;
+            }
+
             if (dateObj.getDay() === 0) {
                 alert('A barbearia não funciona aos domingos. Por favor, escolha outro dia.');
                 dateInput.value = '';
@@ -1600,7 +1616,6 @@
             
             let excludedTimes = [];
             if (pro === "Karlos") {
-                // Karlos: removidos 13:00 e 13:40, e o período da tarde começa a partir de 14:00 pulando de 40 em 40 min
                 excludedTimes = ["13:00", "13:40"];
             } else if (pro === "Dorgivan") {
                 excludedTimes = ["12:20", "13:00"];
