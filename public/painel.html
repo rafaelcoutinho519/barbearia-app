@@ -80,7 +80,6 @@
 
         .hidden { display: none; }
 
-        /* Contador de agendamentos no topo do painel */
         .contador-badge {
             background: rgba(212, 175, 55, 0.1);
             border: 1px solid rgba(212, 175, 55, 0.3);
@@ -189,7 +188,6 @@
     <div class="card hidden" id="painel-card">
         <h2 id="titulo-painel" style="margin-bottom: 5px;">Agenda</h2>
         
-        <!-- Contador de agendamentos dinâmico -->
         <div id="contador-agenda" class="contador-badge">Carregando contagem...</div>
 
         <div style="margin-bottom: 15px; text-align: left;">
@@ -258,8 +256,10 @@
             const contadorEl = document.getElementById('contador-agenda');
             const dataFiltro = document.getElementById('filtro-data').value;
             
+            // Tratamento robusto para comparar apenas a parte YYYY-MM-DD da data
             const dadosFiltrados = dataFiltro ? dadosAtuais.filter(function(item) {
-                const dataItemPura = item.data ? item.data.split('T')[0] : '';
+                if (!item.data) return false;
+                const dataItemPura = item.data.includes('T') ? item.data.split('T')[0] : item.data.split(' ')[0];
                 return dataItemPura === dataFiltro;
             }) : dadosAtuais;
 
@@ -268,7 +268,7 @@
             } else if (dadosFiltrados.length === 1) {
                 contadorEl.innerText = '📅 1 agendamento para esta data';
             } else {
-                contadorEl.innerText = `📅 ${dadosFiltrados.length} agendamentos para esta data`;
+                contadorEl.innerText = '📅 ' + dadosFiltrados.length + ' agendamentos para esta data';
             }
 
             lista.innerHTML = '';
@@ -286,7 +286,7 @@
                 const telCliente = item.telefone_cliente || '';
                 const servicoCliente = item.servico || 'Corte';
                 const horarioCliente = item.horario || '';
-                const dataExibicao = item.data ? item.data.split('T')[0] : '';
+                const dataExibicao = item.data ? (item.data.includes('T') ? item.data.split('T')[0] : item.data) : '';
 
                 const textoMsg = "✂️ *BROOKLYN BARBEARIA* 💈\n\n" +
                                  "Olá, *_" + nomeCliente + "_*! Passando para confirmar o seu horário conosco.\n\n" +
