@@ -247,23 +247,23 @@
             renderizarLista();
         }
 
-        // Função ultra-robusta para lidar com datas em texto (iOS), barras ou formato ISO
+        // Função infalível para tratar formatos do iOS (ex: "24 de set. de 2026"), barras ou ISO
         function normalizarData(dataStr) {
             if (!dataStr) return '';
             
-            const meses = {
+            const mesesMap = {
                 'jan': '01', 'fev': '02', 'mar': '03', 'abr': '04', 'mai': '05', 'jun': '06',
                 'jul': '07', 'ago': '08', 'set': '09', 'out': '10', 'nov': '11', 'dez': '12'
             };
             
             let strLower = dataStr.toLowerCase();
-            for (let mesAbrev in meses) {
+            for (let mesAbrev in mesesMap) {
                 if (strLower.includes(mesAbrev)) {
                     let numeros = dataStr.match(/\d+/g);
                     if (numeros && numeros.length >= 2) {
                         let dia = numeros[0].padStart(2, '0');
                         let ano = numeros[numeros.length - 1];
-                        let mes = meses[mesAbrev];
+                        let mes = mesesMap[mesAbrev];
                         return `${ano}-${mes}-${dia}`;
                     }
                 }
