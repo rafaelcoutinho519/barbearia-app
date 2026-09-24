@@ -39,6 +39,7 @@ db.exec(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome_cliente TEXT,
         telefone_cliente TEXT,
+        data TEXT,
         horario TEXT,
         servico TEXT,
         barbeiro_id INTEGER,
@@ -61,7 +62,7 @@ app.get('/barbeiros', (req, res) => {
 });
 
 app.get('/agendamentos', (req, res) => {
-    const { barbeiro } = req.query;
+    const { barbeiro, data } = req.query;
     
     let query = `
         SELECT agendamentos.*, barbeiros.nome as barbeiro_nome 
@@ -70,31 +71,37 @@ app.get('/agendamentos', (req, res) => {
         WHERE agendamentos.status = 'ativo'
     `;
     
+    const params = [];
+
     if (barbeiro) {
         query += ` AND barbeiros.nome = ?`;
-        const agendamentos = db.prepare(query).all(barbeiro);
-        return res.json(agendamentos);
+        params.push(barbeiro);
     }
 
-    const agendamentos = db.prepare(query).all();
+    if (data) {
+        query += ` AND agendamentos.data = ?`;
+        params.push(data);
+    }
+
+    const agendamentos = db.prepare(query).all(...params);
     res.json(agendamentos);
 });
 
 app.post('/agendamentos', (req, res) => {
-    const { nome_cliente, telefone_cliente, horario, servico, barbeiro_id } = req.body;
+    const { nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id } = req.body;
     
     try {
         const existente = db.prepare(`
             SELECT * FROM agendamentos 
-            WHERE barbeiro_id = ? AND horario = ? AND status = 'ativo'
-        `).get(barbeiro_id, horario);
+            WHERE barbeiro_id = ? AND data = ? AND horario = ? AND status = 'ativo'
+        `).get(barbeiro_id, data, horario);
 
         if (existente) {
             return res.status(400).json({ error: 'Este horário já está ocupado.' });
         }
 
-        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, horario, servico, barbeiro_id, status) VALUES (?, ?, ?, ?, ?, ?)');
-        const info = stmt.run(nome_cliente, telefone_cliente, horario, servico || 'Corte', barbeiro_id, 'ativo');
+        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        const info = stmt.run(nome_cliente, telefone_cliente, data, horario, servico || 'Corte', barbeiro_id, 'ativo');
         
         res.json({ id: info.lastInsertRowid, success: true });
     } catch (error) {
