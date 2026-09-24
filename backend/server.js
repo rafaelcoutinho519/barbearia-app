@@ -80,8 +80,17 @@ app.get('/agendamentos', (req, res) => {
     }
 
     if (data) {
-        query += ` AND agendamentos.data = ?`;
-        params.push(data);
+        // Normaliza a data para aceitar formato ISO (YYYY-MM-DD) ou BR (DD/MM/YYYY)
+        let dataBusca = data;
+        if (data.includes('/')) {
+            const partes = data.split('/');
+            if (partes.length === 3) {
+                dataBusca = `${partes[2]}-${partes[1]}-${partes[0]}`;
+            }
+        }
+        
+        query += ` AND (agendamentos.data = ? OR agendamentos.data = ?)`;
+        params.push(data, dataBusca);
     }
 
     const agendamentos = db.prepare(query).all(...params);
