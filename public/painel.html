@@ -227,10 +227,17 @@
         function carregarAgenda(barbeiro) {
             const lista = document.getElementById('agenda-lista');
             const contadorEl = document.getElementById('contador-agenda');
+            const dataFiltro = document.getElementById('filtro-data').value;
+            
             lista.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Carregando agendamentos...</p>';
             contadorEl.innerText = 'Calculando...';
 
-            fetch('/agendamentos?barbeiro=' + encodeURIComponent(barbeiro))
+            let url = '/agendamentos?barbeiro=' + encodeURIComponent(barbeiro);
+            if (dataFiltro) {
+                url += '&data=' + encodeURIComponent(dataFiltro);
+            }
+
+            fetch(url)
                 .then(function(res) { return res.json(); })
                 .then(function(dados) {
                     dadosAtuais = dados;
@@ -243,7 +250,7 @@
         }
 
         function mudarFiltroData() {
-            renderizarLista();
+            carregarAgenda(barbeiroLogado);
         }
 
         function renderizarLista() {
@@ -256,7 +263,6 @@
                 return dataItemPura === dataFiltro;
             }) : dadosAtuais;
 
-            // Atualiza o contador no topo
             if (dadosFiltrados.length === 0) {
                 contadorEl.innerText = '📅 Nenhum agendamento para esta data';
             } else if (dadosFiltrados.length === 1) {
@@ -283,12 +289,12 @@
                 const dataExibicao = item.data ? item.data.split('T')[0] : '';
 
                 const textoMsg = "✂️ *BROOKLYN BARBEARIA* 💈\n\n" +
-                               "Olá, *_" + nomeCliente + "_*! Passando para confirmar o seu horário conosco.\n\n" +
-                               "📋 *Serviço:* " + servicoCliente + "\n" +
-                               "📅 *Data:* " + dataExibicao + "\n" +
-                               "⏰ *Horário:* " + horarioCliente + "\n\n" +
-                               "⚠️ _Pedimos a gentileza de comparecer com alguns minutos de antecedência para mantermos nossa pontualidade._\n\n" +
-                               "Caso precise reagendar, avise-nos com antecedência. Te esperamos!";
+                                 "Olá, *_" + nomeCliente + "_*! Passando para confirmar o seu horário conosco.\n\n" +
+                                 "📋 *Serviço:* " + servicoCliente + "\n" +
+                                 "📅 *Data:* " + dataExibicao + "\n" +
+                                 "⏰ *Horário:* " + horarioCliente + "\n\n" +
+                                 "⚠️ _Pedimos a gentileza de comparecer com alguns minutos de antecedência para mantermos nossa pontualidade._\n\n" +
+                                 "Caso precise reagendar, avise-nos com antecedência. Te esperamos!";
 
                 const linkWhatsApp = "https://wa.me/" + numeroFinal + "?text=" + encodeURIComponent(textoMsg);
 
