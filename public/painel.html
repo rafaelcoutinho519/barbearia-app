@@ -250,12 +250,10 @@
         function normalizarData(dataStr) {
             if (!dataStr) return '';
             
-            // Se já estiver no formato YYYY-MM-DD
             if (/^\d{4}-\d{2}-\d{2}$/.test(dataStr)) {
                 return dataStr;
             }
 
-            // Tratamento para iOS / Safari (ex: "24 de set. de 2026" ou similares)
             const mesesMap = {
                 'jan': '01', 'fev': '02', 'mar': '03', 'abr': '04', 'mai': '05', 'jun': '06',
                 'jul': '07', 'ago': '08', 'set': '09', 'out': '10', 'nov': '11', 'dez': '12'
@@ -326,7 +324,7 @@
                 const textoMsg = "✂️ *BROOKLYN BARBEARIA* 💈\n\n" +
                                  "Olá, *_" + nomeCliente + "_*! Passando para confirmar o seu horário conosco.\n\n" +
                                  "📋 *Serviço:* " + servicoCliente + "\n" +
-                                 "📅 *Data:* " + dataExibiqueFormatada(dataExibicao) + "\n" +
+                                 "📅 *Data:* " + dataExibidaFormatada(dataExibicao) + "\n" +
                                  "⏰ *Horário:* " + horarioCliente + "\n\n" +
                                  "⚠️ _Pedimos a gentileza de comparecer com alguns minutos de antecedência para mantermos nossa pontualidade._\n\n" +
                                  "Caso precise reagendar, avise-nos com antecedência. Te esperamos!";
@@ -349,7 +347,8 @@
             });
         }
 
-        function dataExibiqueFormatada(dataIso) {
+        // Correção do nome da função para corresponder à chamada acima
+        function dataExibidaFormatada(dataIso) {
             if (!dataIso) return '';
             const partes = dataIso.split('-');
             if (partes.length === 3) {
