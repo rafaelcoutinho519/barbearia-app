@@ -200,7 +200,6 @@
 
     <script>
         const pins = { "Karlos": "1234", "Dorgivan": "5678", "David": "9876" };
-        let dadosAtuais = [];
         let barbeiroLogado = '';
 
         function logar() {
@@ -216,26 +215,26 @@
                 const hoje = new Date().toISOString().split('T')[0];
                 document.getElementById('filtro-data').value = hoje;
 
-                carregarAgenda(barbeiro);
+                carregarAgenda();
             } else {
                 alert('PIN incorreto!');
             }
         }
 
-        function carregarAgenda(barbeiro) {
+        function carregarAgenda() {
             const lista = document.getElementById('agenda-lista');
             const contadorEl = document.getElementById('contador-agenda');
+            const dataSelecionada = document.getElementById('filtro-data').value;
             
             lista.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Carregando agendamentos...</p>';
             contadorEl.innerText = 'Calculando...';
 
-            let url = '/agendamentos?barbeiro=' + encodeURIComponent(barbeiro);
+            let url = '/agendamentos?barbeiro=' + encodeURIComponent(barbeiroLogado) + '&data=' + encodeURIComponent(dataSelecionada);
 
             fetch(url)
                 .then(function(res) { return res.json(); })
                 .then(function(dados) {
-                    dadosAtuais = dados;
-                    renderizarLista();
+                    renderizarLista(dados);
                 })
                 .catch(function() {
                     lista.innerHTML = '<p style="color: #ff6b6b; text-align: center;">Erro ao carregar agendamentos.</p>';
@@ -244,57 +243,12 @@
         }
 
         function mudarFiltroData() {
-            renderizarLista();
+            carregarAgenda();
         }
 
-        function normalizarData(dataStr) {
-            if (!dataStr) return '';
-            
-            if (/^\d{4}-\d{2}-\d{2}$/.test(dataStr)) {
-                return dataStr;
-            }
-
-            const mesesMap = {
-                'jan': '01', 'fev': '02', 'mar': '03', 'abr': '04', 'mai': '05', 'jun': '06',
-                'jul': '07', 'ago': '08', 'set': '09', 'out': '10', 'nov': '11', 'dez': '12'
-            };
-            
-            let strLower = dataStr.toLowerCase();
-            for (let mesAbrev in mesesMap) {
-                if (strLower.includes(mesAbrev)) {
-                    let numeros = dataStr.match(/\d+/g);
-                    if (numeros && numeros.length >= 2) {
-                        let dia = numeros[0].padStart(2, '0');
-                        let ano = numeros[numeros.length - 1];
-                        let mes = mesesMap[mesAbrev];
-                        return `${ano}-${mes}-${dia}`;
-                    }
-                }
-            }
-
-            if (dataStr.includes('/')) {
-                let partes = dataStr.split('/');
-                if (partes.length === 3) {
-                    let ano = partes[2].length === 2 ? '20' + partes[2] : partes[2];
-                    return `${ano}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-                }
-            }
-
-            let limpa = dataStr.includes('T') ? dataStr.split('T')[0] : dataStr.split(' ')[0];
-            return limpa.trim();
-        }
-
-        function renderizarLista() {
+        function renderizarLista(dadosFiltrados) {
             const lista = document.getElementById('agenda-lista');
             const contadorEl = document.getElementById('contador-agenda');
-            const valorInputBruto = document.getElementById('filtro-data').value;
-            
-            const dataFiltro = normalizarData(valorInputBruto);
-            
-            const dadosFiltrados = dadosAtuais.filter(function(item) {
-                if (!item.data) return false;
-                return normalizarData(item.data) === dataFiltro;
-            });
 
             if (dadosFiltrados.length === 0) {
                 contadorEl.innerText = '📅 Nenhum agendamento para esta data';
@@ -319,7 +273,7 @@
                 const telCliente = item.telefone_cliente || '';
                 const servicoCliente = item.servico || 'Corte';
                 const horarioCliente = item.horario || '';
-                const dataExibicao = normalizarData(item.data);
+                const dataExibicao = item.data;
 
                 const textoMsg = "✂️ *BROOKLYN BARBEARIA* 💈\n\n" +
                                  "Olá, *_" + nomeCliente + "_*! Passando para confirmar o seu horário conosco.\n\n" +
@@ -347,7 +301,6 @@
             });
         }
 
-        // Correção do nome da função para corresponder à chamada acima
         function dataExibidaFormatada(dataIso) {
             if (!dataIso) return '';
             const partes = dataIso.split('-');
@@ -364,7 +317,7 @@
                 .then(function(res) { return res.json(); })
                 .then(function(resposta) {
                     if (resposta.success) {
-                        carregarAgenda(barbeiroLogado);
+                        carregarAgenda();
                     } else {
                         alert('Erro ao cancelar agendamento.');
                     }
