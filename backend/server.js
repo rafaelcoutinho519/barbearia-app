@@ -74,8 +74,9 @@ app.get('/agendamentos', (req, res) => {
     const params = [];
 
     if (barbeiro) {
-        query += ` AND barbeiros.nome = ?`;
-        params.push(barbeiro);
+        // Aceita tanto se mandarem o nome quanto se mandarem o ID
+        query += ` AND (barbeiros.nome = ? OR barbeiros.id = ?)`;
+        params.push(barbeiro, barbeiro);
     }
 
     if (data) {
