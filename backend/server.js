@@ -56,6 +56,19 @@ if (totalBarbeiros === 0) {
     insertBarbeiro.run('Dorgivan', '');
 }
 
+// Função auxiliar para normalizar a data para o formato YYYY-MM-DD
+function normalizarData(dataStr) {
+    if (!dataStr) return '';
+    // Se vier no formato DD/MM/YYYY
+    if (dataStr.includes('/')) {
+        const partes = dataStr.split('/');
+        if (partes.length === 3) {
+            return `${partes[2]}-${partes[1]}-${partes[0]}`;
+        }
+    }
+    return dataStr; // Retorna como está se já for YYYY-MM-DD
+}
+
 app.get('/barbeiros', (req, res) => {
     const barbeiros = db.prepare('SELECT * FROM barbeiros').all();
     res.json(barbeiros);
@@ -74,23 +87,21 @@ app.get('/agendamentos', (req, res) => {
     const params = [];
 
     if (barbeiro) {
-        // Aceita tanto se mandarem o nome quanto se mandarem o ID
         query += ` AND (barbeiros.nome = ? OR barbeiros.id = ?)`;
         params.push(barbeiro, barbeiro);
     }
 
     if (data) {
-        // Normaliza a data para aceitar formato ISO (YYYY-MM-DD) ou BR (DD/MM/YYYY)
-        let dataBusca = data;
-        if (data.includes('/')) {
-            const partes = data.split('/');
-            if (partes.length === 3) {
-                dataBusca = `${partes[2]}-${partes[1]}-${partes[0]}`;
-            }
+        const dataIso = normalizarData(data);
+        // Cria variações para garantir que encontre independente de como foi salvo no banco
+        const partesIso = dataIso.split('-');
+        let dataBr = data;
+        if (partesIso.length === 3) {
+            dataBr = `${partesIso[2]}-${partesIso[1]}-${partesIso[0]}`; // DD-MM-YYYY ou similar
         }
-        
-        query += ` AND (agendamentos.data = ? OR agendamentos.data = ?)`;
-        params.push(data, dataBusca);
+
+        query += ` AND (agendamentos.data = ? OR agendamentos.data = ? OR agendamentos.data = ?)`;
+        params.push(data, dataIso, dataBr);
     }
 
     const agendamentos = db.prepare(query).all(...params);
@@ -100,18 +111,21 @@ app.get('/agendamentos', (req, res) => {
 app.post('/agendamentos', (req, res) => {
     const { nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id } = req.body;
     
+    // Normaliza a data antes de salvar no banco para manter o padrão YYYY-MM-DD
+    const dataPadronizada = normalizarData(data);
+
     try {
         const existente = db.prepare(`
             SELECT * FROM agendamentos 
             WHERE barbeiro_id = ? AND data = ? AND horario = ? AND status = 'ativo'
-        `).get(barbeiro_id, data, horario);
+        `).get(barbeiro_id, dataPadronizada, horario);
 
         if (existente) {
             return res.status(400).json({ error: 'Este horário já está ocupado.' });
         }
 
         const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        const info = stmt.run(nome_cliente, telefone_cliente, data, horario, servico || 'Corte', barbeiro_id, 'ativo');
+        const info = stmt.run(nome_cliente, telefone_cliente, dataPadronizada, horario, servico || 'Corte', barbeiro_id, 'ativo');
         
         res.json({ id: info.lastInsertRowid, success: true });
     } catch (error) {
