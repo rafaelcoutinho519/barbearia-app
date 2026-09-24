@@ -1296,6 +1296,19 @@
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
         let currentLoggedInBarber = null;
 
+        // Mapa nome -> id do barbeiro, carregado do backend (necessário para criar agendamentos)
+        let barbeiroIdMap = {};
+        async function loadBarbeiroIds() {
+            try {
+                const res = await fetch('/barbeiros');
+                const lista = await res.json();
+                barbeiroIdMap = {};
+                lista.forEach(b => { barbeiroIdMap[b.nome] = b.id; });
+            } catch (err) {
+                console.error('Erro ao carregar barbeiros do servidor:', err);
+            }
+        }
+
         function updateAuthUI() {
             const navLink = document.getElementById('userAuthNav');
             const mobileBtn = document.getElementById('mobileAuthBtn');
@@ -1371,10 +1384,25 @@
             renderAppointmentsList();
         }
 
-        function renderAppointmentsList() {
+        // Cache local dos últimos agendamentos do cliente exibidos, para achar dados ao cancelar
+        let ultimosAgendamentosCliente = [];
+
+        async function renderAppointmentsList() {
             const listContainer = document.getElementById('appointmentsList');
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const userApps = appointments.filter(a => a.phone === currentUser.phone);
+            listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Carregando...</p>';
+
+            let userApps = [];
+            try {
+                const res = await fetch('/agendamentos');
+                const todos = await res.json();
+                const telLimpo = currentUser.phone.replace(/\D/g, '');
+                userApps = todos.filter(a => (a.telefone_cliente || '').replace(/\D/g, '') === telLimpo);
+            } catch (err) {
+                listContainer.innerHTML = '<p style="color: #ff6b6b; padding: 15px;">Erro ao carregar seus agendamentos.</p>';
+                return;
+            }
+
+            ultimosAgendamentosCliente = userApps;
 
             if (userApps.length === 0) {
                 listContainer.innerHTML = '<p style="color: var(--text-muted); padding: 15px;">Você ainda não possui agendamentos ativos.</p>';
@@ -1382,14 +1410,14 @@
                 listContainer.innerHTML = userApps.map((app) => `
                     <div class="appointment-card-modern">
                         <div class="appointment-header">
-                            <span class="appointment-service">${app.service}</span>
+                            <span class="appointment-service">${app.servico}</span>
                             <span style="font-size: 0.8rem; color: var(--gold);">Ativo</span>
                         </div>
                         <div class="appointment-info">
-                            <img src="${barberImages[app.pro]}" alt="${app.pro}" class="appointment-pro-img">
+                            <img src="${barberImages[app.barbeiro_nome] || ''}" alt="${app.barbeiro_nome}" class="appointment-pro-img">
                             <div class="appointment-details">
-                                <p>Profissional: <strong>${app.pro}</strong></p>
-                                <p>Data e Hora: <strong>${app.date} às ${app.time}</strong></p>
+                                <p>Profissional: <strong>${app.barbeiro_nome}</strong></p>
+                                <p>Data e Hora: <strong>${app.data} às ${app.horario}</strong></p>
                             </div>
                         </div>
                         <button class="btn-cancel-modern" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
@@ -1398,23 +1426,31 @@
             }
         }
 
-        function cancelAppointment(appId) {
-            if (confirm('Tem certeza que deseja cancelar este agendamento? Lembre-se de avisar o barbeiro com pelo menos 1h de antecedência.')) {
-                let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-                const appToCancel = appointments.find(a => a.id === appId);
-                
-                appointments = appointments.filter(a => a.id !== appId);
-                localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-                
-                renderAppointmentsList();
-                updateAvailableTimes();
-                alert('Agendamento cancelado com sucesso.');
+        async function cancelAppointment(appId) {
+            if (!confirm('Tem certeza que deseja cancelar este agendamento? Lembre-se de avisar o barbeiro com pelo menos 1h de antecedência.')) return;
 
-                if (appToCancel && barberPhones[appToCancel.pro]) {
-                    const phone = barberPhones[appToCancel.pro];
-                    const msg = `❌ *CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.service}* marcado para ${appToCancel.date} às ${appToCancel.time}. A vaga foi liberada no site. 🔄`;
-                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            const appToCancel = ultimosAgendamentosCliente.find(a => a.id === appId);
+
+            try {
+                const res = await fetch('/agendamentos/' + appId, { method: 'DELETE' });
+                const resposta = await res.json();
+                if (!resposta.success) {
+                    alert('Erro ao cancelar agendamento.');
+                    return;
                 }
+            } catch (err) {
+                alert('Erro de conexão ao cancelar.');
+                return;
+            }
+
+            await renderAppointmentsList();
+            updateAvailableTimes();
+            alert('Agendamento cancelado com sucesso.');
+
+            if (appToCancel && barberPhones[appToCancel.barbeiro_nome]) {
+                const phone = barberPhones[appToCancel.barbeiro_nome];
+                const msg = `❌ *CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.servico}* marcado para ${appToCancel.data} às ${appToCancel.horario}. A vaga foi liberada no site. 🔄`;
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
             }
         }
 
@@ -1444,35 +1480,43 @@
             alert('Você saiu do painel do barbeiro.');
         }
 
-        function renderBarberDashboard() {
+        async function renderBarberDashboard() {
             if (!currentLoggedInBarber) return;
             const filterDate = document.getElementById('barberFilterDate').value;
             const container = document.getElementById('barberAppointmentsContainer');
-            
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            let barberApps = appointments.filter(a => a.pro === currentLoggedInBarber);
 
-            if (filterDate) {
-                barberApps = barberApps.filter(a => a.date === filterDate);
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando agendamentos...</p>';
+
+            let barberApps = [];
+            try {
+                let url = '/agendamentos?barbeiro=' + encodeURIComponent(currentLoggedInBarber);
+                if (filterDate) url += '&data=' + encodeURIComponent(filterDate);
+                const res = await fetch(url);
+                barberApps = await res.json();
+            } catch (err) {
+                container.innerHTML = '<p style="color: #ff6b6b; text-align: center; padding: 20px;">Erro ao carregar agendamentos.</p>';
+                return;
             }
 
-            barberApps.sort((a, b) => a.time.localeCompare(b.time));
+            barberApps.sort((a, b) => a.horario.localeCompare(b.horario));
 
             if (barberApps.length === 0) {
                 container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum agendamento encontrado para esta data.</p>';
             } else {
                 container.innerHTML = barberApps.map(app => {
-                    const msgWhatsApp = `✂️ *BROOKLYN BARBEARIA* 💈\n\nOlá *${app.clientName}*, tudo bien? Passando para falar sobre o seu horário de *${app.service}* marcado para *${app.date}* às *${app.time}* com o profissional *${app.pro}*.\n\nDeseja seguir para o corte 💈✅, ou cancelar ❌?\n\nResponda por aqui para confirmarmos!`;
+                    const msgWhatsApp = `✂️ *BROOKLYN BARBEARIA* 💈\n\nOlá *${app.nome_cliente}*, tudo bien? Passando para falar sobre o seu horário de *${app.servico}* marcado para *${app.data}* às *${app.horario}* com o profissional *${currentLoggedInBarber}*.\n\nDeseja seguir para o corte 💈✅, ou cancelar ❌?\n\nResponda por aqui para confirmarmos!`;
+                    const telLimpo = (app.telefone_cliente || '').replace(/\D/g, '');
+                    const numeroFinal = telLimpo.startsWith('55') ? telLimpo : '55' + telLimpo;
 
                     return `
                     <div class="admin-app-item">
                         <div>
-                            <span style="color: var(--gold); font-weight: bold; font-size: 1.05rem;">${app.time} - ${app.service}</span>
-                            <p style="color: #fff; font-size: 0.9rem; margin-top: 4px;">Cliente: <strong>${app.clientName}</strong></p>
-                            <p style="color: var(--text-muted); font-size: 0.8rem;">Tel: ${app.phone} | Data: ${app.date}</p>
+                            <span style="color: var(--gold); font-weight: bold; font-size: 1.05rem;">${app.horario} - ${app.servico}</span>
+                            <p style="color: #fff; font-size: 0.9rem; margin-top: 4px;">Cliente: <strong>${app.nome_cliente}</strong></p>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">Tel: ${app.telefone_cliente} | Data: ${app.data}</p>
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <a href="https://wa.me/55${app.phone.replace(/\D/g, '')}?text=${encodeURIComponent(msgWhatsApp)}" target="_blank" class="btn-social" style="padding: 6px 12px; font-size: 0.75rem;">WhatsApp</a>
+                            <a href="https://wa.me/${numeroFinal}?text=${encodeURIComponent(msgWhatsApp)}" target="_blank" class="btn-social" style="padding: 6px 12px; font-size: 0.75rem;">WhatsApp</a>
                             <button onclick="barberCancelApp(${app.id})" class="btn-cancel-modern" style="margin-top: 0;">Cancelar (Liberar Vaga)</button>
                         </div>
                     </div>
@@ -1481,15 +1525,24 @@
             }
         }
 
-        function barberCancelApp(appId) {
-            if (confirm('Deseja realmente cancelar o agendamento deste cliente? A vaga será liberada imediatamente no site.')) {
-                let appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-                appointments = appointments.filter(a => a.id !== appId);
-                localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
-                renderBarberDashboard();
-                updateAvailableTimes();
-                alert('Agendamento cancelado e vaga liberada com sucesso!');
+        async function barberCancelApp(appId) {
+            if (!confirm('Deseja realmente cancelar o agendamento deste cliente? A vaga será liberada imediatamente no site.')) return;
+
+            try {
+                const res = await fetch('/agendamentos/' + appId, { method: 'DELETE' });
+                const resposta = await res.json();
+                if (!resposta.success) {
+                    alert('Erro ao cancelar agendamento.');
+                    return;
+                }
+            } catch (err) {
+                alert('Erro de conexão ao cancelar.');
+                return;
             }
+
+            await renderBarberDashboard();
+            updateAvailableTimes();
+            alert('Agendamento cancelado e vaga liberada com sucesso!');
         }
 
         function selectServiceAndSchedule(serviceName) {
@@ -1591,7 +1644,7 @@
             return slots;
         }
 
-        function updateAvailableTimes() {
+        async function updateAvailableTimes() {
             const pro = document.getElementById('schedulePro').value;
             const dateStr = document.getElementById('scheduleDate').value;
             const timeSelect = document.getElementById('scheduleTime');
@@ -1621,10 +1674,19 @@
                 excludedTimes = ["12:20", "13:00", "13:40"];
             }
 
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const bookedTimes = appointments
-                .filter(a => a.pro === pro && a.date === dateStr)
-                .map(a => a.time);
+            timeSelect.innerHTML = '<option value="">Carregando horários...</option>';
+
+            let bookedTimes = [];
+            try {
+                const url = '/agendamentos?barbeiro=' + encodeURIComponent(pro) + '&data=' + encodeURIComponent(dateStr);
+                const res = await fetch(url);
+                const agendamentos = await res.json();
+                bookedTimes = agendamentos.map(a => a.horario);
+            } catch (err) {
+                console.error('Erro ao buscar horários ocupados:', err);
+                timeSelect.innerHTML = '<option value="">Erro ao carregar horários, tente novamente</option>';
+                return;
+            }
 
             let optionsHtml = '<option value="">Selecione o horário</option>';
             let availableCount = 0;
@@ -1649,24 +1711,37 @@
             timeSelect.innerHTML = optionsHtml;
         }
 
-        function checkReminders() {
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
+        // Controla, só nesta aba, quais agendamentos já tiveram lembrete disparado (evita repetir enquanto a aba estiver aberta)
+        let lembretesEnviados = new Set();
+
+        async function checkReminders() {
+            if (!currentUser) return;
+
+            let appointments = [];
+            try {
+                const res = await fetch('/agendamentos');
+                const todos = await res.json();
+                const telLimpo = currentUser.phone.replace(/\D/g, '');
+                appointments = todos.filter(a => (a.telefone_cliente || '').replace(/\D/g, '') === telLimpo);
+            } catch (err) {
+                return;
+            }
+
             const now = new Date();
 
             appointments.forEach(app => {
-                const [year, month, day] = app.date.split('-');
-                const [hour, minute] = app.time.split(':');
+                const [year, month, day] = app.data.split('-');
+                const [hour, minute] = app.horario.split(':');
                 const appDate = new Date(year, month - 1, day, hour, minute);
 
                 const diffMinutes = (appDate - now) / (1000 * 60);
 
-                if (diffMinutes > 55 && diffMinutes <= 60 && !app.reminderSent) {
-                    app.reminderSent = true;
-                    localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+                if (diffMinutes > 55 && diffMinutes <= 60 && !lembretesEnviados.has(app.id)) {
+                    lembretesEnviados.add(app.id);
 
-                    if (barberPhones[app.pro]) {
-                        const phoneNum = barberPhones[app.pro];
-                        const confirmMsg = `✂️ *LEMBRETE DE HORÁRIO - BROOKLYN BARBEARIA* 💈\n\nOlá *${app.clientName.toUpperCase()}*!\n\nPassando para lembrar do seu agendamento de *${app.service}* daqui a pouco, às *${app.time}* do dia *${app.date}* com *${app.pro}*.\n\nDeseja seguir para o corte ✅, ou cancelar ❌ (liberando a vaga)?`;
+                    if (barberPhones[app.barbeiro_nome]) {
+                        const phoneNum = barberPhones[app.barbeiro_nome];
+                        const confirmMsg = `✂️ *LEMBRETE DE HORÁRIO - BROOKLYN BARBEARIA* 💈\n\nOlá *${app.nome_cliente.toUpperCase()}*!\n\nPassando para lembrar do seu agendamento de *${app.servico}* daqui a pouco, às *${app.horario}* do dia *${app.data}* com *${app.barbeiro_nome}*.\n\nDeseja seguir para o corte ✅, ou cancelar ❌ (liberando a vaga)?`;
                         
                         window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(confirmMsg)}`, '_blank');
                     }
@@ -1697,7 +1772,7 @@
             alert(`Bem-vindo, ${name}! Identificação realizada com sucesso.`);
         }
 
-        function handleScheduleSubmit(e) {
+        async function handleScheduleSubmit(e) {
             e.preventDefault();
             if (!currentUser) {
                 alert('Por favor, informe seu nome e telefone antes de concluir o agendamento.');
@@ -1715,41 +1790,63 @@
                 return;
             }
 
-            const appointments = JSON.parse(localStorage.getItem('brooklyn_appointments') || '[]');
-            const isAlreadyBooked = appointments.some(a => a.pro === pro && a.date === date && a.time === time);
-            
-            if (isAlreadyBooked) {
-                alert('Este horário já acabou de ser reservado para este profissional. Por favor, escolha outro.');
-                updateAvailableTimes();
+            if (!date || !time) {
+                alert('Por favor, selecione a data e o horário.');
                 return;
             }
 
-            const newAppointment = {
-                id: Date.now(),
-                service,
-                pro,
-                date,
-                time,
-                phone: currentUser.phone,
-                clientName: currentUser.name,
-                reminderSent: false
-            };
+            // Garante que temos o id do barbeiro no backend (recarrega se ainda não carregou)
+            if (!barbeiroIdMap[pro]) {
+                await loadBarbeiroIds();
+            }
+            const barbeiroId = barbeiroIdMap[pro];
+            if (!barbeiroId) {
+                alert('Não foi possível identificar o profissional no servidor. Recarregue a página e tente novamente.');
+                return;
+            }
 
-            appointments.push(newAppointment);
-            localStorage.setItem('brooklyn_appointments', JSON.stringify(appointments));
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = 'Agendando...'; }
 
-            closeAllModals();
-            alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
+            try {
+                const res = await fetch('/agendamentos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nome_cliente: currentUser.name,
+                        telefone_cliente: currentUser.phone,
+                        data: date,
+                        horario: time,
+                        servico: service,
+                        barbeiro_id: barbeiroId
+                    })
+                });
+                const resposta = await res.json();
 
-            if (barberPhones[pro]) {
-                const phoneNum = barberPhones[pro];
-                const textMessage = `🔔 *NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
-                window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
+                if (!res.ok || resposta.error) {
+                    alert(resposta.error || 'Este horário já acabou de ser reservado para este profissional. Por favor, escolha outro.');
+                    updateAvailableTimes();
+                    return;
+                }
+
+                closeAllModals();
+                alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
+
+                if (barberPhones[pro]) {
+                    const phoneNum = barberPhones[pro];
+                    const textMessage = `🔔 *NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
+                    window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
+                }
+            } catch (err) {
+                alert('Erro de conexão ao criar o agendamento. Verifique sua internet e tente novamente.');
+            } finally {
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = 'Confirmar Agendamento'; }
             }
         }
 
         window.onload = function() {
             updateAuthUI();
+            loadBarbeiroIds();
             setInterval(checkReminders, 60000);
         };
     </script>
