@@ -59,14 +59,13 @@ if (totalBarbeiros === 0) {
 // Função auxiliar para normalizar a data para o formato YYYY-MM-DD
 function normalizarData(dataStr) {
     if (!dataStr) return '';
-    // Se vier no formato DD/MM/YYYY
     if (dataStr.includes('/')) {
         const partes = dataStr.split('/');
         if (partes.length === 3) {
             return `${partes[2]}-${partes[1]}-${partes[0]}`;
         }
     }
-    return dataStr; // Retorna como está se já for YYYY-MM-DD
+    return dataStr;
 }
 
 app.get('/barbeiros', (req, res) => {
@@ -87,21 +86,20 @@ app.get('/agendamentos', (req, res) => {
     const params = [];
 
     if (barbeiro) {
-        query += ` AND (barbeiros.nome = ? OR barbeiros.id = ?)`;
-        params.push(barbeiro, barbeiro);
+        // Encontra o ID exato do barbeiro pelo nome ou id enviado
+        const bObj = db.prepare('SELECT id FROM barbeiros WHERE nome = ? OR id = ?').get(barbeiro, barbeiro);
+        if (bObj) {
+            query += ` AND agendamentos.barbeiro_id = ?`;
+            params.push(bObj.id);
+        } else {
+            query += ` AND 1 = 0`; // Se não encontrar o barbeiro, retorna vazio
+        }
     }
 
     if (data) {
-        const dataIso = normalizarData(data);
-        // Cria variações para garantir que encontre independente de como foi salvo no banco
-        const partesIso = dataIso.split('-');
-        let dataBr = data;
-        if (partesIso.length === 3) {
-            dataBr = `${partesIso[2]}-${partesIso[1]}-${partesIso[0]}`; // DD-MM-YYYY ou similar
-        }
-
-        query += ` AND (agendamentos.data = ? OR agendamentos.data = ? OR agendamentos.data = ?)`;
-        params.push(data, dataIso, dataBr);
+        const dataNormalizada = normalizarData(data);
+        query += ` AND agendamentos.data = ?`;
+        params.push(dataNormalizada);
     }
 
     const agendamentos = db.prepare(query).all(...params);
@@ -111,7 +109,6 @@ app.get('/agendamentos', (req, res) => {
 app.post('/agendamentos', (req, res) => {
     const { nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id } = req.body;
     
-    // Normaliza a data antes de salvar no banco para manter o padrão YYYY-MM-DD
     const dataPadronizada = normalizarData(data);
 
     try {
