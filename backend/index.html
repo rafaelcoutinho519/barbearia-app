@@ -1335,7 +1335,6 @@
             closeAllModals();
             document.getElementById(modalId).style.display = 'flex';
             
-            // Trava datas anteriores no campo de agendamento ao abrir
             if (modalId === 'scheduleModal') {
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('scheduleDate').setAttribute('min', today);
@@ -1528,7 +1527,6 @@
             const [year, month, day] = selectedDateStr.split('-');
             const dateObj = new Date(year, month - 1, day);
             
-            // Trava extra contra datas anteriores (compara com a data atual zerada)
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (dateObj < today) {
