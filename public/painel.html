@@ -225,12 +225,10 @@
         function carregarAgenda(barbeiro) {
             const lista = document.getElementById('agenda-lista');
             const contadorEl = document.getElementById('contador-agenda');
-            const dataFiltro = document.getElementById('filtro-data').value;
             
             lista.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Carregando agendamentos...</p>';
             contadorEl.innerText = 'Calculando...';
 
-            // Buscamos todos os agendamentos do barbeiro e filtramos no front-end de forma ultra-segura
             let url = '/agendamentos?barbeiro=' + encodeURIComponent(barbeiro);
 
             fetch(url)
@@ -249,10 +247,36 @@
             renderizarLista();
         }
 
-        // Função auxiliar para normalizar qualquer formato de data (YYYY-MM-DD ou ISO) para comparação exata
+        // Função ultra-robusta para lidar com datas em texto (iOS), barras ou formato ISO
         function normalizarData(dataStr) {
             if (!dataStr) return '';
-            // Se vier com T (ex: 2026-09-24T00:00:00.000Z), corta no T
+            
+            const meses = {
+                'jan': '01', 'fev': '02', 'mar': '03', 'abr': '04', 'mai': '05', 'jun': '06',
+                'jul': '07', 'ago': '08', 'set': '09', 'out': '10', 'nov': '11', 'dez': '12'
+            };
+            
+            let strLower = dataStr.toLowerCase();
+            for (let mesAbrev in meses) {
+                if (strLower.includes(mesAbrev)) {
+                    let numeros = dataStr.match(/\d+/g);
+                    if (numeros && numeros.length >= 2) {
+                        let dia = numeros[0].padStart(2, '0');
+                        let ano = numeros[numeros.length - 1];
+                        let mes = meses[mesAbrev];
+                        return `${ano}-${mes}-${dia}`;
+                    }
+                }
+            }
+
+            if (dataStr.includes('/')) {
+                let partes = dataStr.split('/');
+                if (partes.length === 3) {
+                    let ano = partes[2].length === 2 ? '20' + partes[2] : partes[2];
+                    return `${ano}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+                }
+            }
+
             let limpa = dataStr.includes('T') ? dataStr.split('T')[0] : dataStr.split(' ')[0];
             return limpa.trim();
         }
@@ -260,7 +284,9 @@
         function renderizarLista() {
             const lista = document.getElementById('agenda-lista');
             const contadorEl = document.getElementById('contador-agenda');
-            const dataFiltro = document.getElementById('filtro-data').value; // Formato sempre YYYY-MM-DD vindo do input date HTML5
+            const valorInputBruto = document.getElementById('filtro-data').value;
+            
+            const dataFiltro = normalizarData(valorInputBruto);
             
             const dadosFiltrados = dadosAtuais.filter(function(item) {
                 if (!item.data) return false;
