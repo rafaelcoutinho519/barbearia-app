@@ -199,25 +199,42 @@
     </div>
 
     <script>
-        const pins = { "Karlos": "1234", "Dorgivan": "5678", "David": "9876" };
+        // Os PINs não ficam mais aqui no código (essa página é pública e qualquer um podia ver
+        // o código-fonte). O login agora é validado no servidor, na rota POST /login.
         let barbeiroLogado = '';
+        let painelToken = sessionStorage.getItem('painel_token') || null;
 
-        function logar() {
+        async function logar() {
             const barbeiro = document.getElementById('barbeiro').value;
             const pin = document.getElementById('pin').value;
 
-            if (pins[barbeiro] === pin) {
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ barbeiro, pin })
+                });
+                const resposta = await res.json();
+
+                if (!res.ok || !resposta.token) {
+                    alert(resposta.error || 'PIN incorreto!');
+                    return;
+                }
+
+                painelToken = resposta.token;
+                sessionStorage.setItem('painel_token', painelToken);
                 barbeiroLogado = barbeiro;
+
                 document.getElementById('login-card').classList.add('hidden');
                 document.getElementById('painel-card').classList.remove('hidden');
                 document.getElementById('titulo-painel').innerText = "PAINEL - " + barbeiro.toUpperCase();
-                
+
                 const hoje = new Date().toISOString().split('T')[0];
                 document.getElementById('filtro-data').value = hoje;
 
                 carregarAgenda();
-            } else {
-                alert('PIN incorreto!');
+            } catch (err) {
+                alert('Erro de conexão ao entrar no painel.');
             }
         }
 
@@ -231,8 +248,15 @@
 
             let url = '/agendamentos?barbeiro=' + encodeURIComponent(barbeiroLogado) + '&data=' + encodeURIComponent(dataSelecionada);
 
-            fetch(url)
-                .then(function(res) { return res.json(); })
+            fetch(url, { headers: { 'Authorization': 'Bearer ' + painelToken } })
+                .then(function(res) {
+                    if (res.status === 401) {
+                        alert('Sua sessão expirou. Faça login novamente.');
+                        logout();
+                        return [];
+                    }
+                    return res.json();
+                })
                 .then(function(dados) {
                     renderizarLista(dados);
                 })
@@ -313,19 +337,24 @@
         function cancelarAgendamento(id) {
             if (!confirm('Deseja realmente cancelar este agendamento do cliente?')) return;
 
-            fetch('/agendamentos/' + id, { method: 'DELETE' })
+            fetch('/agendamentos/' + id, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + painelToken }
+            })
                 .then(function(res) { return res.json(); })
                 .then(function(resposta) {
                     if (resposta.success) {
                         carregarAgenda();
                     } else {
-                        alert('Erro ao cancelar agendamento.');
+                        alert(resposta.error || 'Erro ao cancelar agendamento.');
                     }
                 })
                 .catch(function() { alert('Erro de conexão ao cancelar.'); });
         }
 
         function logout() {
+            painelToken = null;
+            sessionStorage.removeItem('painel_token');
             document.getElementById('pin').value = '';
             document.getElementById('painel-card').classList.add('hidden');
             document.getElementById('login-card').classList.remove('hidden');
