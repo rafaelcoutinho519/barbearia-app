@@ -870,10 +870,6 @@
     </header>
 
     <div class="mobile-bottom-nav">
-        <a href="#inicio" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Início
-        </a>
         <a href="#servicos" class="mobile-nav-item">
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
             Serviços
@@ -1286,11 +1282,9 @@
             "David": "David/perfil.jpg"
         };
 
-        const barberPins = {
-            "Karlos": "1234",
-            "Dorgivan": "5678",
-            "David": "9012"
-        };
+        // Os PINs não ficam mais aqui no código do site (qualquer um podia ver via "Ver código-fonte").
+        // O login agora é validado no servidor, na rota POST /login.
+        let barberToken = sessionStorage.getItem('brooklyn_barber_token') || null;
 
         let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
@@ -1393,10 +1387,8 @@
 
             let userApps = [];
             try {
-                const res = await fetch('/agendamentos');
-                const todos = await res.json();
-                const telLimpo = currentUser.phone.replace(/\D/g, '');
-                userApps = todos.filter(a => (a.telefone_cliente || '').replace(/\D/g, '') === telLimpo);
+                const res = await fetch('/agendamentos/cliente?telefone=' + encodeURIComponent(currentUser.phone));
+                userApps = await res.json();
             } catch (err) {
                 listContainer.innerHTML = '<p style="color: #ff6b6b; padding: 15px;">Erro ao carregar seus agendamentos.</p>';
                 return;
@@ -1432,10 +1424,10 @@
             const appToCancel = ultimosAgendamentosCliente.find(a => a.id === appId);
 
             try {
-                const res = await fetch('/agendamentos/' + appId, { method: 'DELETE' });
+                const res = await fetch('/agendamentos/' + appId + '?telefone=' + encodeURIComponent(currentUser.phone), { method: 'DELETE' });
                 const resposta = await res.json();
                 if (!resposta.success) {
-                    alert('Erro ao cancelar agendamento.');
+                    alert(resposta.error || 'Erro ao cancelar agendamento.');
                     return;
                 }
             } catch (err) {
@@ -1454,28 +1446,49 @@
             }
         }
 
-        function handleBarberLogin(e) {
+        async function handleBarberLogin(e) {
             e.preventDefault();
             const barber = document.getElementById('barberSelectUser').value;
             const pin = document.getElementById('barberPinInput').value;
 
-            if (barberPins[barber] && barberPins[barber] === pin) {
+            if (!barber || !pin) {
+                alert('Selecione o barbeiro e digite o PIN.');
+                return;
+            }
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ barbeiro: barber, pin })
+                });
+                const resposta = await res.json();
+
+                if (!res.ok || !resposta.token) {
+                    alert(resposta.error || 'PIN incorreto ou barbeiro não selecionado.');
+                    return;
+                }
+
+                barberToken = resposta.token;
+                sessionStorage.setItem('brooklyn_barber_token', barberToken);
                 currentLoggedInBarber = barber;
                 document.getElementById('barberPinInput').value = '';
                 document.getElementById('barberPanelTitle').innerText = `Painel de Agendamentos - ${barber}`;
-                
+
                 const todayStr = new Date().toISOString().split('T')[0];
                 document.getElementById('barberFilterDate').value = todayStr;
 
                 openModal('barberPanelModal');
                 renderBarberDashboard();
-            } else {
-                alert('PIN incorreto ou barbeiro não selecionado.');
+            } catch (err) {
+                alert('Erro de conexão ao entrar no painel.');
             }
         }
 
         function logoutBarber() {
             currentLoggedInBarber = null;
+            barberToken = null;
+            sessionStorage.removeItem('brooklyn_barber_token');
             closeAllModals();
             alert('Você saiu do painel do barbeiro.');
         }
@@ -1491,7 +1504,12 @@
             try {
                 let url = '/agendamentos?barbeiro=' + encodeURIComponent(currentLoggedInBarber);
                 if (filterDate) url += '&data=' + encodeURIComponent(filterDate);
-                const res = await fetch(url);
+                const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + barberToken } });
+                if (res.status === 401) {
+                    alert('Sua sessão expirou. Faça login novamente.');
+                    logoutBarber();
+                    return;
+                }
                 barberApps = await res.json();
             } catch (err) {
                 container.innerHTML = '<p style="color: #ff6b6b; text-align: center; padding: 20px;">Erro ao carregar agendamentos.</p>';
@@ -1529,10 +1547,13 @@
             if (!confirm('Deseja realmente cancelar o agendamento deste cliente? A vaga será liberada imediatamente no site.')) return;
 
             try {
-                const res = await fetch('/agendamentos/' + appId, { method: 'DELETE' });
+                const res = await fetch('/agendamentos/' + appId, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + barberToken }
+                });
                 const resposta = await res.json();
                 if (!resposta.success) {
-                    alert('Erro ao cancelar agendamento.');
+                    alert(resposta.error || 'Erro ao cancelar agendamento.');
                     return;
                 }
             } catch (err) {
@@ -1616,8 +1637,14 @@
                 endHour = 19;
                 endMinute = 40;
             } else if (proName === "Karlos") {
-                endHour = 19;
-                endMinute = 40;
+                if (dayOfWeek === 5 || dayOfWeek === 6) {
+                    // Sexta-feira e sábado: não oferecer o horário das 19:40
+                    endHour = 19;
+                    endMinute = 0;
+                } else {
+                    endHour = 19;
+                    endMinute = 40;
+                }
             } else {
                 endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
                 endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
@@ -1678,10 +1705,9 @@
 
             let bookedTimes = [];
             try {
-                const url = '/agendamentos?barbeiro=' + encodeURIComponent(pro) + '&data=' + encodeURIComponent(dateStr);
+                const url = '/disponibilidade?barbeiro=' + encodeURIComponent(pro) + '&data=' + encodeURIComponent(dateStr);
                 const res = await fetch(url);
-                const agendamentos = await res.json();
-                bookedTimes = agendamentos.map(a => a.horario);
+                bookedTimes = await res.json();
             } catch (err) {
                 console.error('Erro ao buscar horários ocupados:', err);
                 timeSelect.innerHTML = '<option value="">Erro ao carregar horários, tente novamente</option>';
@@ -1697,11 +1723,11 @@
                 }
 
                 if (bookedTimes.includes(time)) {
-                    optionsHtml += `<option value="${time}" disabled style="color: #555; background: #111;">${time} (Indisponível)</option>`;
-                } else {
-                    optionsHtml += `<option value="${time}">${time}</option>`;
-                    availableCount++;
+                    return; // horário já ocupado: não aparece mais na lista
                 }
+
+                optionsHtml += `<option value="${time}">${time}</option>`;
+                availableCount++;
             });
 
             if (availableCount === 0) {
@@ -1719,10 +1745,8 @@
 
             let appointments = [];
             try {
-                const res = await fetch('/agendamentos');
-                const todos = await res.json();
-                const telLimpo = currentUser.phone.replace(/\D/g, '');
-                appointments = todos.filter(a => (a.telefone_cliente || '').replace(/\D/g, '') === telLimpo);
+                const res = await fetch('/agendamentos/cliente?telefone=' + encodeURIComponent(currentUser.phone));
+                appointments = await res.json();
             } catch (err) {
                 return;
             }
