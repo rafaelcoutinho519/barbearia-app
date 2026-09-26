@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel dos Barbeiros - Brooklyn Barbearia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-main: #121212;
@@ -16,8 +19,8 @@
         }
 
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: var(--bg-main); 
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: radial-gradient(circle at 50% -10%, #1e1b14 0%, var(--bg-main) 55%); 
             color: var(--text-main); 
             display: flex; 
             justify-content: center; 
@@ -31,31 +34,55 @@
         .card { 
             background: var(--card-bg); 
             padding: 30px 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6); 
+            border-radius: 18px; 
+            box-shadow: 0 12px 32px rgba(0,0,0,0.55); 
             width: 100%; 
             max-width: 450px; 
             text-align: center; 
             border: 1px solid var(--border-color);
         }
 
+        .selo-barbearia {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 12px auto;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #2a2a2a, #161616);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 0 18px rgba(212, 175, 55, 0.15);
+        }
+
         h2 {
             color: var(--gold);
             letter-spacing: 0.5px;
-            margin-bottom: 20px;
-            font-size: 22px;
+            margin-bottom: 4px;
+            font-size: 21px;
+            font-weight: 600;
+        }
+
+        .subtitulo-painel {
+            color: var(--text-muted);
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 22px;
         }
 
         input, select, button { 
             width: 100%; 
             padding: 14px; 
             margin-top: 15px; 
-            border-radius: 6px; 
+            border-radius: 10px; 
             border: 1px solid var(--border-color); 
             background: #242424; 
             color: var(--text-main); 
             box-sizing: border-box; 
             font-size: 15px;
+            font-family: inherit;
             outline: none;
             transition: all 0.3s ease;
         }
@@ -85,9 +112,9 @@
             border: 1px solid rgba(212, 175, 55, 0.3);
             color: var(--gold);
             padding: 10px;
-            border-radius: 6px;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 15px;
             text-align: center;
         }
@@ -96,10 +123,15 @@
             background: #222222; 
             padding: 16px; 
             margin-top: 15px; 
-            border-radius: 8px; 
+            border-radius: 12px; 
             text-align: left; 
             border-left: 4px solid var(--gold);
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .agendamento-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
         }
 
         .agendamento-header {
@@ -130,7 +162,7 @@
             color: #fff; 
             padding: 10px 12px; 
             text-decoration: none; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             font-weight: bold; 
             font-size: 13px; 
             text-align: center; 
@@ -147,7 +179,7 @@
             color: #fff; 
             padding: 10px 12px; 
             border: none; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             cursor: pointer; 
             font-size: 13px; 
             width: auto; 
@@ -184,12 +216,14 @@
         .semana-nav-btn {
             width: auto;
             margin-top: 0;
-            padding: 8px 12px;
+            padding: 8px 14px;
             background: #242424;
             color: var(--gold);
             font-size: 16px;
             font-weight: bold;
             flex: none;
+            border-radius: 50%;
+            line-height: 1;
         }
         .semana-nav-btn:hover {
             background: #2c2c2c;
@@ -197,6 +231,7 @@
 
         .semana-label {
             font-size: 13px;
+            font-weight: 500;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -206,7 +241,7 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .dia-tab {
@@ -215,10 +250,14 @@
             padding: 10px 2px;
             background: #1f1f1f;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .dia-tab:active {
+            transform: scale(0.95);
         }
 
         .dia-tab .dia-nome {
@@ -266,7 +305,9 @@
 <body>
 
     <div class="card" id="login-card">
+        <div class="selo-barbearia">💈</div>
         <h2>Painel dos Barbeiros</h2>
+        <div class="subtitulo-painel">Brooklyn Barbearia</div>
         <select id="barbeiro">
             <option value="Karlos">Karlos</option>
             <option value="Dorgivan">Dorgivan</option>
@@ -277,7 +318,8 @@
     </div>
 
     <div class="card hidden card-painel" id="painel-card">
-        <h2 id="titulo-painel" style="margin-bottom: 5px;">Agenda</h2>
+        <h2 id="titulo-painel" style="margin-bottom: 3px;">Agenda</h2>
+        <div class="subtitulo-painel" style="margin-bottom: 18px;">Brooklyn Barbearia</div>
 
         <div class="semana-nav">
             <button class="semana-nav-btn" onclick="mudarSemana(-1)">‹</button>
