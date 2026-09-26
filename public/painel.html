@@ -170,6 +170,97 @@
             background: #333;
             border-radius: 3px;
         }
+        .card-painel {
+            max-width: 480px;
+        }
+
+        .semana-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .semana-nav-btn {
+            width: auto;
+            margin-top: 0;
+            padding: 8px 12px;
+            background: #242424;
+            color: var(--gold);
+            font-size: 16px;
+            font-weight: bold;
+            flex: none;
+        }
+        .semana-nav-btn:hover {
+            background: #2c2c2c;
+        }
+
+        .semana-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dias-tabs {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .dia-tab {
+            width: 100%;
+            margin-top: 0;
+            padding: 10px 2px;
+            background: #1f1f1f;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dia-tab .dia-nome {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .dia-tab .dia-numero {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-top: 2px;
+        }
+
+        .dia-tab.hoje .dia-nome {
+            color: var(--gold);
+        }
+
+        .dia-tab.selecionado {
+            background: var(--gold);
+            border-color: var(--gold);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+        }
+
+        .dia-tab.selecionado .dia-nome,
+        .dia-tab.selecionado .dia-numero {
+            color: #121212;
+        }
+
+        .dia-tab:hover:not(.selecionado) {
+            border-color: var(--gold);
+        }
+
+        @media (max-width: 380px) {
+            .dia-tab .dia-nome { font-size: 10px; }
+            .dia-tab .dia-numero { font-size: 14px; }
+            .dia-tab { padding: 8px 1px; }
+        }
     </style>
 </head>
 <body>
@@ -185,15 +276,19 @@
         <button onclick="logar()">Entrar</button>
     </div>
 
-    <div class="card hidden" id="painel-card">
+    <div class="card hidden card-painel" id="painel-card">
         <h2 id="titulo-painel" style="margin-bottom: 5px;">Agenda</h2>
-        
+
+        <div class="semana-nav">
+            <button class="semana-nav-btn" onclick="mudarSemana(-1)">‹</button>
+            <span class="semana-label" id="semana-label"></span>
+            <button class="semana-nav-btn" onclick="mudarSemana(1)">›</button>
+        </div>
+
+        <div class="dias-tabs" id="dias-tabs"></div>
+
         <div id="contador-agenda" class="contador-badge">Carregando contagem...</div>
 
-        <div style="margin-bottom: 15px; text-align: left;">
-            <label style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Filtrar por Data:</label>
-            <input type="date" id="filtro-data" onchange="mudarFiltroData()">
-        </div>
         <div id="agenda-lista"></div>
         <button onclick="logout()" style="background: #333; color: #fff; margin-top: 20px;">Sair do Painel</button>
     </div>
@@ -229,20 +324,89 @@
                 document.getElementById('painel-card').classList.remove('hidden');
                 document.getElementById('titulo-painel').innerText = "PAINEL - " + barbeiro.toUpperCase();
 
-                const hoje = new Date().toISOString().split('T')[0];
-                document.getElementById('filtro-data').value = hoje;
+                semanaOffset = 0;
+                const hoje = new Date();
+                const diaSemanaHoje = hoje.getDay(); // 0=domingo
+                // Se hoje for domingo (barbearia fechada), começa mostrando a segunda-feira seguinte
+                diaSelecionadoIndex = (diaSemanaHoje === 0) ? 0 : (diaSemanaHoje - 1);
 
-                carregarAgenda();
+                renderSemana();
             } catch (err) {
                 alert('Erro de conexão ao entrar no painel.');
             }
         }
 
+        // índice 0 = segunda ... 5 = sábado
+        let semanaOffset = 0;
+        let diaSelecionadoIndex = 0;
+
+        function obterDiasDaSemana(offset) {
+            const hoje = new Date();
+            const diaSemanaHoje = hoje.getDay(); // 0=domingo, 1=segunda...
+            const deslocamentoAteSegunda = (diaSemanaHoje === 0) ? -6 : (1 - diaSemanaHoje);
+
+            const segunda = new Date(hoje);
+            segunda.setDate(hoje.getDate() + deslocamentoAteSegunda + (offset * 7));
+            segunda.setHours(0, 0, 0, 0);
+
+            const dias = [];
+            for (let i = 0; i < 6; i++) {
+                const d = new Date(segunda);
+                d.setDate(segunda.getDate() + i);
+                dias.push(d);
+            }
+            return dias;
+        }
+
+        function paraISO(data) {
+            const ano = data.getFullYear();
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const dia = String(data.getDate()).padStart(2, '0');
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        function mudarSemana(delta) {
+            semanaOffset += delta;
+            renderSemana();
+        }
+
+        function renderSemana() {
+            const dias = obterDiasDaSemana(semanaOffset);
+            const nomesDias = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+            const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+            const hojeISO = paraISO(new Date());
+
+            document.getElementById('semana-label').innerText =
+                `${dias[0].getDate()} - ${dias[5].getDate()} de ${meses[dias[0].getMonth()]}`;
+
+            const tabsContainer = document.getElementById('dias-tabs');
+            tabsContainer.innerHTML = '';
+
+            dias.forEach((d, index) => {
+                const iso = paraISO(d);
+                const isHoje = iso === hojeISO;
+                const isSelecionado = index === diaSelecionadoIndex;
+
+                const tab = document.createElement('div');
+                tab.className = 'dia-tab' + (isHoje ? ' hoje' : '') + (isSelecionado ? ' selecionado' : '');
+                tab.innerHTML = `<span class="dia-nome">${nomesDias[index]}</span><span class="dia-numero">${d.getDate()}</span>`;
+                tab.onclick = function () {
+                    diaSelecionadoIndex = index;
+                    renderSemana();
+                };
+                tabsContainer.appendChild(tab);
+            });
+
+            carregarAgenda();
+        }
+
         function carregarAgenda() {
             const lista = document.getElementById('agenda-lista');
             const contadorEl = document.getElementById('contador-agenda');
-            const dataSelecionada = document.getElementById('filtro-data').value;
-            
+            const dias = obterDiasDaSemana(semanaOffset);
+            const dataSelecionada = paraISO(dias[diaSelecionadoIndex]);
+
             lista.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Carregando agendamentos...</p>';
             contadorEl.innerText = 'Calculando...';
 
@@ -264,10 +428,6 @@
                     lista.innerHTML = '<p style="color: #ff6b6b; text-align: center;">Erro ao carregar agendamentos.</p>';
                     contadorEl.innerText = 'Erro ao carregar';
                 });
-        }
-
-        function mudarFiltroData() {
-            carregarAgenda();
         }
 
         function renderizarLista(dadosFiltrados) {
