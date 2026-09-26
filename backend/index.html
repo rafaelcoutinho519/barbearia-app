@@ -848,6 +848,83 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+        .barber-semana-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .barber-semana-nav-btn {
+            width: auto;
+            padding: 6px 14px;
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            color: var(--gold);
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50%;
+            cursor: pointer;
+            line-height: 1;
+            transition: border-color 0.2s;
+        }
+        .barber-semana-nav-btn:hover {
+            border-color: var(--gold);
+        }
+
+        .barber-semana-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .barber-dias-tabs {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .barber-dia-tab {
+            padding: 10px 2px;
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+        .barber-dia-tab:active { transform: scale(0.95); }
+
+        .barber-dia-tab .dia-nome {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .barber-dia-tab .dia-numero {
+            display: block;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 2px;
+        }
+
+        .barber-dia-tab.hoje .dia-nome { color: var(--gold); }
+
+        .barber-dia-tab.selecionado {
+            background: var(--gold);
+            border-color: var(--gold);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+        }
+        .barber-dia-tab.selecionado .dia-nome,
+        .barber-dia-tab.selecionado .dia-numero {
+            color: #0c0c0c;
+        }
     </style>
 </head>
 <body>
@@ -1258,10 +1335,14 @@
         <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3 id="barberPanelTitle">Painel de Agendamentos</h3>
-            <div class="form-group">
-                <label>Filtrar por Data</label>
-                <input type="date" id="barberFilterDate" onchange="renderBarberDashboard()">
+
+            <div class="barber-semana-nav">
+                <button type="button" class="barber-semana-nav-btn" onclick="mudarSemanaBarbeiro(-1)">‹</button>
+                <span class="barber-semana-label" id="barberSemanaLabel"></span>
+                <button type="button" class="barber-semana-nav-btn" onclick="mudarSemanaBarbeiro(1)">›</button>
             </div>
+            <div class="barber-dias-tabs" id="barberDiasTabs"></div>
+
             <div id="barberAppointmentsContainer" style="max-height: 50vh; overflow-y: auto;">
                 <!-- Lista injetada via JS -->
             </div>
@@ -1475,14 +1556,79 @@
                 document.getElementById('barberPinInput').value = '';
                 document.getElementById('barberPanelTitle').innerText = `Painel de Agendamentos - ${barber}`;
 
-                const todayStr = new Date().toISOString().split('T')[0];
-                document.getElementById('barberFilterDate').value = todayStr;
+                barberSemanaOffset = 0;
+                const diaSemanaHoje = new Date().getDay(); // 0 = domingo
+                barberDiaSelecionadoIndex = (diaSemanaHoje === 0) ? 0 : (diaSemanaHoje - 1);
 
                 openModal('barberPanelModal');
-                renderBarberDashboard();
+                renderBarberSemana();
             } catch (err) {
                 alert('Erro de conexão ao entrar no painel.');
             }
+        }
+
+        // Abas de dias da semana (SEG a SÁB) do painel do barbeiro
+        let barberSemanaOffset = 0;
+        let barberDiaSelecionadoIndex = 0;
+
+        function obterDiasDaSemana(offset) {
+            const hoje = new Date();
+            const diaSemanaHoje = hoje.getDay(); // 0=domingo, 1=segunda...
+            const deslocamentoAteSegunda = (diaSemanaHoje === 0) ? -6 : (1 - diaSemanaHoje);
+
+            const segunda = new Date(hoje);
+            segunda.setDate(hoje.getDate() + deslocamentoAteSegunda + (offset * 7));
+            segunda.setHours(0, 0, 0, 0);
+
+            const dias = [];
+            for (let i = 0; i < 6; i++) {
+                const d = new Date(segunda);
+                d.setDate(segunda.getDate() + i);
+                dias.push(d);
+            }
+            return dias;
+        }
+
+        function paraISO(data) {
+            const ano = data.getFullYear();
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const dia = String(data.getDate()).padStart(2, '0');
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        function mudarSemanaBarbeiro(delta) {
+            barberSemanaOffset += delta;
+            renderBarberSemana();
+        }
+
+        function renderBarberSemana() {
+            const dias = obterDiasDaSemana(barberSemanaOffset);
+            const nomesDias = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+            const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+            const hojeISO = paraISO(new Date());
+
+            document.getElementById('barberSemanaLabel').innerText =
+                `${dias[0].getDate()} - ${dias[5].getDate()} de ${meses[dias[0].getMonth()]}`;
+
+            const tabsContainer = document.getElementById('barberDiasTabs');
+            tabsContainer.innerHTML = '';
+
+            dias.forEach((d, index) => {
+                const iso = paraISO(d);
+                const isHoje = iso === hojeISO;
+                const isSelecionado = index === barberDiaSelecionadoIndex;
+
+                const tab = document.createElement('div');
+                tab.className = 'barber-dia-tab' + (isHoje ? ' hoje' : '') + (isSelecionado ? ' selecionado' : '');
+                tab.innerHTML = `<span class="dia-nome">${nomesDias[index]}</span><span class="dia-numero">${d.getDate()}</span>`;
+                tab.onclick = function () {
+                    barberDiaSelecionadoIndex = index;
+                    renderBarberSemana();
+                };
+                tabsContainer.appendChild(tab);
+            });
+
+            renderBarberDashboard();
         }
 
         function logoutBarber() {
@@ -1495,7 +1641,8 @@
 
         async function renderBarberDashboard() {
             if (!currentLoggedInBarber) return;
-            const filterDate = document.getElementById('barberFilterDate').value;
+            const dias = obterDiasDaSemana(barberSemanaOffset);
+            const filterDate = paraISO(dias[barberDiaSelecionadoIndex]);
             const container = document.getElementById('barberAppointmentsContainer');
 
             container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando agendamentos...</p>';
