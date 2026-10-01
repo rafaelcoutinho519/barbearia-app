@@ -6,6 +6,7 @@
     <title>Brooklyn Barbearia</title>
     <style>
         :root {
+            color-scheme: dark;
             --bg-color: #0c0c0c;
             --card-bg: #161616;
             --card-border: #262626;
@@ -675,7 +676,9 @@
             max-width: 480px;
             position: relative;
             max-height: 90vh;
+            max-height: 90dvh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
@@ -925,6 +928,142 @@
         .barber-dia-tab.selecionado .dia-numero {
             color: #0c0c0c;
         }
+
+        /* ===== Correções mobile (Android/iOS) ===== */
+        button, a, select, .service-card, .pro-option-card, .cut-item { touch-action: manipulation; }
+
+        /* 16px evita o zoom automático do iOS/Android ao tocar nos campos */
+        .form-group input, .form-group select { font-size: 16px; }
+        .form-group select option { background: #161616; color: #fff; }
+
+        /* ===== Calendário próprio (substitui o <input type="date"> nativo, escuro/ruim no Android) ===== */
+        .date-trigger {
+            width: 100%;
+            padding: 12px;
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.2s;
+        }
+        .date-trigger.placeholder { color: #777; }
+        .date-trigger.open, .date-trigger:focus { border-color: var(--gold); outline: none; }
+        .date-trigger svg { width: 20px; height: 20px; fill: var(--gold); flex: none; }
+
+        .calendar-box {
+            margin-top: 8px;
+            background: #111;
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+        .cal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .cal-title {
+            color: var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        .cal-nav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #0c0c0c;
+            border: 1px solid var(--card-border);
+            color: var(--gold);
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+        }
+        .cal-nav:disabled { opacity: 0.25; cursor: default; }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .cal-wd {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 4px 0;
+        }
+        .cal-day {
+            aspect-ratio: 1 / 1;
+            min-height: 38px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background: #1c1c1c;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+        }
+        .cal-day.empty { background: transparent; cursor: default; }
+        .cal-day:disabled { background: transparent; color: #444; cursor: not-allowed; }
+        .cal-day.today { border-color: var(--gold); color: var(--gold-light); }
+        .cal-day.sel {
+            background: linear-gradient(135deg, #f3d36b, #d4af37 60%, #aa8c2c);
+            color: #0c0c0c;
+            border-color: var(--gold);
+            box-shadow: 0 3px 10px rgba(212, 175, 55, 0.35);
+        }
+        .cal-day:not(:disabled):not(.empty):active { transform: scale(0.94); }
+        .cal-legend { margin-top: 10px; font-size: 0.72rem; color: var(--text-muted); text-align: center; }
+
+        /* ===== Modal de confirmação / WhatsApp ===== */
+        .wa-warning {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: var(--gold-light);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 14px 0;
+            text-align: left;
+        }
+        .btn-wa {
+            display: block;
+            width: 100%;
+            background: #25d366;
+            color: #fff;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+        .btn-wa:active { opacity: 0.85; }
+        .btn-link-close {
+            width: 100%;
+            margin-top: 10px;
+            background: none;
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -1029,6 +1168,14 @@
                 <h4>Cabelo + Barba + Sobrancelha</h4>
                 <div class="service-footer">
                     <span class="price-tag">R$ 35,00</span>
+                    <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
+                </div>
+            </div>
+
+            <div class="service-card" onclick="selectServiceAndSchedule('Corte + Barba')">
+                <h4>Corte + Barba</h4>
+                <div class="service-footer">
+                    <span class="price-tag">R$ 30,00</span>
                     <span class="duration-badge"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 40 min</span>
                 </div>
             </div>
@@ -1206,7 +1353,7 @@
     </div>
 
     <!-- MODAL DE ZOOM / AMPLIAR MÍDIA -->
-    <div id="imageZoomModal" class="modal" onclick="closeAllModals()">
+    <div id="imageZoomModal" class="modal" onclick="if(event.target===this)closeAllModals()">
         <div class="zoom-container" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <div id="zoomMediaContainer" style="display: flex; justify-content: center; align-items: center;"></div>
@@ -1215,7 +1362,7 @@
     </div>
 
     <!-- MODAL DE AGENDAMENTO -->
-    <div id="scheduleModal" class="modal" onclick="closeAllModals()">
+    <div id="scheduleModal" class="modal" onclick="if(event.target===this)closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3>Agendar Horário</h3>
@@ -1229,6 +1376,7 @@
                         <option value="Barba + Pezinho">Barba + Pezinho - R$ 15,00</option>
                         <option value="Cabelo">Cabelo - R$ 20,00</option>
                         <option value="Cabelo + Barba + Sobrancelha">Cabelo + Barba + Sobrancelha - R$ 35,00</option>
+                        <option value="Corte + Barba">Corte + Barba - R$ 30,00</option>
                         <option value="Corte com Pigmentação">Corte com Pigmentação - R$ 40,00</option>
                         <option value="Luzes Normal">Luzes Normal - R$ 40,00</option>
                         <option value="Luzes Platinada">Luzes Platinada - R$ 60,00</option>
@@ -1260,7 +1408,20 @@
 
                 <div class="form-group">
                     <label>Data</label>
-                    <input type="date" id="scheduleDate" required onchange="validateDateAndTimes()">
+                    <input type="hidden" id="scheduleDate">
+                    <button type="button" class="date-trigger placeholder" id="dateTrigger" onclick="toggleCalendar()">
+                        <span id="dateTriggerText">Toque para escolher a data</span>
+                        <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                    </button>
+                    <div class="calendar-box" id="calendarBox" hidden>
+                        <div class="cal-head">
+                            <button type="button" class="cal-nav" id="calPrev" onclick="changeCalMonth(-1)" aria-label="Mês anterior">‹</button>
+                            <span class="cal-title" id="calTitle"></span>
+                            <button type="button" class="cal-nav" id="calNext" onclick="changeCalMonth(1)" aria-label="Próximo mês">›</button>
+                        </div>
+                        <div class="cal-grid" id="calGrid"></div>
+                        <div class="cal-legend">Domingo: fechado</div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Horário</label>
@@ -1273,8 +1434,21 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONFIRMAÇÃO + ENVIO PARA O WHATSAPP -->
+    <div id="waModal" class="modal" onclick="if(event.target===this)closeAllModals()">
+        <div class="modal-content" style="text-align: center;" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            <div style="font-size: 2.6rem; margin-bottom: 6px;" id="waModalIcon">✅</div>
+            <h3 id="waModalTitle" style="margin-bottom: 10px;">Agendamento confirmado!</h3>
+            <p id="waModalDetails" style="color: #fff; font-size: 0.95rem; line-height: 1.5;"></p>
+            <div class="wa-warning" id="waModalWarning"></div>
+            <a id="waModalBtn" class="btn-wa" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+            <button type="button" class="btn-link-close" onclick="closeAllModals()">Fechar</button>
+        </div>
+    </div>
+
     <!-- MODAL DE LOGIN / CADASTRO DO CLIENTE -->
-    <div id="authModal" class="modal" onclick="closeAllModals()">
+    <div id="authModal" class="modal" onclick="if(event.target===this)closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3 id="authModalTitle">Identificação</h3>
@@ -1282,11 +1456,11 @@
             <form id="authForm" onsubmit="handleAuthSubmit(event)">
                 <div class="form-group">
                     <label>Nome Completo</label>
-                    <input type="text" id="authName" placeholder="Ex: João Silva" required>
+                    <input type="text" id="authName" placeholder="Ex: João Silva" autocomplete="name" required>
                 </div>
                 <div class="form-group">
                     <label>Telefone / WhatsApp</label>
-                    <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" required>
+                    <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" inputmode="tel" autocomplete="tel" maxlength="16" required>
                 </div>
                 <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Continuar</button>
             </form>
@@ -1294,7 +1468,7 @@
     </div>
 
     <!-- MODAL DE MEUS AGENDAMENTOS -->
-    <div id="appointmentsModal" class="modal" onclick="closeAllModals()">
+    <div id="appointmentsModal" class="modal" onclick="if(event.target===this)closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3>Meus Agendamentos</h3>
@@ -1306,7 +1480,7 @@
     </div>
 
     <!-- MODAL DE LOGIN DO BARBEIRO (PIN SECRETO) -->
-    <div id="barberLoginModal" class="modal" onclick="closeAllModals()">
+    <div id="barberLoginModal" class="modal" onclick="if(event.target===this)closeAllModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3>Área Exclusiva - Barbeiros</h3>
@@ -1331,7 +1505,7 @@
     </div>
 
     <!-- MODAL DO PAINEL DO BARBEIRO (AGENDA) -->
-    <div id="barberPanelModal" class="modal" onclick="closeAllModals()">
+    <div id="barberPanelModal" class="modal" onclick="if(event.target===this)closeAllModals()">
         <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3 id="barberPanelTitle">Painel de Agendamentos</h3>
@@ -1351,6 +1525,33 @@
     </div>
 
     <script>
+        // Protege contra HTML/script injetado em nome, serviço etc. (o nome do cliente aparece no painel do barbeiro)
+        function esc(valor) {
+            return String(valor == null ? '' : valor)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function dataBR(iso) {
+            const p = String(iso || '').split('-');
+            return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+        }
+
+        // Aceita só números, com DDD (10 ou 11 dígitos), e já aceita o 55 na frente
+        function telefoneValido(valor) {
+            let d = String(valor || '').replace(/\D/g, '');
+            if (d.startsWith('55') && d.length > 11) d = d.slice(2);
+            return d.length === 10 || d.length === 11;
+        }
+
+        function formatarTelefone(valor) {
+            let d = String(valor || '').replace(/\D/g, '');
+            if (d.startsWith('55') && d.length > 11) d = d.slice(2);
+            if (d.length === 11) return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+            if (d.length === 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+            return valor;
+        }
+
         const barberPhones = {
             "Karlos": "5587996132581",
             "Dorgivan": "5587996173768",
@@ -1424,8 +1625,7 @@
             document.getElementById(modalId).style.display = 'flex';
             
             if (modalId === 'scheduleModal') {
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('scheduleDate').setAttribute('min', today);
+                resetCalendar();
             }
         }
 
@@ -1483,14 +1683,14 @@
                 listContainer.innerHTML = userApps.map((app) => `
                     <div class="appointment-card-modern">
                         <div class="appointment-header">
-                            <span class="appointment-service">${app.servico}</span>
+                            <span class="appointment-service">${esc(app.servico)}</span>
                             <span style="font-size: 0.8rem; color: var(--gold);">Ativo</span>
                         </div>
                         <div class="appointment-info">
-                            <img src="${barberImages[app.barbeiro_nome] || ''}" alt="${app.barbeiro_nome}" class="appointment-pro-img">
+                            <img src="${barberImages[app.barbeiro_nome] || ''}" alt="${esc(app.barbeiro_nome)}" class="appointment-pro-img">
                             <div class="appointment-details">
-                                <p>Profissional: <strong>${app.barbeiro_nome}</strong></p>
-                                <p>Data e Hora: <strong>${app.data} às ${app.horario}</strong></p>
+                                <p>Profissional: <strong>${esc(app.barbeiro_nome)}</strong></p>
+                                <p>Data e Hora: <strong>${dataBR(app.data)} às ${esc(app.horario)}</strong></p>
                             </div>
                         </div>
                         <button class="btn-cancel-modern" onclick="cancelAppointment(${app.id})">Cancelar Agendamento</button>
@@ -1518,12 +1718,21 @@
 
             await renderAppointmentsList();
             updateAvailableTimes();
-            alert('Agendamento cancelado com sucesso.');
 
             if (appToCancel && barberPhones[appToCancel.barbeiro_nome]) {
                 const phone = barberPhones[appToCancel.barbeiro_nome];
-                const msg = `❌ *CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.servico}* marcado para ${appToCancel.data} às ${appToCancel.horario}. A vaga foi liberada no site. 🔄`;
-                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+                const msg = `❌ *CANCELAMENTO DE HORÁRIO*\n\nO cliente *${currentUser.name}* cancelou o agendamento de *${appToCancel.servico}* marcado para ${dataBR(appToCancel.data)} às ${appToCancel.horario}. A vaga foi liberada no site. 🔄`;
+                showWhatsAppModal({
+                    icon: '❌',
+                    title: 'Agendamento cancelado',
+                    details: `${appToCancel.servico} com ${appToCancel.barbeiro_nome}<br>${dataBR(appToCancel.data)} às ${appToCancel.horario}`,
+                    warning: '⚠️ <strong>Último passo:</strong> toque no botão abaixo e, no WhatsApp, aperte <strong>ENVIAR</strong> ▶ para avisar o barbeiro do cancelamento.',
+                    link: `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
+                    buttonLabel: 'Avisar o barbeiro no WhatsApp',
+                    autoOpen: false
+                });
+            } else {
+                alert('Agendamento cancelado com sucesso.');
             }
         }
 
@@ -1676,9 +1885,9 @@
                     return `
                     <div class="admin-app-item">
                         <div>
-                            <span style="color: var(--gold); font-weight: bold; font-size: 1.05rem;">${app.horario} - ${app.servico}</span>
-                            <p style="color: #fff; font-size: 0.9rem; margin-top: 4px;">Cliente: <strong>${app.nome_cliente}</strong></p>
-                            <p style="color: var(--text-muted); font-size: 0.8rem;">Tel: ${app.telefone_cliente} | Data: ${app.data}</p>
+                            <span style="color: var(--gold); font-weight: bold; font-size: 1.05rem;">${esc(app.horario)} - ${esc(app.servico)}</span>
+                            <p style="color: #fff; font-size: 0.9rem; margin-top: 4px;">Cliente: <strong>${esc(app.nome_cliente)}</strong></p>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">Tel: ${esc(app.telefone_cliente)} | Data: ${dataBR(app.data)}</p>
                         </div>
                         <div style="display: flex; gap: 8px;">
                             <a href="https://wa.me/${numeroFinal}?text=${encodeURIComponent(msgWhatsApp)}" target="_blank" class="btn-social" style="padding: 6px 12px; font-size: 0.75rem;">WhatsApp</a>
@@ -1864,9 +2073,20 @@
             let optionsHtml = '<option value="">Selecione o horário</option>';
             let availableCount = 0;
 
+            const agora = new Date();
+            const hojeISO = paraISO(agora);
+            const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+
             allPossibleTimes.forEach(time => {
                 if (excludedTimes.includes(time)) {
                     return; 
+                }
+
+                if (dateStr === hojeISO) {
+                    const [hh, mm] = time.split(':').map(Number);
+                    if (hh * 60 + mm <= minutosAgora) {
+                        return; // horário de hoje que já passou
+                    }
                 }
 
                 if (bookedTimes.includes(time)) {
@@ -1923,13 +2143,19 @@
         function handleAuthSubmit(e) {
             e.preventDefault();
             const name = document.getElementById('authName').value.trim();
-            const phone = document.getElementById('authPhone').value.trim();
+            let phone = document.getElementById('authPhone').value.trim();
 
             if (!name || !phone) {
                 alert('Preencha o nome e o telefone.');
                 return;
             }
 
+            if (!telefoneValido(phone)) {
+                alert('Digite o telefone com DDD. Ex: (87) 99999-9999');
+                return;
+            }
+
+            phone = formatarTelefone(phone);
             currentUser = { name, phone };
             localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
 
@@ -2001,18 +2227,133 @@
                 }
 
                 closeAllModals();
-                alert(`Agendamento de ${service} com ${pro} confirmado para ${date} às ${time}!`);
+                updateAvailableTimes();
 
                 if (barberPhones[pro]) {
                     const phoneNum = barberPhones[pro];
-                    const textMessage = `🔔 *NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${date}\n⏰ *Horário:* ${time}`;
-                    window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`, '_blank');
+                    const textMessage = `🔔 *NOVO AGENDAMENTO - BROOKLYN BARBEARIA*\n\n👤 *Cliente:* ${currentUser.name}\n📞 *Telefone:* ${currentUser.phone}\n✂️ *Serviço:* ${service}\n📅 *Data:* ${dataBR(date)}\n⏰ *Horário:* ${time}`;
+                    showWhatsAppModal({
+                        icon: '✅',
+                        title: 'Agendamento confirmado!',
+                        details: `<strong>${esc(service)}</strong> com <strong>${esc(pro)}</strong><br>${dataBR(date)} às ${esc(time)}`,
+                        warning: '⚠️ <strong>Último passo (importante):</strong> toque no botão verde abaixo e, no WhatsApp, aperte <strong>ENVIAR</strong> ▶ para o barbeiro receber o seu agendamento.',
+                        link: `https://wa.me/${phoneNum}?text=${encodeURIComponent(textMessage)}`,
+                        buttonLabel: 'Enviar para o barbeiro no WhatsApp',
+                        autoOpen: true
+                    });
+                } else {
+                    alert(`Agendamento de ${service} com ${pro} confirmado para ${dataBR(date)} às ${time}!`);
                 }
             } catch (err) {
                 alert('Erro de conexão ao criar o agendamento. Verifique sua internet e tente novamente.');
             } finally {
                 if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = 'Confirmar Agendamento'; }
             }
+        }
+
+        // ===== Modal "último passo" do WhatsApp =====
+        // O navegador do celular costuma BLOQUEAR window.open depois de uma requisição assíncrona.
+        // Por isso o botão abaixo é um link de verdade: o toque do cliente nunca é bloqueado.
+        function showWhatsAppModal(opts) {
+            closeAllModals();
+            document.getElementById('waModalIcon').innerText = opts.icon || '✅';
+            document.getElementById('waModalTitle').innerText = opts.title || '';
+            document.getElementById('waModalDetails').innerHTML = opts.details || '';
+            document.getElementById('waModalWarning').innerHTML = opts.warning || '';
+            const btn = document.getElementById('waModalBtn');
+            btn.href = opts.link;
+            btn.innerText = opts.buttonLabel || 'Enviar no WhatsApp';
+            document.getElementById('waModal').style.display = 'flex';
+
+            if (opts.autoOpen) {
+                // Tenta abrir sozinho; se o navegador bloquear, o botão continua ali.
+                try { window.open(opts.link, '_blank'); } catch (err) { /* o botão cobre */ }
+            }
+        }
+
+        // ===== Calendário próprio (dourado, funciona igual no Android e no iOS) =====
+        const MESES_LONGOS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+        const DIAS_SEMANA_LONGOS = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+        let calMes = new Date();
+        calMes.setDate(1);
+
+        function resetCalendar() {
+            const hoje = new Date();
+            calMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+            document.getElementById('calendarBox').hidden = true;
+            document.getElementById('dateTrigger').classList.remove('open');
+            const valor = document.getElementById('scheduleDate').value;
+            if (valor) {
+                atualizarTextoData(valor);
+                const [a, m] = valor.split('-').map(Number);
+                calMes = new Date(a, m - 1, 1);
+            }
+        }
+
+        function atualizarTextoData(iso) {
+            const trigger = document.getElementById('dateTrigger');
+            const texto = document.getElementById('dateTriggerText');
+            if (!iso) {
+                texto.innerText = 'Toque para escolher a data';
+                trigger.classList.add('placeholder');
+                return;
+            }
+            const [a, m, d] = iso.split('-').map(Number);
+            const dow = new Date(a, m - 1, d).getDay();
+            texto.innerText = `${dataBR(iso)} (${DIAS_SEMANA_LONGOS[dow]})`;
+            trigger.classList.remove('placeholder');
+        }
+
+        function toggleCalendar() {
+            const box = document.getElementById('calendarBox');
+            const abrir = box.hidden;
+            box.hidden = !abrir;
+            document.getElementById('dateTrigger').classList.toggle('open', abrir);
+            if (abrir) renderCalendar();
+        }
+
+        function changeCalMonth(delta) {
+            calMes = new Date(calMes.getFullYear(), calMes.getMonth() + delta, 1);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const hojeISO = paraISO(hoje);
+            const selecionado = document.getElementById('scheduleDate').value;
+
+            const ano = calMes.getFullYear();
+            const mes = calMes.getMonth();
+            document.getElementById('calTitle').innerText = `${MESES_LONGOS[mes]} ${ano}`;
+            document.getElementById('calPrev').disabled = (ano === hoje.getFullYear() && mes <= hoje.getMonth());
+
+            const grid = document.getElementById('calGrid');
+            let html = ['D','S','T','Q','Q','S','S'].map(l => `<div class="cal-wd">${l}</div>`).join('');
+
+            const primeiroDow = new Date(ano, mes, 1).getDay();
+            const totalDias = new Date(ano, mes + 1, 0).getDate();
+
+            for (let i = 0; i < primeiroDow; i++) html += '<button type="button" class="cal-day empty" disabled></button>';
+
+            for (let dia = 1; dia <= totalDias; dia++) {
+                const d = new Date(ano, mes, dia);
+                const iso = paraISO(d);
+                const desativado = d < hoje || d.getDay() === 0;
+                let classes = 'cal-day';
+                if (iso === hojeISO) classes += ' today';
+                if (iso === selecionado) classes += ' sel';
+                html += `<button type="button" class="${classes}" ${desativado ? 'disabled' : ''} onclick="pickDate('${iso}')">${dia}</button>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        function pickDate(iso) {
+            document.getElementById('scheduleDate').value = iso;
+            atualizarTextoData(iso);
+            document.getElementById('calendarBox').hidden = true;
+            document.getElementById('dateTrigger').classList.remove('open');
+            validateDateAndTimes();
         }
 
         window.onload = function() {
