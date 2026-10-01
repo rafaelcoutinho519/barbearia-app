@@ -25,7 +25,8 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            min-height: 100vh; 
+            min-height: 100vh;
+            min-height: 100dvh; 
             margin: 0; 
             padding: 15px;
             box-sizing: border-box;
@@ -81,7 +82,7 @@
             background: #242424; 
             color: var(--text-main); 
             box-sizing: border-box; 
-            font-size: 15px;
+            font-size: 16px;
             font-family: inherit;
             outline: none;
             transition: all 0.3s ease;
@@ -295,6 +296,19 @@
             border-color: var(--gold);
         }
 
+        .aviso-novo {
+            background: linear-gradient(135deg, #d4af37, #aa8c2c);
+            color: #121212;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            text-align: left;
+            line-height: 1.4;
+            animation: pulsar 1.2s ease-in-out 3;
+        }
+        @keyframes pulsar { 0%,100% { transform: scale(1); } 50% { transform: scale(1.02); } }
         @media (max-width: 380px) {
             .dia-tab .dia-nome { font-size: 10px; }
             .dia-tab .dia-numero { font-size: 14px; }
@@ -313,7 +327,7 @@
             <option value="Dorgivan">Dorgivan</option>
             <option value="David">David</option>
         </select>
-        <input type="password" id="pin" placeholder="Digite seu PIN" maxlength="4">
+        <input type="password" id="pin" placeholder="Digite seu PIN" maxlength="4" inputmode="numeric" autocomplete="current-password">
         <button onclick="logar()">Entrar</button>
     </div>
 
@@ -329,6 +343,7 @@
 
         <div class="dias-tabs" id="dias-tabs"></div>
 
+        <div id="aviso-novo" class="aviso-novo hidden"></div>
         <div id="contador-agenda" class="contador-badge">Carregando contagem...</div>
 
         <div id="agenda-lista"></div>
@@ -338,7 +353,69 @@
     <script>
         // Os PINs não ficam mais aqui no código (essa página é pública e qualquer um podia ver
         // o código-fonte). O login agora é validado no servidor, na rota POST /login.
+        function esc(valor) {
+            return String(valor == null ? '' : valor)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
         let barbeiroLogado = '';
+        let idsConhecidos = null;   // null = ainda não carregou a primeira vez
+        let timerNovos = null;
+        let audioCtx = null;
+
+        // Apita quando chega agendamento novo (o login conta como "toque", então o navegador libera o som)
+        function apitar() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                [0, 0.25].forEach(function(atraso) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = 880;
+                    gain.gain.value = 0.15;
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + atraso);
+                    osc.stop(audioCtx.currentTime + atraso + 0.18);
+                });
+            } catch (e) { /* sem som, tudo bem: o aviso visual aparece */ }
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        }
+
+        // A cada 30s confere se entrou agendamento novo. Garante que o barbeiro veja TODO agendamento,
+        // mesmo que o cliente não tenha apertado "enviar" no WhatsApp.
+        async function verificarNovos() {
+            if (!painelToken || !barbeiroLogado) return;
+            try {
+                const res = await fetch('/agendamentos?barbeiro=' + encodeURIComponent(barbeiroLogado), {
+                    headers: { 'Authorization': 'Bearer ' + painelToken },
+                    cache: 'no-store'
+                });
+                if (res.status === 401) return;
+                const todos = await res.json();
+                const ids = new Set(todos.map(function(a) { return a.id; }));
+
+                if (idsConhecidos === null) {
+                    idsConhecidos = ids;
+                    return;
+                }
+
+                const novos = todos.filter(function(a) { return !idsConhecidos.has(a.id); });
+                idsConhecidos = ids;
+
+                if (novos.length > 0) {
+                    const n = novos[novos.length - 1];
+                    const aviso = document.getElementById('aviso-novo');
+                    aviso.innerHTML = '🔔 ' + (novos.length > 1 ? novos.length + ' novos agendamentos!' : 'Novo agendamento!') +
+                        '<br>' + esc(n.nome_cliente) + ' — ' + esc(n.servico) + ' — ' + dataExibidaFormatada(n.data) + ' às ' + esc(n.horario);
+                    aviso.classList.remove('hidden');
+                    apitar();
+                    carregarAgenda();
+                }
+            } catch (err) { /* sem internet agora: tenta de novo em 30s */ }
+        }
         let painelToken = sessionStorage.getItem('painel_token') || null;
 
         async function logar() {
@@ -373,6 +450,14 @@
                 diaSelecionadoIndex = (diaSemanaHoje === 0) ? 0 : (diaSemanaHoje - 1);
 
                 renderSemana();
+                idsConhecidos = null;
+                try {
+                    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                } catch (e) {}
+                verificarNovos();
+                if (timerNovos) clearInterval(timerNovos);
+                timerNovos = setInterval(verificarNovos, 30000);
             } catch (err) {
                 alert('Erro de conexão ao entrar no painel.');
             }
@@ -484,8 +569,9 @@
                 contadorEl.innerText = '📅 ' + dadosFiltrados.length + ' agendamentos para esta data';
             }
 
+            dadosFiltrados.sort(function(a, b) { return String(a.horario).localeCompare(String(b.horario)); });
             lista.innerHTML = '';
-            
+
             if (dadosFiltrados.length === 0) {
                 lista.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px 0;">Nenhum agendamento encontrado para esta data.</p>';
                 return;
@@ -499,12 +585,12 @@
                 const telCliente = item.telefone_cliente || '';
                 const servicoCliente = item.servico || 'Corte';
                 const horarioCliente = item.horario || '';
-                const dataExibicao = item.data;
+                const dataExibicao = dataExibidaFormatada(item.data);
 
                 const textoMsg = "✂️ *BROOKLYN BARBEARIA* 💈\n\n" +
                                  "Olá, *_" + nomeCliente + "_*! Passando para confirmar o seu horário conosco.\n\n" +
                                  "📋 *Serviço:* " + servicoCliente + "\n" +
-                                 "📅 *Data:* " + dataExibidaFormatada(dataExibicao) + "\n" +
+                                 "📅 *Data:* " + dataExibicao + "\n" +
                                  "⏰ *Horário:* " + horarioCliente + "\n\n" +
                                  "⚠️ _Pedimos a gentileza de comparecer com alguns minutos de antecedência para mantermos nossa pontualidade._\n\n" +
                                  "Caso precise reagendar, avise-nos com antecedência. Te esperamos!";
@@ -513,10 +599,10 @@
 
                 lista.innerHTML += `
                     <div class="agendamento-item">
-                        <div class="agendamento-header">⏰ ${horarioCliente} - ${servicoCliente}</div>
+                        <div class="agendamento-header">⏰ ${esc(horarioCliente)} - ${esc(servicoCliente)}</div>
                         <div class="agendamento-info">
-                            👤 <strong>Cliente:</strong> ${nomeCliente}<br>
-                            📞 <strong>Tel:</strong> ${telCliente} | 📅 <strong>Data:</strong> ${dataExibicao}
+                            👤 <strong>Cliente:</strong> ${esc(nomeCliente)}<br>
+                            📞 <strong>Tel:</strong> ${esc(telCliente)} | 📅 <strong>Data:</strong> ${esc(dataExibicao)}
                         </div>
                         <div class="acoes-container">
                             <a href="${linkWhatsApp}" target="_blank" class="btn-whatsapp">💬 WhatsApp</a>
@@ -555,6 +641,8 @@
         }
 
         function logout() {
+            if (timerNovos) { clearInterval(timerNovos); timerNovos = null; }
+            idsConhecidos = null;
             painelToken = null;
             sessionStorage.removeItem('painel_token');
             document.getElementById('pin').value = '';
