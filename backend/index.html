@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Brooklyn Barbearia</title>
     <style>
         :root {
@@ -930,6 +930,19 @@
         }
 
         /* ===== Correções mobile (Android/iOS) ===== */
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        .modal { height: 100vh; height: 100dvh; overscroll-behavior: contain;
+                 padding-top: max(20px, env(safe-area-inset-top));
+                 padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+        .modal-content { overscroll-behavior: contain; }
+        .mobile-bottom-nav { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+        .form-group input, .btn-primary { -webkit-appearance: none; appearance: none; border-radius: 6px; }
+        @media(max-width: 768px) {
+            .modal { align-items: flex-start; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+            .modal-content { margin: auto; max-height: none; padding: 30px 18px; }
+            .btn-primary, .btn-agendar-pro, .close-btn { min-height: 44px; }
+        }
         button, a, select, .service-card, .pro-option-card, .cut-item { touch-action: manipulation; }
 
         /* 16px evita o zoom automático do iOS/Android ao tocar nos campos */
@@ -1105,11 +1118,11 @@
     </div>
 
     <section class="hero" id="inicio">
-        <div class="hero-logo-container" onclick="openModal('scheduleModal')" title="Clique para agendar!">
+        <div class="hero-logo-container" onclick="startSchedule()" title="Clique para agendar!">
             <img src="logo.png" alt="Brooklyn Barbearia" class="hero-logo">
         </div>
         <p>Cortes precisos, barba na navalha e um atendimento à altura. Agende seu horário de forma rápida e elegante.</p>
-        <button class="btn-primary" onclick="openModal('scheduleModal')">Agendar Horário</button>
+        <button class="btn-primary" onclick="startSchedule()">Agendar Horário</button>
     </section>
 
     <div class="info-section">
@@ -1453,14 +1466,14 @@
             <button class="close-btn" onclick="closeAllModals()">&times;</button>
             <h3 id="authModalTitle">Identificação</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 20px;">Insira seu nome e número de WhatsApp para acessar ou cadastrar.</p>
-            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" autocomplete="off">
                 <div class="form-group">
                     <label>Nome Completo</label>
-                    <input type="text" id="authName" placeholder="Ex: João Silva" autocomplete="name" required>
+                    <input type="text" id="authName" placeholder="Ex: João Silva" autocomplete="off" autocapitalize="words" autocorrect="off" required>
                 </div>
                 <div class="form-group">
                     <label>Telefone / WhatsApp</label>
-                    <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" inputmode="tel" autocomplete="tel" maxlength="16" required>
+                    <input type="tel" id="authPhone" placeholder="Ex: (87) 99999-9999" inputmode="tel" autocomplete="off" maxlength="16" required>
                 </div>
                 <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; margin-top: 10px;">Continuar</button>
             </form>
@@ -1568,7 +1581,7 @@
         // O login agora é validado no servidor, na rota POST /login.
         let barberToken = sessionStorage.getItem('brooklyn_barber_token') || null;
 
-        let usersDB = JSON.parse(localStorage.getItem('brooklyn_users_db')) || [];
+        localStorage.removeItem('brooklyn_users_db'); // não guardamos mais lista de nomes/telefones neste aparelho
         let currentUser = localStorage.getItem('brooklyn_current_user') ? JSON.parse(localStorage.getItem('brooklyn_current_user')) : null;
         let currentLoggedInBarber = null;
 
@@ -1613,11 +1626,42 @@
             }
         }
 
+        function limparFormularioLogin() {
+            const f = document.getElementById('authForm');
+            if (f) f.reset();
+            const n = document.getElementById('authName');
+            const t = document.getElementById('authPhone');
+            if (n) n.value = '';
+            if (t) t.value = '';
+        }
+
         function logoutUser() {
             currentUser = null;
+            pendingAction = null;
+            ultimosAgendamentosCliente = [];
+            lembretesEnviados.clear();
             localStorage.removeItem('brooklyn_current_user');
+            localStorage.removeItem('brooklyn_users_db');
+            limparFormularioLogin();
+            closeAllModals();
             updateAuthUI();
             alert('Você saiu da sua conta com sucesso.');
+        }
+
+        // ===== Login direto: ao tocar em Agendar/serviço/profissional, pede o login ANTES e continua sozinho depois =====
+        let pendingAction = null;
+
+        function requireLoginThen(action) {
+            if (currentUser) {
+                action();
+                return;
+            }
+            openModal('authModal');
+            pendingAction = action; // definido depois do openModal, que limpa a ação pendente
+        }
+
+        function startSchedule() {
+            requireLoginThen(() => openModal('scheduleModal'));
         }
 
         function openModal(modalId) {
@@ -1626,6 +1670,9 @@
             
             if (modalId === 'scheduleModal') {
                 resetCalendar();
+            }
+            if (modalId === 'authModal') {
+                limparFormularioLogin();
             }
         }
 
@@ -1642,6 +1689,7 @@
         }
 
         function closeAllModals() {
+            pendingAction = null;
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.style.display = 'none';
             });
@@ -1651,8 +1699,8 @@
 
         function openAppointments() {
             if (!currentUser) {
-                alert('Você precisa se identificar com nome e telefone para ver os agendamentos!');
                 openModal('authModal');
+                pendingAction = openAppointments;
                 return;
             }
             openModal('appointmentsModal');
@@ -1923,13 +1971,17 @@
         }
 
         function selectServiceAndSchedule(serviceName) {
-            openModal('scheduleModal');
-            document.getElementById('scheduleService').value = serviceName;
+            requireLoginThen(() => {
+                openModal('scheduleModal');
+                document.getElementById('scheduleService').value = serviceName;
+            });
         }
 
         function selectProAndSchedule(proName) {
-            openModal('scheduleModal');
-            selectProOption(proName);
+            requireLoginThen(() => {
+                openModal('scheduleModal');
+                selectProOption(proName);
+            });
         }
 
         function selectProOption(proName) {
@@ -1993,14 +2045,9 @@
                 endHour = 19;
                 endMinute = 40;
             } else if (proName === "Karlos") {
-                if (dayOfWeek === 5 || dayOfWeek === 6) {
-                    // Sexta-feira e sábado: não oferecer o horário das 19:40
-                    endHour = 19;
-                    endMinute = 0;
-                } else {
-                    endHour = 19;
-                    endMinute = 40;
-                }
+                // Karlos: todos os dias o último horário é 19:00 (sem 19:40)
+                endHour = 19;
+                endMinute = 0;
             } else {
                 endHour = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 19 : 20;
                 endMinute = (dayOfWeek >= 1 && dayOfWeek <= 4) ? 30 : 0;
@@ -2046,7 +2093,7 @@
                 return;
             }
 
-            const allPossibleTimes = generateTimeSlots(dayOfWeek, pro);
+            const allPossibleTimes = generateTimeSlots(dayOfWeek, pro).filter(t => !(pro === "Karlos" && t === "19:40"));
             
             let excludedTimes = [];
             if (pro === "Karlos") {
@@ -2159,21 +2206,22 @@
             currentUser = { name, phone };
             localStorage.setItem('brooklyn_current_user', JSON.stringify(currentUser));
 
-            if (!usersDB.some(u => u.phone === phone)) {
-                usersDB.push(currentUser);
-                localStorage.setItem('brooklyn_users_db', JSON.stringify(usersDB));
-            }
-
             updateAuthUI();
+            const acao = pendingAction;
             closeAllModals();
-            alert(`Bem-vindo, ${name}! Identificação realizada com sucesso.`);
+            limparFormularioLogin();
+            if (acao) {
+                acao(); // continua direto no que o cliente tinha tocado (agendar, serviço, profissional...)
+            } else {
+                alert(`Bem-vindo, ${name}! Identificação realizada com sucesso.`);
+            }
         }
 
         async function handleScheduleSubmit(e) {
             e.preventDefault();
             if (!currentUser) {
-                alert('Por favor, informe seu nome e telefone antes de concluir o agendamento.');
                 openModal('authModal');
+                pendingAction = startSchedule;
                 return;
             }
 
