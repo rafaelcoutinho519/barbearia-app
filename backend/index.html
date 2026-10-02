@@ -2108,8 +2108,8 @@
 
             let bookedTimes = [];
             try {
-                const url = '/disponibilidade?barbeiro=' + encodeURIComponent(pro) + '&data=' + encodeURIComponent(dateStr);
-                const res = await fetch(url);
+                const url = '/disponibilidade?barbeiro=' + encodeURIComponent(pro) + '&data=' + encodeURIComponent(dateStr) + '&_=' + Date.now();
+                const res = await fetch(url, { cache: 'no-store' });
                 bookedTimes = await res.json();
             } catch (err) {
                 console.error('Erro ao buscar horários ocupados:', err);
@@ -2254,6 +2254,21 @@
             if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = 'Agendando...'; }
 
             try {
+                // Confere de novo, na hora de confirmar, se o horário ainda está livre
+                // (a lista que o cliente vê pode ter ficado velha enquanto ele preenchia).
+                try {
+                    const chk = await fetch('/disponibilidade?barbeiro=' + encodeURIComponent(pro) + '&data=' + encodeURIComponent(date) + '&_=' + Date.now(), { cache: 'no-store' });
+                    const ocupados = await chk.json();
+                    if (Array.isArray(ocupados) && ocupados.includes(time)) {
+                        alert('Esse horário acabou de ser reservado por outra pessoa. Por favor, escolha outro horário.');
+                        updateAvailableTimes();
+                        return;
+                    }
+                } catch (errChk) {
+                    alert('Não foi possível confirmar a disponibilidade do horário. Verifique sua internet e tente novamente.');
+                    return;
+                }
+
                 const res = await fetch('/agendamentos', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
