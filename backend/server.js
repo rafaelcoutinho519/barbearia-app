@@ -26,6 +26,15 @@ app.use(cors());
 app.use(express.json());
 
 // Servir arquivos estáticos da pasta public e backend
+// Bloqueia arquivos sensíveis: antes, /server.js e /database.sqlite podiam ser baixados por qualquer pessoa
+// porque a pasta backend inteira é servida como estática.
+app.use((req, res, next) => {
+    if (/(^|\/)\.|\.(sqlite|sqlite3|sqlite-wal|sqlite-shm|db|env)$|\/(server\.js|package(-lock)?\.json)$/i.test(req.path)) {
+        return res.status(404).end();
+    }
+    next();
+});
+
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.static(__dirname));
 
@@ -38,7 +47,12 @@ app.get('/painel', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/painel.html'));
 });
 
-const db = new Database('database.sqlite');
+// Em produção (Railway), aponte DB_PATH para um Volume (ex.: /data/database.sqlite) para o banco não ser apagado a cada deploy.
+const DB_PATH = process.env.DB_PATH || 'database.sqlite';
+const db = new Database(DB_PATH);
+db.pragma('journal_mode = WAL');
+db.pragma('busy_timeout = 5000');
+console.log('[BANCO] Usando arquivo:', path.resolve(DB_PATH));
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS barbeiros (
@@ -59,6 +73,67 @@ db.exec(`
         FOREIGN KEY(barbeiro_id) REFERENCES barbeiros(id)
     );
 `);
+
+// ===== TRAVA CONTRA HORÁRIO DUPLICADO (feita pelo próprio banco) =====
+// Só pode existir UM agendamento 'ativo' por barbeiro + data + horário. Cancelados não contam.
+let indiceUnicoOk = false;
+function garantirIndiceUnico() {
+    if (indiceUnicoOk) return true;
+    try {
+        db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS ux_agendamento_ativo
+                 ON agendamentos (barbeiro_id, data, horario) WHERE status = 'ativo'`);
+        indiceUnicoOk = true;
+        console.log('[BANCO] Trava de horário duplicado ATIVA.');
+        return true;
+    } catch (err) {
+        // Já existem horários duplicados gravados: o índice só entra depois que os extras forem cancelados no painel.
+        const dup = db.prepare(`
+            SELECT a.id, b.nome AS barbeiro, a.data, a.horario, a.nome_cliente, a.telefone_cliente
+            FROM agendamentos a JOIN barbeiros b ON b.id = a.barbeiro_id
+            WHERE a.status = 'ativo' AND (a.barbeiro_id, a.data, a.horario) IN (
+                SELECT barbeiro_id, data, horario FROM agendamentos
+                WHERE status = 'ativo' GROUP BY barbeiro_id, data, horario HAVING COUNT(*) > 1)
+            ORDER BY a.data, a.horario, a.id
+        `).all();
+        console.warn('[BANCO] ATENÇÃO: existem agendamentos duplicados. Cancele os extras no painel. A trava ativa sozinha depois disso.');
+        console.table(dup);
+        return false;
+    }
+}
+garantirIndiceUnico();
+
+// ===== Horários válidos (mesmas regras do site) =====
+const HORARIOS_BLOQUEADOS = {
+    Karlos: ['13:00', '13:40'],
+    Dorgivan: ['12:20', '13:00'],
+    David: ['12:20', '13:00', '13:40']
+};
+
+function gerarHorarios(diaSemana, nomeBarbeiro) {
+    let fim; // em minutos desde 00:00
+    if (nomeBarbeiro === 'Dorgivan') fim = diaSemana === 6 ? 19 * 60 + 40 : 19 * 60;
+    else if (nomeBarbeiro === 'David') fim = 19 * 60 + 40;
+    else if (nomeBarbeiro === 'Karlos') fim = 19 * 60; // Karlos: último horário 19:00, todos os dias
+    else fim = (diaSemana >= 1 && diaSemana <= 4) ? 19 * 60 + 30 : 20 * 60;
+
+    const bloqueados = HORARIOS_BLOQUEADOS[nomeBarbeiro] || [];
+    const lista = [];
+    for (let m = 9 * 60; m <= fim; m += 40) {
+        const hh = String(Math.floor(m / 60)).padStart(2, '0');
+        const mm = String(m % 60).padStart(2, '0');
+        const h = `${hh}:${mm}`;
+        if (!bloqueados.includes(h)) lista.push(h);
+    }
+    return lista;
+}
+
+function horarioPermitido(nomeBarbeiro, dataISO, horario) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dataISO);
+    if (!m) return false;
+    const diaSemana = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).getUTCDay();
+    if (diaSemana === 0) return false; // domingo fechado
+    return gerarHorarios(diaSemana, nomeBarbeiro).includes(horario);
+}
 
 // Adiciona a coluna pin_hash se ainda não existir (migração segura, não quebra bancos já em produção)
 const colunasBarbeiros = db.prepare("PRAGMA table_info(barbeiros)").all().map(c => c.name);
@@ -222,6 +297,22 @@ app.get('/agendamentos', autenticarBarbeiro, (req, res) => {
     res.json(agendamentos);
 });
 
+// Gravação atômica: verifica e insere dentro de UMA transação com trava de escrita,
+// e o índice único do banco é a segunda barreira. Dois clientes nunca conseguem o mesmo horário.
+const inserirAgendamento = db.transaction((d) => {
+    const existente = db.prepare(`
+        SELECT id FROM agendamentos
+        WHERE barbeiro_id = ? AND data = ? AND horario = ? AND status = 'ativo'
+    `).get(d.barbeiro_id, d.data, d.horario);
+    if (existente) return { conflito: true };
+
+    const info = db.prepare(`
+        INSERT INTO agendamentos (nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id, status)
+        VALUES (?, ?, ?, ?, ?, ?, 'ativo')
+    `).run(d.nome_cliente, d.telefone_cliente, d.data, d.horario, d.servico, d.barbeiro_id);
+    return { id: info.lastInsertRowid };
+});
+
 app.post('/agendamentos', (req, res) => {
     const { nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id } = req.body;
 
@@ -229,24 +320,41 @@ app.post('/agendamentos', (req, res) => {
         return res.status(400).json({ error: 'Preencha todos os campos do agendamento.' });
     }
 
-    const dataPadronizada = normalizarData(data);
+    const barbeiroIdNum = Number(barbeiro_id);
+    const barbeiro = Number.isInteger(barbeiroIdNum)
+        ? db.prepare('SELECT id, nome FROM barbeiros WHERE id = ?').get(barbeiroIdNum)
+        : null;
+    if (!barbeiro) {
+        return res.status(400).json({ error: 'Profissional inválido.' });
+    }
+
+    const dataPadronizada = normalizarData(String(data));
+    const horarioLimpo = String(horario).trim();
+
+    if (!horarioPermitido(barbeiro.nome, dataPadronizada, horarioLimpo)) {
+        return res.status(400).json({ error: 'Este horário não está disponível para este profissional.' });
+    }
 
     try {
-        const existente = db.prepare(`
-            SELECT * FROM agendamentos 
-            WHERE barbeiro_id = ? AND data = ? AND horario = ? AND status = 'ativo'
-        `).get(barbeiro_id, dataPadronizada, horario);
+        const resultado = inserirAgendamento.immediate({
+            nome_cliente: String(nome_cliente).trim().slice(0, 100),
+            telefone_cliente: String(telefone_cliente).trim().slice(0, 30),
+            data: dataPadronizada,
+            horario: horarioLimpo,
+            servico: String(servico || 'Corte').slice(0, 100),
+            barbeiro_id: barbeiro.id
+        });
 
-        if (existente) {
-            return res.status(400).json({ error: 'Este horário já está ocupado.' });
+        if (resultado.conflito) {
+            return res.status(409).json({ error: 'Este horário acabou de ser reservado por outra pessoa. Escolha outro horário.' });
         }
-
-        const stmt = db.prepare('INSERT INTO agendamentos (nome_cliente, telefone_cliente, data, horario, servico, barbeiro_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        const info = stmt.run(nome_cliente, telefone_cliente, dataPadronizada, horario, servico || 'Corte', barbeiro_id, 'ativo');
-        
-        res.json({ id: info.lastInsertRowid, success: true });
+        res.json({ id: resultado.id, success: true });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        if (error && String(error.code).startsWith('SQLITE_CONSTRAINT')) {
+            return res.status(409).json({ error: 'Este horário acabou de ser reservado por outra pessoa. Escolha outro horário.' });
+        }
+        console.error('Erro ao criar agendamento:', error);
+        res.status(500).json({ error: 'Erro ao criar o agendamento. Tente novamente.' });
     }
 });
 
@@ -288,6 +396,7 @@ app.delete('/agendamentos/:id', (req, res) => {
 
     try {
         db.prepare("UPDATE agendamentos SET status = 'cancelado' WHERE id = ?").run(id);
+        garantirIndiceUnico(); // se ainda faltava a trava por causa de duplicados, ativa assim que sumirem
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
