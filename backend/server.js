@@ -22,6 +22,7 @@ if (!process.env.JWT_SECRET) {
     console.warn('[AVISO] JWT_SECRET não definido nas variáveis de ambiente. Defina um valor forte em produção (Railway > Variables).');
 }
 
+app.set('trust proxy', 1); // Railway fica na frente do servidor; necessário para enxergar o IP real
 app.use(cors());
 app.use(express.json());
 
@@ -149,16 +150,19 @@ if (totalBarbeiros === 0) {
     insertBarbeiro.run('Dorgivan', '');
 }
 
-// PINs padrão só são usados para preencher o hash de barbeiros que ainda não têm um definido
-// (ex.: primeira execução após esta atualização). A partir daqui, o que importa é o pin_hash no banco.
-// Unifiquei o PIN do David, que estava diferente entre o index.html (9012) e o painel.html (9876) — fica 9876.
-const pinsPadrao = { Karlos: '1234', Dorgivan: '5678', David: '9876' };
-const barbeirosSemHash = db.prepare('SELECT id, nome FROM barbeiros WHERE pin_hash IS NULL').all();
-for (const b of barbeirosSemHash) {
-    const pin = pinsPadrao[b.nome];
-    if (pin) {
-        const hash = bcrypt.hashSync(pin, 10);
-        db.prepare('UPDATE barbeiros SET pin_hash = ? WHERE id = ?').run(hash, b.id);
+// Os PINs dos barbeiros vêm das variáveis de ambiente do Railway (PIN_KARLOS, PIN_DORGIVAN, PIN_DAVID).
+// Nada de PIN fica escrito no código nem no GitHub. A cada inicialização, o hash no banco é sincronizado com a variável,
+// então para trocar um PIN basta mudar a variável no Railway.
+const todosBarbeiros = db.prepare('SELECT id, nome, pin_hash FROM barbeiros').all();
+for (const b of todosBarbeiros) {
+    const pin = process.env['PIN_' + String(b.nome).toUpperCase()];
+    if (!pin) {
+        console.warn(`[AVISO] Variável PIN_${String(b.nome).toUpperCase()} não definida: ${b.nome} ${b.pin_hash ? 'continua com o PIN já salvo' : 'NÃO conseguirá entrar no painel'}.`);
+        continue;
+    }
+    if (!b.pin_hash || !bcrypt.compareSync(String(pin), b.pin_hash)) {
+        db.prepare('UPDATE barbeiros SET pin_hash = ? WHERE id = ?').run(bcrypt.hashSync(String(pin), 10), b.id);
+        console.log(`[PIN] PIN de ${b.nome} atualizado a partir das variáveis de ambiente.`);
     }
 }
 
@@ -202,6 +206,11 @@ app.get('/barbeiros', (req, res) => {
 });
 
 // Login do barbeiro: recebe { barbeiro, pin } e devolve um token JWT
+// Limite de tentativas: 5 erros por IP + barbeiro a cada 15 minutos (PIN de 4 dígitos seria fácil de adivinhar sem isso)
+const tentativasLogin = new Map();
+const MAX_TENTATIVAS = 5;
+const JANELA_MS = 15 * 60 * 1000;
+
 app.post('/login', (req, res) => {
     const { barbeiro, pin } = req.body;
 
@@ -209,10 +218,23 @@ app.post('/login', (req, res) => {
         return res.status(400).json({ error: 'Informe o barbeiro e o PIN.' });
     }
 
+    const chave = req.ip + '|' + String(barbeiro);
+    const agora = Date.now();
+    const reg = tentativasLogin.get(chave);
+    if (reg && agora - reg.inicio > JANELA_MS) tentativasLogin.delete(chave);
+    const atual = tentativasLogin.get(chave);
+    if (atual && atual.erros >= MAX_TENTATIVAS) {
+        return res.status(429).json({ error: 'Muitas tentativas incorretas. Aguarde 15 minutos e tente novamente.' });
+    }
+
     const row = db.prepare('SELECT * FROM barbeiros WHERE nome = ?').get(barbeiro);
     if (!row || !row.pin_hash || !bcrypt.compareSync(String(pin), row.pin_hash)) {
+        const r = tentativasLogin.get(chave) || { erros: 0, inicio: agora };
+        r.erros++;
+        tentativasLogin.set(chave, r);
         return res.status(401).json({ error: 'PIN incorreto.' });
     }
+    tentativasLogin.delete(chave);
 
     const token = jwt.sign({ id: row.id, nome: row.nome }, JWT_SECRET, { expiresIn: '12h' });
     res.json({ token, barbeiro: row.nome });
